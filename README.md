@@ -1,0 +1,2 @@
+# odoo-marketing
+Marketing addons
