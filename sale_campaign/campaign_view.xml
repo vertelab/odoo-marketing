@@ -21,5 +21,19 @@
             </field>
         </record>
 
+        <template id="current_campaign_view" name="Current Campaign Page">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="container">
+                            <h1 class="text-center"><t t-esc="campaign.name"/></h1>
+                            <h3 class="text-center"><t t-esc="campaign.date_start"/> - <t t-esc="campaign.date_stop"/></h3>
+                            <div t-field="campaign.website_description"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
     </data>
 </openerp>
