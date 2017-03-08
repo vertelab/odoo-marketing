@@ -1,0 +1,52 @@
+﻿/*=============================================================
+                    webshop
+ ============================================================ */
+
+.oe_product_image {
+    margin-bottom: 10%;
+    height: 300px;
+}
+
+.product_shop {
+    display: inline-flex;
+}
+
+.oe_vertel_product_info {
+    text-overflow: ellipsis;
+}
+
+.oe_vertel_product_info .p_desc {
+    height: 4em;
+    overflow: hidden;
+    position: relative;
+    margin: 20px 0px 0px 0px;
+    line-height: 1em;
+}
+
+.c_product_idv {
+    padding: 16px;
+    border: 1px solid #ddd;
+}
+
+.c_product_idv img {
+    margin: auto;
+}
+
+.oe_p_qty {
+    max-width: 45px !important;
+    margin: 0px 20px;
+}
+
+.oe_product .product_price {
+    position: unset;
+}
+
+.oe_vertel_product_info .p_desc::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10%;
+    height: 1.1em;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
