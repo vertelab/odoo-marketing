@@ -1,39 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-
         <record id="view_marketing_campaign_form" model="ir.ui.view">
             <field name="name">marketing.campaign.form.inherited.sale_campaign</field>
             <field name="model">marketing.campaign</field>
-            <field name="inherit_id" ref="marketing_campaign.view_marketing_campaign_form"/>
+            <field name="inherit_id" ref="marketing_campaign.view_marketing_campaign_form" />
             <field name="arch" type="xml">
                 <field name="fixed_cost" position="after">
-                    <field name="pricelist"/>
-                    <field name="reseller_pricelist"/>
+                    <field name="pricelist" />
+                    <field name="reseller_pricelist" />
                 </field>
                 <field name="unique_field_id" position="after">
-                    <field name="date_start"/>
-                    <field name="date_stop"/>
+                    <field name="date_start" />
+                    <field name="date_stop" />
                 </field>
                 <separator string="Activities" position="before">
-                    <field name="website_description"/>
+                    <field name="product_ids" widget="many2many_tags" />
+                    <field name="website_description" />
                 </separator>
             </field>
         </record>
-
         <template id="current_campaign_view" name="Current Campaign Page">
             <t t-call="website.layout">
                 <div id="wrap">
                     <div class="oe_structure">
                         <div class="container">
-                            <h1 class="text-center"><t t-esc="campaign.name"/></h1>
-                            <h3 class="text-center"><t t-esc="campaign.date_start"/> - <t t-esc="campaign.date_stop"/></h3>
-                            <div t-field="campaign.website_description"/>
+                            <h1 class="text-center">
+                                <t t-esc="campaign.name" />
+                            </h1>
+                            <h3 class="text-center">
+                                <t t-esc="campaign.date_start" />
+                                -
+                                <t t-esc="campaign.date_stop" />
+                            </h3>
+                            <div t-field="campaign.website_description" />
+                            <div class="col-md-12" id="products_grid">
+                                <div t-foreach="campaign.product_ids" t-as="product">
+                                    <div class="col-md-4">
+<!--
+                                        <t t-call="website_sale.products_item"/>
+-->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </t>
         </template>
-
     </data>
 </openerp>

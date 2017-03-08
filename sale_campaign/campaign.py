@@ -35,6 +35,7 @@ class marketing_campaign(models.Model):
     website_description = fields.Html(string='Website Description')
     pricelist = fields.Many2one(comodel_name='product.pricelist', string='Pricelist')
     reseller_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Reseller Pricelist')
+    product_ids = fields.One2many(comodel_name='product.template', inverse_name='campaign_id', string='Products')
 
 class website_campaign(Website):
     @http.route('/', type='http', auth="public", website=True)
