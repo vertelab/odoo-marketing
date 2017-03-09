@@ -40,6 +40,12 @@ class crm_tracking_campaign(models.Model):
     pricelist = fields.Many2one(comodel_name='product.pricelist', string='Pricelist')
     reseller_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Reseller Pricelist')
     product_ids = fields.One2many(comodel_name='product.template', inverse_name='campaign_id', string='Products')
+    website_published = fields.Boolean(string='Available in the website', default=False, copy=False)
+    website_url = fields.Char(string='Website url', compute='_website_url')
+
+    @api.one
+    def _website_url(self):
+        self.website_url = '/crm_tracking_campaign/%s' %self.id
 
 class product_public_category(models.Model):
     _inherit = 'product.public.category'
@@ -50,15 +56,18 @@ class website_campaign(Website):
     @http.route('/', type='http', auth="public", website=True)
     def index(self, **kw):
         res = super(website_campaign, self).index(**kw)
-        campaign = request.env['crm.tracking.campaign'].search([('date_start', '<=', datetime.date.today()), ('date_stop', '>=', datetime.date.today()), '|', ('reseller_pricelist', '!=', False), ('pricelist', '!=', False)])
+        campaign = request.env['crm.tracking.campaign'].search([('date_start', '<=', datetime.date.today()), ('date_stop', '>=', datetime.date.today()), ('website_published', '=', True), '|', ('reseller_pricelist', '!=', False), ('pricelist', '!=', False)])
         if len(campaign) > 0:
-            return werkzeug.utils.redirect('/current_campaign', 302)
+            return werkzeug.utils.redirect('/crm_tracking_campaign', 302)
         else:
             return res
 
 class website_sale(website_sale):
-    @http.route(['/current_campaign',], type='http', auth="public", website=True)
-    def campaign_shop(self, page=0, category=None, search='', **post):
+    @http.route([
+        '/crm_tracking_campaign',
+        '/crm_tracking_campaign/<model("crm.tracking.campaign"):campaign>',
+    ], type='http', auth="public", website=True)
+    def campaign_shop(self, page=0, category=None, campaign=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
         attrib_list = request.httprequest.args.getlist('attrib')
@@ -87,11 +96,15 @@ class website_sale(website_sale):
         if attrib_list:
             post['attrib'] = attrib_list
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
-        #~ product_ids = product_obj.search(cr, uid, domain, limit=PPG, offset=pager['offset'], order=self._get_search_order(post), context=context)
-        campaign = request.env['crm.tracking.campaign'].search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today())])
-        if not campaign:
-            return werkzeug.utils.redirect('/', 302)
-        products = campaign.product_ids
+
+        if campaign:
+            products = campaign.product_ids
+        else:
+            campaign = request.env['crm.tracking.campaign'].search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today()), ('website_published', '=', True)])
+            if not campaign:
+                return werkzeug.utils.redirect('/', 302)
+            campaign = campaign[0]
+            products = campaign.product_ids
 
         style_obj = pool['product.style']
         style_ids = style_obj.search(cr, uid, [], context=context)

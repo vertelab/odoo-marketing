@@ -9,12 +9,20 @@
                 <field name="section_id" position="after">
                     <field name="date_start" />
                     <field name="date_stop" />
+                    <field name="website_url" invisible="1"/>
+                    <field name="website_published" widget="website_button"/>
                     <field name="pricelist" />
                     <field name="reseller_pricelist" />
                     <field name="product_ids" widget="many2many_tags" />
                     <field name="website_description" />
                 </field>
             </field>
+        </record>
+        <record id="crm_tracking_campaign_act_form" model="ir.actions.act_window">
+            <field name="name">Campaigns Form</field>
+            <field name="res_model">crm.tracking.campaign</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="crm.crm_tracking_campaign_form"/>
         </record>
         <record id="product_public_category_form_view" model="ir.ui.view">
             <field name="name">product.public.category.form.inherited.sale_campaign</field>
@@ -26,10 +34,41 @@
                 </field>
             </field>
         </record>
-        <template id="product_categories_tab" inherit_id="website_sale.products" active="False" customize_show="True" name="Product Categories Tab">
+        <template id="products_list" inherit_id="website_sale.products" name="Products List">
+            <xpath expr="//t[@t-set='additional_title']" position="replace">
+                <t t-if="campaign">
+                    <t t-set="additional_title">Campaign</t>
+                </t>
+                <t t-if="not campaign">
+                    <t t-set="additional_title">Shop</t>
+                </t>
+            </xpath>
+            <xpath expr="//div[@class='products_pager'][1]" position="attributes">
+                <t t-if="campaign">
+                    <attribute name="class">products_pager hidden</attribute>
+                </t>
+                <t t-if="not campaign">
+                    <attribute name="class">products_pager</attribute>
+                </t>
+            </xpath>
+            <xpath expr="//div[@class='products_pager'][2]" position="attributes">
+                <t t-if="campaign">
+                    <attribute name="class">products_pager hidden</attribute>
+                </t>
+                <t t-if="not campaign">
+                    <attribute name="class">products_pager</attribute>
+                </t>
+            </xpath>
             <xpath expr="//div[@class='container oe_website_sale']" position="before">
                 <t t-if="campaign">
                     <div class="container">
+                        <div class="col-sm-offset-8 col-sm-4 mt16" groups="base.group_sale_manager">
+                            <t t-call="website.publish_management">
+                                <t t-set="object" t-value="campaign"/>
+                                <t t-set="publish_edit" t-value="True"/>
+                                <t t-set="action" t-value="'sale_campaign.crm_tracking_campaign_act_form'"/>
+                            </t>
+                        </div>
                         <div t-field="campaign.website_description" />
                     </div>
                 </t>
@@ -80,12 +119,12 @@
                 <p class="text-muted" t-field="product.default_code" />
             </xpath>
             <xpath expr="//div[@itemprop='offers']" position="after">
-                <b t-if="product.qty_available &gt; 0.0" class="" style="color: #1CB807;">In Stock</b>
-                <b t-if="product.qty_available &lt;= 0.0" class="" style="color: #f00;">Ej i lager</b>
+                <b t-if="product.qty_available &gt; 0.0" class="" style="color: #1CB807;">In stock</b>
+                <b t-if="product.qty_available &lt;= 0.0" class="" style="color: #f00;">Not in stock</b>
                 <form t-att-action="keep('/shop/cart/update')" class="js_add_cart_variants" t-att-data-attribute_value_ids="product.product_variant_ids.ids" method="POST">
                     <div class="product_shop col-md-12">
                         <input type="hidden" class="product_id" name="product_id" t-att-value="int(product.product_variant_ids[0]) if len(product.product_variant_ids) == 1 else '0'" />
-                        <a class="btn btn-default btn-sm" href="#">MER INFO</a>
+                        <a class="btn btn-default btn-sm" href="#">More info</a>
                         <input type="text" class="oe_p_qty form-control input-sm" data-min="1" name="add_qty" value="1" />
                         <a id="add_to_cart" class="btn btn-primary btn-sm js_check_product a-submit" href="#">Buy</a>
                     </div>
