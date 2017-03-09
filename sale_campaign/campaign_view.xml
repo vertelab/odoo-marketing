@@ -43,20 +43,18 @@
                     <t t-set="additional_title">Shop</t>
                 </t>
             </xpath>
-            <xpath expr="//div[@class='products_pager'][1]" position="attributes">
+            <xpath expr="//div[@class='products_pager']/div[@class='row']/t[@t-call='website.pager']" position="replace">
                 <t t-if="campaign">
-                    <attribute name="class">products_pager hidden</attribute>
                 </t>
                 <t t-if="not campaign">
-                    <attribute name="class">products_pager</attribute>
+                    <t t-call="website.pager"/>
                 </t>
             </xpath>
-            <xpath expr="//div[@class='products_pager'][2]" position="attributes">
+            <xpath expr="//div[@class='products_pager']/t[@t-call='website.pager']" position="replace">
                 <t t-if="campaign">
-                    <attribute name="class">products_pager hidden</attribute>
                 </t>
                 <t t-if="not campaign">
-                    <attribute name="class">products_pager</attribute>
+                    <t t-call="website.pager"/>
                 </t>
             </xpath>
             <xpath expr="//div[@class='container oe_website_sale']" position="before">
