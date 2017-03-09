@@ -22,7 +22,7 @@
 {
     'name': 'Sale Campaign',
     'version': '0.1',
-    'category': 'marketing',
+    'category': 'crm',
     'description': """
 Different pricelists on campaign
 ================================
@@ -32,7 +32,7 @@ Different pricelists on campaign
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['base', 'marketing_campaign', 'website_sale'],
+    'depends': ['crm', 'website_sale'],
     'data': [
         'campaign_view.xml',
         'product_view.xml',

@@ -26,7 +26,7 @@ _logger = logging.getLogger(__name__)
 class product_template(models.Model):
     _inherit = 'product.template'
 
-    campaign_id = fields.Many2one(comodel_name='marketing.campaign', string='Campaign')
+    campaign_id = fields.Many2one(comodel_name='crm.tracking.campaign', string='Campaign')
 
 
 class product_pricelist(models.Model):
