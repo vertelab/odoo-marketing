@@ -30,62 +30,40 @@ PPR = 4  # Products Per Row
 import logging
 _logger = logging.getLogger(__name__)
 
-
-class crm_tracking_campaign(models.Model):
-    _inherit = 'crm.tracking.campaign'
+class crm_campaign_object(models.Model):
+    _inherit = 'crm.campaign.object'
 
     website_description = fields.Html(string='Website Description')
-    pricelist = fields.Many2one(comodel_name='product.pricelist', string='Pricelist')
-    reseller_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Reseller Pricelist')
-    #~ product_ids = fields.One2many(comodel_name='product.template', inverse_name='campaign_id', string='Products')
     website_published = fields.Boolean(string='Available in the website', default=False, copy=False)
     website_url = fields.Char(string='Website url', compute='_website_url')
 
     @api.one
     def _website_url(self):
         self.website_url = '/campaign/%s' %self.id
-        
-    @api.model
-    def get_products(self, object_ids):
-        products = self.env['product.template'].browse([])
-        for o in object_ids:
-            model = o.object_id._name
-            if model == 'product.template':
-                products |= o.object_id
-            elif model == 'product.product':
-                products |= o.object_id.product_tmpl_id
-            elif model == 'product.public.category':
-                products |= self.env['product.template'].search([('public_categ_ids', 'in', o.object_id.id)])
-        return products
-    
 
-    @api.model
-    def get_objects(self, object_ids):
-        products = self.env['product.template'].browse([])
-        form campaign in request.env['crm.tracking.campaign'].search([('date_start', '<=', datetime.date.today()), ('date_stop', '>=', datetime.date.today()), ('website_published', '=', True), '|', ('reseller_pricelist', '!=', False), ('pricelist', '!=', False)])
-
-
-        for o in object_ids:
-            model = o.object_id._name
-            if model == 'product.template':
-                products |= o.object_id
-            elif model == 'product.product':
-                products |= o.object_id.product_tmpl_id
-            elif model == 'product.public.category':
-                products |= self.env['product.template'].search([('public_categ_ids', 'in', o.object_id.id)])
-        return products
-
+    object_id = fields.Reference(selection_add=[('product.public.category', 'Product Category')])
+    @api.one
+    @api.onchange('object_id')
+    def get_object_value(self):
+        if self.object_id:
+            if self.object_id._name == 'product.public.category':
+                self.res_id = self.object_id.id
+                self.name = self.object_id.name
+                self.description = self.object_id.description
+                self.image = self.object_id.image
+        return super(crm_campaign_object, self).get_object_value()
 
 class product_public_category(models.Model):
     _inherit = 'product.public.category'
 
+    description = fields.Text(string='Description')
     mobile_icon = fields.Char(string='Mobile Icon', help='This icon will display on smaller devices')
 
 class website_campaign(Website):
     @http.route('/', type='http', auth="public", website=True)
     def index(self, **kw):
         res = super(website_campaign, self).index(**kw)
-        campaign = request.env['crm.tracking.campaign'].search([('date_start', '<=', datetime.date.today()), ('date_stop', '>=', datetime.date.today()), ('website_published', '=', True), '|', ('reseller_pricelist', '!=', False), ('pricelist', '!=', False)])
+        campaign = request.env['crm.tracking.campaign'].get_campaigns()
         if len(campaign) > 0:
             return werkzeug.utils.redirect('/campaign', 302)
         else:
@@ -102,16 +80,12 @@ class website_sale(website_sale):
         attrib_list = request.httprequest.args.getlist('attrib')
         attrib_values = [map(int, v.split("-")) for v in attrib_list if v]
         attrib_set = set([v[1] for v in attrib_values])
-
+        if attrib_list:
+            post['attrib'] = attrib_list
+            
         domain = self._get_search_domain(search, category, attrib_values)
 
         keep = QueryURL('/campaign', category=category and int(category), search=search, attrib=attrib_list)
-
-        if not context.get('pricelist'):
-            pricelist = self.get_pricelist()
-            context['pricelist'] = int(pricelist)
-        else:
-            pricelist = request.env['product.pricelist'].browse(request.context['pricelist'])
 
         url = "/campaign"
         product_count = request.env['product.template'].search_count(domain)
@@ -120,18 +94,21 @@ class website_sale(website_sale):
         if category:
             category = request.env['product.public.category'].browse(int(category))
             url = "/shop/category/%s" % slug(category)
-        if attrib_list:
-            post['attrib'] = attrib_list
-        pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
 
-        if campaign:
-            products = self.get_products(campaign.object_ids)
-        else:
-            campaign = request.env['crm.tracking.campaign'].search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today()), ('website_published', '=', True)])
-            if not campaign:
-                return werkzeug.utils.redirect('/', 302)
-            campaign = campaign[0]
-            products = self.get_products(campaign.object_ids)
+        pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
+        campaign = request.env['crm.tracking.campaign'].get_campaigns()
+        if not campaign:
+            return werkzeug.utils.redirect('/', 302)
+        campaign.ensure_one()
+
+        #~ if campaign:
+            #~ products = self.get_products(campaign.object_ids)
+        #~ else:
+            #~ campaign = request.env['crm.tracking.campaign'].search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today()), ('website_published', '=', True)])
+            #~ if not campaign:
+                #~ return werkzeug.utils.redirect('/', 302)
+            #~ campaign = campaign[0]
+            #~ products = self.get_products(campaign.object_ids)
 
         styles = request.env['product.style'].search([])
         categs = request.env['product.public.category'].search([('parent_id', '=', False)])
@@ -141,15 +118,15 @@ class website_sale(website_sale):
         to_currency = pricelist.currency_id
         compute_currency = lambda price: request.env['res.currency']._compute(from_currency, to_currency, price)
 
-        values = {
+        return request.website.render("website_sale.products", {
             'search': search,
             'category': category,
             'attrib_values': attrib_values,
             'attrib_set': attrib_set,
             'pager': pager,
-            'pricelist': pricelist,
-            'products': products,
-            'bins': table_compute().process(products),
+            'pricelist': campaign.get_pricelist(),
+            'products': campaign.product_ids,
+            'bins': table_compute().process(campaign.product_ids),
             'rows': PPR,
             'styles': styles,
             'categories': categs,
@@ -159,7 +136,4 @@ class website_sale(website_sale):
             'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
             'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
             'campaign': campaign,
-        }
-        return request.website.render("website_sale.products", values)
-
-
+        })

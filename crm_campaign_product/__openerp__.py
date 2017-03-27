@@ -20,34 +20,17 @@
 ##############################################################################
 
 {
-    'name': 'Sale Campaign',
-    'version': '0.1',
+    'name': 'CRM Campaign Product',
+    'version': '0.2',
     'category': 'crm',
     'description': """
-Different pricelists on campaign
-================================
-* Hook product.template with crm.tracking.campaign
-* Start and stop date on a campaign
-* Show current campaign as first page on website
-
-crm_campaign
-    crm.tracking.campaign
-    crm.tracking.campaign.object  (title,description,image)
-    start/stop-date
-    pricelists
-    campaign_objects
-     get_campaign_objs
-crm_campaign_product
-     get_campaign_products
-crm_campaign_blog
-website_crm_campaign
+        Extends Crm Campaign with products
 
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['product_imagemagick', 'website_sale', 'product_crm_campaign'],
+    'depends': ['crm_campaign','product'],
     'data': [
-        'campaign_view.xml',
         'product_view.xml',
     ],
     'installable': True,
