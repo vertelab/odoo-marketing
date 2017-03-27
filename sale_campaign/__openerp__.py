@@ -32,7 +32,7 @@ Different pricelists on campaign
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['crm', 'website_sale'],
+    'depends': ['product_imagemagick', 'website_sale', 'product_crm_campaign'],
     'data': [
         'campaign_view.xml',
         'product_view.xml',

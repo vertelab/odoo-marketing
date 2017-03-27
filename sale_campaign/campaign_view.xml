@@ -4,16 +4,16 @@
         <record id="crm_tracking_campaign_form" model="ir.ui.view">
             <field name="name">crm.tracking.campaign.form.inherited.sale_campaign</field>
             <field name="model">crm.tracking.campaign</field>
-            <field name="inherit_id" ref="crm.crm_tracking_campaign_form" />
+            <field name="inherit_id" ref="object_crm_campaign.crm_tracking_campaign_form" />
             <field name="arch" type="xml">
                 <field name="section_id" position="after">
-                    <field name="date_start" />
-                    <field name="date_stop" />
                     <field name="website_url" invisible="1"/>
                     <field name="website_published" widget="website_button"/>
                     <field name="pricelist" />
                     <field name="reseller_pricelist" />
+<!--
                     <field name="product_ids" widget="many2many_tags" />
+-->
                     <field name="website_description" />
                 </field>
             </field>

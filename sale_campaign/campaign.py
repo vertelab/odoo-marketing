@@ -34,12 +34,10 @@ _logger = logging.getLogger(__name__)
 class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
 
-    date_start = fields.Date(string='Start Date')
-    date_stop = fields.Date(string='Start Stop')
     website_description = fields.Html(string='Website Description')
     pricelist = fields.Many2one(comodel_name='product.pricelist', string='Pricelist')
     reseller_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Reseller Pricelist')
-    product_ids = fields.One2many(comodel_name='product.template', inverse_name='campaign_id', string='Products')
+    #~ product_ids = fields.One2many(comodel_name='product.template', inverse_name='campaign_id', string='Products')
     website_published = fields.Boolean(string='Available in the website', default=False, copy=False)
     website_url = fields.Char(string='Website url', compute='_website_url')
 
@@ -98,13 +96,13 @@ class website_sale(website_sale):
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
 
         if campaign:
-            products = campaign.product_ids
+            products = self.get_products(campaign.object_ids)
         else:
             campaign = request.env['crm.tracking.campaign'].search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today()), ('website_published', '=', True)])
             if not campaign:
                 return werkzeug.utils.redirect('/', 302)
             campaign = campaign[0]
-            products = campaign.product_ids
+            products = self.get_products(campaign.object_ids)
 
         style_obj = pool['product.style']
         style_ids = style_obj.search(cr, uid, [], context=context)
@@ -143,3 +141,15 @@ class website_sale(website_sale):
         }
         return request.website.render("website_sale.products", values)
 
+    @api.model
+    def get_products(self, object_ids):
+        products = self.env['product.template'].browse([])
+        for o in object_ids:
+            model = o.object_id._name
+            if model == 'product.template':
+                products |= o.object_id
+            elif model == 'product.product':
+                products |= o.object_id.product_tmpl_id
+            elif model == 'product.public.category':
+                products |= self.env['product.template'].search([('public_categ_ids', 'in', o.object_id.id)])
+        return products
