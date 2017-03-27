@@ -29,6 +29,19 @@ Different pricelists on campaign
 * Hook product.template with crm.tracking.campaign
 * Start and stop date on a campaign
 * Show current campaign as first page on website
+
+crm_campaign
+    crm.tracking.campaign
+    crm.tracking.campaign.object  (title,description,image)
+    start/stop-date
+    pricelists
+    campaign_objects
+     get_campaign_objs
+crm_campaign_product
+     get_campaign_products
+crm_campaign_blog
+website_crm_campaign
+
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',

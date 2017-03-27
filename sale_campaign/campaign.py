@@ -43,7 +43,38 @@ class crm_tracking_campaign(models.Model):
 
     @api.one
     def _website_url(self):
-        self.website_url = '/crm_tracking_campaign/%s' %self.id
+        self.website_url = '/campaign/%s' %self.id
+        
+    @api.model
+    def get_products(self, object_ids):
+        products = self.env['product.template'].browse([])
+        for o in object_ids:
+            model = o.object_id._name
+            if model == 'product.template':
+                products |= o.object_id
+            elif model == 'product.product':
+                products |= o.object_id.product_tmpl_id
+            elif model == 'product.public.category':
+                products |= self.env['product.template'].search([('public_categ_ids', 'in', o.object_id.id)])
+        return products
+    
+
+    @api.model
+    def get_objects(self, object_ids):
+        products = self.env['product.template'].browse([])
+        form campaign in request.env['crm.tracking.campaign'].search([('date_start', '<=', datetime.date.today()), ('date_stop', '>=', datetime.date.today()), ('website_published', '=', True), '|', ('reseller_pricelist', '!=', False), ('pricelist', '!=', False)])
+
+
+        for o in object_ids:
+            model = o.object_id._name
+            if model == 'product.template':
+                products |= o.object_id
+            elif model == 'product.product':
+                products |= o.object_id.product_tmpl_id
+            elif model == 'product.public.category':
+                products |= self.env['product.template'].search([('public_categ_ids', 'in', o.object_id.id)])
+        return products
+
 
 class product_public_category(models.Model):
     _inherit = 'product.public.category'
@@ -56,14 +87,14 @@ class website_campaign(Website):
         res = super(website_campaign, self).index(**kw)
         campaign = request.env['crm.tracking.campaign'].search([('date_start', '<=', datetime.date.today()), ('date_stop', '>=', datetime.date.today()), ('website_published', '=', True), '|', ('reseller_pricelist', '!=', False), ('pricelist', '!=', False)])
         if len(campaign) > 0:
-            return werkzeug.utils.redirect('/crm_tracking_campaign', 302)
+            return werkzeug.utils.redirect('/campaign', 302)
         else:
             return res
 
 class website_sale(website_sale):
     @http.route([
-        '/crm_tracking_campaign',
-        '/crm_tracking_campaign/<model("crm.tracking.campaign"):campaign>',
+        '/campaign',
+        '/campaign/<model("crm.tracking.campaign"):campaign>',
     ], type='http', auth="public", website=True)
     def campaign_shop(self, page=0, category=None, campaign=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
@@ -74,22 +105,20 @@ class website_sale(website_sale):
 
         domain = self._get_search_domain(search, category, attrib_values)
 
-        keep = QueryURL('/shop', category=category and int(category), search=search, attrib=attrib_list)
+        keep = QueryURL('/campaign', category=category and int(category), search=search, attrib=attrib_list)
 
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
             context['pricelist'] = int(pricelist)
         else:
-            pricelist = pool.get('product.pricelist').browse(cr, uid, context['pricelist'], context)
+            pricelist = request.env['product.pricelist'].browse(request.context['pricelist'])
 
-        product_obj = pool.get('product.template')
-
-        url = "/shop"
-        product_count = product_obj.search_count(cr, uid, domain, context=context)
+        url = "/campaign"
+        product_count = request.env['product.template'].search_count(domain)
         if search:
             post["search"] = search
         if category:
-            category = pool['product.public.category'].browse(cr, uid, int(category), context=context)
+            category = request.env['product.public.category'].browse(int(category))
             url = "/shop/category/%s" % slug(category)
         if attrib_list:
             post['attrib'] = attrib_list
@@ -104,21 +133,13 @@ class website_sale(website_sale):
             campaign = campaign[0]
             products = self.get_products(campaign.object_ids)
 
-        style_obj = pool['product.style']
-        style_ids = style_obj.search(cr, uid, [], context=context)
-        styles = style_obj.browse(cr, uid, style_ids, context=context)
+        styles = request.env['product.style'].search([])
+        categs = request.env['product.public.category'].search([('parent_id', '=', False)])
+        attributes = request.env['product.attribute'].search([])
 
-        category_obj = pool['product.public.category']
-        category_ids = category_obj.search(cr, uid, [('parent_id', '=', False)], context=context)
-        categs = category_obj.browse(cr, uid, category_ids, context=context)
-
-        attributes_obj = request.registry['product.attribute']
-        attributes_ids = attributes_obj.search(cr, uid, [], context=context)
-        attributes = attributes_obj.browse(cr, uid, attributes_ids, context=context)
-
-        from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
+        from_currency = request.env['product.price.type']._get_field_currency('list_price')
         to_currency = pricelist.currency_id
-        compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
+        compute_currency = lambda price: request.env['res.currency']._compute(from_currency, to_currency, price)
 
         values = {
             'search': search,
@@ -141,15 +162,4 @@ class website_sale(website_sale):
         }
         return request.website.render("website_sale.products", values)
 
-    @api.model
-    def get_products(self, object_ids):
-        products = self.env['product.template'].browse([])
-        for o in object_ids:
-            model = o.object_id._name
-            if model == 'product.template':
-                products |= o.object_id
-            elif model == 'product.product':
-                products |= o.object_id.product_tmpl_id
-            elif model == 'product.public.category':
-                products |= self.env['product.template'].search([('public_categ_ids', 'in', o.object_id.id)])
-        return products
+
