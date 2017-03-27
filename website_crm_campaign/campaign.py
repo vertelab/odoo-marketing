@@ -30,8 +30,8 @@ PPR = 4  # Products Per Row
 import logging
 _logger = logging.getLogger(__name__)
 
-class crm_campaign_object(models.Model):
-    _inherit = 'crm.campaign.object'
+class crm_tracking_campaign(models.Model):
+    _inherit = 'crm.tracking.campaign'
 
     website_description = fields.Html(string='Website Description')
     website_published = fields.Boolean(string='Available in the website', default=False, copy=False)
@@ -40,6 +40,10 @@ class crm_campaign_object(models.Model):
     @api.one
     def _website_url(self):
         self.website_url = '/campaign/%s' %self.id
+ 
+
+class crm_campaign_object(models.Model):
+    _inherit = 'crm.campaign.object'
 
     object_id = fields.Reference(selection_add=[('product.public.category', 'Product Category')])
     @api.one

@@ -4,7 +4,7 @@
         <record id="crm_tracking_campaign_form" model="ir.ui.view">
             <field name="name">crm.tracking.campaign.form.inherited.sale_campaign</field>
             <field name="model">crm.tracking.campaign</field>
-            <field name="inherit_id" ref="object_crm_campaign.crm_tracking_campaign_form" />
+            <field name="inherit_id" ref="crm_campaign.crm_tracking_campaign_form" />
             <field name="arch" type="xml">
                 <field name="section_id" position="after">
                     <field name="website_url" invisible="1"/>
@@ -64,7 +64,7 @@
                             <t t-call="website.publish_management">
                                 <t t-set="object" t-value="campaign"/>
                                 <t t-set="publish_edit" t-value="True"/>
-                                <t t-set="action" t-value="'sale_campaign.crm_tracking_campaign_act_form'"/>
+                                <t t-set="action" t-value="'website_crm_campaign.crm_tracking_campaign_act_form'"/>
                             </t>
                         </div>
                         <div t-field="campaign.website_description" />
@@ -86,7 +86,7 @@
                             <a t-att-href="keep('/shop',category=0)"><i class="fa fa-home fa-2"/></a>
                         </li>
                         <t t-foreach="categories" t-as="c">
-                            <t t-call="sale_campaign.categories_recursive_mobile" />
+                            <t t-call="website_crm_campaign.categories_recursive_mobile" />
                         </t>
                     </ul>
                 </t>
@@ -105,7 +105,7 @@
             </li>
             <t t-if="c.child_id">
                 <t t-foreach="c.child_id" t-as="c">
-                    <t t-call="sale_campaign.categories_recursive_mobile" />
+                    <t t-call="website_crm_campaign.categories_recursive_mobile" />
                 </t>
             </t>
         </template>
@@ -131,7 +131,7 @@
         </template>
         <template id="css_js" inherit_id="website.layout" name="Css Js">
             <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
-                <link href="/sale_campaign/static/src/css/sale_campaign.css" rel="stylesheet" type="text/css" />
+                <link href="/website_crm_campaign/static/src/css/sale_campaign.css" rel="stylesheet" type="text/css" />
             </xpath>
         </template>
         

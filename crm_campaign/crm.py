@@ -41,7 +41,7 @@ class crm_tracking_campaign(models.Model):
 
     @api.multi
     def get_campaigns(self):
-        return request.env['crm.tracking.campaign'].search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today()), ('website_published', '=', True), '|', ('reseller_pricelist', '!=', False), ('pricelist', '!=', False)])
+        return self.env['crm.tracking.campaign'].search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today()), ('website_published', '=', True), '|', ('reseller_pricelist', '!=', False), ('pricelist', '!=', False)])
 
     @api.model
     def get_objects(self):

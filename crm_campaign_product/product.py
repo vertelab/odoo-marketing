@@ -73,7 +73,7 @@ class res_partner(models.Model):
             if pricelist.is_fixed:
                 self.property_product_pricelist = pricelist
             else:
-                current_campaign = self.env['crm.tracking.campaign'].search([('date_start', '<=', datetime.date.today()), ('date_stop', '>=', datetime.date.today()), '|', ('reseller_pricelist', '!=', False), ('pricelist', '!=', False)])
+                current_campaign = self.env['crm.tracking.campaign'].get_campaigns()
                 if len(current_campaign) > 0:
                     if pricelist.is_reseller:
                         self.property_product_pricelist = current_campaign[0].reseller_pricelist.id if current_campaign[0].reseller_pricelist else current_campaign[0].pricelist.id
