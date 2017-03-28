@@ -40,7 +40,11 @@ class crm_tracking_campaign(models.Model):
     @api.one
     def _website_url(self):
         self.website_url = '/campaign/%s' %self.id
- 
+
+    @api.multi
+    def get_campaigns(self):
+        return super(crm_tracking_campaign, self).get_campaigns().filtered(lambda c: c.website_published)
+
 
 class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
@@ -86,7 +90,7 @@ class website_sale(website_sale):
         attrib_set = set([v[1] for v in attrib_values])
         if attrib_list:
             post['attrib'] = attrib_list
-            
+
         domain = self._get_search_domain(search, category, attrib_values)
 
         keep = QueryURL('/campaign', category=category and int(category), search=search, attrib=attrib_list)

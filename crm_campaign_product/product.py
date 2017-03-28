@@ -25,7 +25,7 @@ _logger = logging.getLogger(__name__)
 
 class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
-    
+
     pricelist = fields.Many2one(comodel_name='product.pricelist', string='Pricelist')
     reseller_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Reseller Pricelist')
     @api.one
@@ -41,6 +41,9 @@ class crm_tracking_campaign(models.Model):
         self.product_ids = products
     product_ids = fields.Many2many(comodel_name='product.template', compute='_product_ids',string='Products')
 
+    @api.multi
+    def get_campaigns(self):
+        return super(crm_tracking_campaign, self).get_campaigns().filtered(lambda c: c.reseller_pricelist or c.pricelist)
 
     @api.multi
     def get_pricelist(self):
@@ -52,10 +55,14 @@ class crm_tracking_campaign(models.Model):
         #~ else:
             #~ pricelist = request.env['product.pricelist'].browse(request.context['pricelist'])
 
-#~ class product_template(models.Model):
-    #~ _inherit = 'product.template'
+class product_template(models.Model):
+    _inherit = 'product.template'
 
-    #~ campaign_id = fields.Many2one(comodel_name='crm.tracking.campaign', string='Campaign')
+    @api.one
+    @api.depends('')
+    def _campaign_ids(self):
+        self.campaign_ids = [(6, 0, self.env['crm.campaign.object'].search([('object_id', '=', self.id)]).filtered(lambda o: o.object_id._name == 'product.template').mapped('campaign_id').mapped('id'))]
+    campaign_ids = fields.Many2many(comodel_name='crm.tracking.campaign', string='Campaign')
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
