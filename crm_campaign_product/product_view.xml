@@ -15,28 +15,5 @@
             </field>
         </record>
 
-        <record id="product_pricelist_view" model="ir.ui.view">
-            <field name="name">product.pricelist.form.inherited.sale_campaign</field>
-            <field name="model">product.pricelist</field>
-            <field name="inherit_id" ref="product.product_pricelist_view"/>
-            <field name="arch" type="xml">
-                <group position="inside">
-                    <field name="is_reseller"/>
-                    <field name="is_fixed"/>
-                </group>
-            </field>
-        </record>
-
-        <record id="view_partner_property_form" model="ir.ui.view">
-            <field name="name">res.partner.product.property.form.inherited.sale_campaign</field>
-            <field name="model">res.partner</field>
-            <field name="inherit_id" ref="product.view_partner_property_form"/>
-            <field name="arch" type="xml">
-                <field name="property_product_pricelist" position="before">
-                    <field name="partner_product_pricelist" groups="product.group_sale_pricelist"/>
-                </field>
-            </field>
-        </record>
-
     </data>
 </openerp>
