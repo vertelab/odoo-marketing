@@ -29,7 +29,7 @@
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['crm_campaign','website_blog'],
+    'depends': ['crm_campaign_addons','website_blog'],
     'data': [
     ],
     'installable': True,
