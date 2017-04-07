@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="product_pricelist_view" model="ir.ui.view">
+            <field name="name">product.pricelist.form.inherited.website_crm_campaign_runex</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view"/>
+            <field name="arch" type="xml">
+                <group position="inside">
+                    <field name="is_reseller"/>
+                    <field name="is_fixed"/>
+                </group>
+            </field>
+        </record>
+
+        <record id="view_partner_property_form" model="ir.ui.view">
+            <field name="name">res.partner.product.property.form.inherited.website_crm_campaign_runex</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="product.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <field name="property_product_pricelist" position="before">
+                    <field name="partner_product_pricelist" groups="product.group_sale_pricelist"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="crm_tracking_campaign_form" model="ir.ui.view">
+            <field name="name">crm.tracking.campaign.form.inherited.website_crm_campaign_runex</field>
+            <field name="model">crm.tracking.campaign</field>
+            <field name="inherit_id" ref="crm_campaign.crm_tracking_campaign_form" />
+            <field name="arch" type="xml">
+                <field name="section_id" position="after">
+                    <field name="pricelist" />
+                    <field name="reseller_pricelist" />
+                </field>
+            </field>
+        </record>
+
+<!--
+        <record id="product_public_category_form_view" model="ir.ui.view">
+            <field name="name">product.public.category.form.inherited.website_crm_campaign_runex</field>
+            <field name="model">product.public.category</field>
+            <field name="inherit_id" ref="website_sale.product_public_category_form_view" />
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="mobile_icon" />
+                </field>
+            </field>
+        </record>
+-->
+
+        <record id="product_public_category_form_view" model="ir.ui.view">
+            <field name="name">product.public.category.form.inherited.website_crm_campaign_runex</field>
+            <field name="model">product.public.category</field>
+            <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+            <field name="arch" type="xml">
+                <field name="sequence" position="after">
+                    <field name="description"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="crm_tracking_campaign_act_form" model="ir.actions.act_window">
+            <field name="name">Campaigns Form</field>
+            <field name="res_model">crm.tracking.campaign</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="crm.crm_tracking_campaign_form"/>
+        </record>
+
+<!--
+        <template id="products_list" inherit_id="website_sale.products" name="Products List">
+            <xpath expr="//t[@t-set='additional_title']" position="replace">
+                <t t-if="campaign">
+                    <t t-set="additional_title">Campaign</t>
+                </t>
+                <t t-if="not campaign">
+                    <t t-set="additional_title">Shop</t>
+                </t>
+            </xpath>
+            <xpath expr="//div[@class='products_pager']/div[@class='row']/t[@t-call='website.pager']" position="replace">
+                <t t-if="campaign">
+                </t>
+                <t t-if="not campaign">
+                    <t t-call="website.pager"/>
+                </t>
+            </xpath>
+            <xpath expr="//div[@class='products_pager']/t[@t-call='website.pager']" position="replace">
+                <t t-if="campaign">
+                </t>
+                <t t-if="not campaign">
+                    <t t-call="website.pager"/>
+                </t>
+            </xpath>
+            <xpath expr="//div[@class='container oe_website_sale']" position="before">
+                <t t-if="campaign">
+                    <div class="container">
+                        <div class="col-sm-offset-8 col-sm-4 mt16" groups="base.group_sale_manager">
+                            <t t-call="website.publish_management">
+                                <t t-set="object" t-value="campaign"/>
+                                <t t-set="publish_edit" t-value="True"/>
+                                <t t-set="action" t-value="'website_crm_campaign.crm_tracking_campaign_act_form'"/>
+                            </t>
+                        </div>
+                        <div t-field="campaign.website_description" />
+                    </div>
+                </t>
+            </xpath>
+            <xpath expr="//div[@id='products_grid']" position="before">
+                <t t-if="not campaign">
+                    <ul class="nav nav-tabs nav-justified hidden-xs">
+                        <li t-att-class=" '' if category else 'active' ">
+                            <a t-att-href="keep('/shop',category=0)">All Products</a>
+                        </li>
+                        <t t-foreach="categories" t-as="c">
+                            <t t-call="website_sale.categories_recursive" />
+                        </t>
+                    </ul>
+                    <ul class="nav nav-pills hidden-lg hidden-md hidden-sm">
+                        <li t-att-class=" '' if category else 'active' ">
+                            <a t-att-href="keep('/shop',category=0)"><i class="fa fa-home fa-2"/></a>
+                        </li>
+                        <t t-foreach="categories" t-as="c">
+                            <t t-call="website_crm_campaign_runex.categories_recursive_mobile" />
+                        </t>
+                    </ul>
+                </t>
+            </xpath>
+        </template>
+        <template id="categories_recursive_mobile" name="Category list On Mobile">
+            <li t-att-class="'active' if c.id == int(category or 0) else ''">
+                <t t-if="c.mobile_icon">
+                    <a t-att-href="keep('/shop/category/' + slug(c), category=0)">
+                        <i t-att-class="'%s fa-2x' %(c.mobile_icon)" />
+                    </a>
+                </t>
+                <t t-if="not c.mobile_icon">
+                    <a t-att-href="keep('/shop/category/' + slug(c), category=0)" t-field="c.name" />
+                </t>
+            </li>
+            <t t-if="c.child_id">
+                <t t-foreach="c.child_id" t-as="c">
+                    <t t-call="website_crm_campaign_runex.categories_recursive_mobile" />
+                </t>
+            </t>
+        </template>
+-->
+
+        <template id="products" inherit_id="website_sale.products">
+            <xpath expr="//t[@t-set='additional_title']" position="replace">
+                <t t-if="campaign">
+                    <t t-set="additional_title">Campaign</t>
+                </t>
+                <t t-if="not campaign">
+                    <t t-set="additional_title">Shop</t>
+                </t>
+            </xpath>
+            <xpath expr="//div[@class='container oe_website_sale']" position="before">
+                <t t-if="campaign">
+                    <div class="container">
+                        <div class="col-sm-offset-8 col-sm-4 mt16" groups="base.group_sale_manager">
+                            <t t-call="website.publish_management">
+                                <t t-set="object" t-value="campaign"/>
+                                <t t-set="publish_edit" t-value="True"/>
+                                <t t-set="action" t-value="'website_crm_campaign_runex.crm_tracking_campaign_act_form'"/>
+                            </t>
+                        </div>
+                        <h1 class="text-center" t-field="campaign.name" />
+                        <h4 class="text-center" t-field="campaign.website_description" />
+                    </div>
+                </t>
+            </xpath>
+        </template>
+
+        <template id="product" inherit_id="website_sale.product">
+            <xpath expr="//h1[@itemprop='name']" position="replace">
+                <h4 itemprop="name" style="color: #3E96CA;" t-field="product.name">Product Name</h4>
+            </xpath>
+        </template>
+
+        <template id="products_item" inherit_id="website_sale.products_item">
+            <xpath expr="//img[@itemprop='image']" position="replace">
+                <t t-if="campaign">
+                    <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/product_imagemagick.img_product_thumnail_watermark_right_bottom' %product.id" t-att-alt="product.name"/>
+                </t>
+                <t t-if="not campaign">
+                    <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/product_imagemagick.img_product_thumnail' %product.id" t-att-alt="product.name"/>
+                </t>
+            </xpath>
+        </template>
+
+        <template id="search" inherit_id="website_sale.search">
+            <xpath expr="//input[@name='search']" position="before">
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-info hidden-lg hidden-md hidden-sm" data-toggle="modal" data-target="#pc_modal"><i class="fa fa-tags"/></button>
+                </span>
+            </xpath>
+            <xpath expr="//div[@class='input-group']" position="before">
+                <div class="modal fade" id="pc_modal" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&amp;times;</button>
+                                <h4 class="modal-title">Public Category</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container">
+                                    <t t-set="categs" t-value="request.env['product.public.category'].search([], order='sequence')"/>
+                                    <ul t-if="len(categs) &gt; 0" style="list-style-type:none">
+                                        <t t-foreach="categs" t-as="categ">
+                                            <li t-att-data-value="categ.id"><a t-att-href="'/shop/category/%s' %categ.id"><h4 class="text-left" t-field="categ.name"/></a></li>
+                                        </t>
+                                    </ul>
+                                </div>
+                            </div>
+<!--
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+-->
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+
+        <template id="css_js" inherit_id="website.layout" name="Css Js">
+            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
+                <link href="/website_crm_campaign_runex/static/src/css/sale_campaign.css" rel="stylesheet" type="text/css" />
+            </xpath>
+        </template>
+
+    </data>
+</openerp>

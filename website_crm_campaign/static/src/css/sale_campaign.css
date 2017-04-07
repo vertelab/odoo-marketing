@@ -2,6 +2,19 @@
                     webshop
  ============================================================ */
 
+.modal.fade:not(.in) .modal-dialog {
+    -webkit-transform: translate3d(-25%, 0, 0);
+    transform: translate3d(-25%, 0, 0);
+}
+
+/*
+    top: translate3d(0, -25%, 0)
+    bottom: translate3d(0, 25%, 0)
+    left: translate3d(-25%, 0, 0)
+    right: translate3d(25%, 0, 0)
+*/
+
+
 .oe_product_image {
     margin-bottom: 10%;
     height: 300px;
@@ -14,14 +27,6 @@
 
 .oe_vertel_product_info {
     text-overflow: ellipsis;
-}
-
-.oe_vertel_product_info .p_desc {
-    height: 4.4em;
-    overflow: hidden;
-    position: relative;
-    margin: 10px 0px 0px 0px;
-    line-height: 1.1em;
 }
 
 .oe_p_qty {
@@ -37,20 +42,26 @@
     position: unset;
 }
 
+.oe_vertel_product_info .p_desc {
+    height: 3.3em;
+    overflow: hidden;
+    position: relative;
+    margin: 10px 0px 0px 0px;
+    line-height: 1.1em;
+}
+
 .oe_vertel_product_info .p_desc::after {
     content: "";
     position: absolute;
     bottom: 0;
     right: 0;
-    width: 10%;
+    width: 20%;
     height: 1.1em;
-/*
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
-*/
 }
 
 .oe_product h5 {
-    height: 2em;
+    height: 2.9em;
     overflow: hidden;
     position: relative;
     margin: 20px 0px 0px 0px;
@@ -62,8 +73,9 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    width: 10%;
-    height: 1.1em;
+    width: 20%;
+    height: 1em;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
 /* ---- Product Sizes ---- */
@@ -87,7 +99,7 @@
   height: 70px;
 }
 .col-md-9 .oe-height-2 {
-  height: 140px;
+  height: 437px !important;
 }
 .col-md-9 .oe-height-4 {
   height: 280px;
@@ -118,6 +130,10 @@
 
   .product_categories_tree_div {
     border: none;
+  }
+
+  .col-md-9 .oe-height-2 {
+    height: 520px !important;
   }
 }
 @media (max-width: 400px) {
@@ -161,7 +177,7 @@
     height: 72px;
   }
   .col-md-9 .oe-height-2 {
-    height: 144px;
+    height: 432px !important;
   }
   .col-md-9 .oe-height-4 {
     height: 288px;
@@ -194,7 +210,7 @@
     height: 95px;
   }
   .col-md-9 .oe-height-2 {
-    height: 215px;
+    height: 470px !important;
   }
   .col-md-9 .oe-height-4 {
     height: 430px;
@@ -205,5 +221,17 @@
   .col-md-9 .oe-height-8 {
     height: 760px;
   }
+}
+
+.oe_product .oe_product_image img {
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: unset;
+    right: 0;
+    z-index: 4;
 }
 
