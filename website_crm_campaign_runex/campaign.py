@@ -36,14 +36,14 @@ class crm_tracking_campaign(models.Model):
     pricelist = fields.Many2one(comodel_name='product.pricelist', string='Pricelist')
     reseller_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Reseller Pricelist')
 
-    @api.multi
+    @api.model
     def get_campaigns(self):
         return super(crm_tracking_campaign, self).get_campaigns().filtered(lambda c: c.reseller_pricelist or c.pricelist)
 
     @api.multi
     def get_pricelist(self):
         self.ensure_one()
-        return None
+        return request.env['product.pricelist'].browse(request.context['pricelist'])
         #~ if not context.get('pricelist'):
             #~ pricelist = self.get_pricelist()
             #~ context['pricelist'] = int(pricelist)
@@ -163,7 +163,7 @@ class website_sale(website_sale):
             'attrib_set': attrib_set,
             'pager': pager,
             'pricelist': campaign.get_pricelist(),
-            'products': campaign.product_ids,
+            'products': campaign.with_context({'pricelist': context.get('pricelist')}).product_ids,
             'bins': table_compute().process(campaign.product_ids),
             'rows': PPR,
             'styles': styles,
