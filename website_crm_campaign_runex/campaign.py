@@ -65,18 +65,18 @@ class res_partner(models.Model):
         pricelist = self.partner_product_pricelist
         if pricelist:
             if pricelist.is_fixed:
-                self.property_product_pricelist = pricelist
+                self.sudo().property_product_pricelist = pricelist
             else:
                 current_campaign = self.env['crm.tracking.campaign'].get_campaigns()
                 if len(current_campaign) > 0:
                     if pricelist.is_reseller:
-                        self.property_product_pricelist = current_campaign[0].reseller_pricelist.id if current_campaign[0].reseller_pricelist else current_campaign[0].pricelist.id
+                        self.sudo().property_product_pricelist = current_campaign[0].reseller_pricelist.id if current_campaign[0].reseller_pricelist else current_campaign[0].pricelist.id
                     else:
-                        self.property_product_pricelist = current_campaign[0].pricelist.id if current_campaign[0].pricelist else pricelist
+                        self.sudo().property_product_pricelist = current_campaign[0].pricelist.id if current_campaign[0].pricelist else pricelist
                 else:
-                    self.property_product_pricelist = pricelist
+                    self.sudo().property_product_pricelist = pricelist
         else:
-            self.property_product_pricelist = None
+            self.sudo().property_product_pricelist = None
 
 class product_pricelist(models.Model):
     _inherit = 'product.pricelist'
