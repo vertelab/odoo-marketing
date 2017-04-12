@@ -134,7 +134,7 @@ class website_sale(website_sale):
             url = "/shop/category/%s" % slug(category)
 
         pager = request.website.pager(url=url, total=product_count, page=page, step=PPG, scope=7, url_args=post)
-        campaign = request.env['crm.tracking.campaign'].get_campaigns()
+        campaign = request.env['crm.tracking.campaign'].with_context(context).get_campaigns()
         if not campaign:
             return werkzeug.utils.redirect('/', 302)
         campaign.ensure_one()
@@ -162,8 +162,8 @@ class website_sale(website_sale):
             'attrib_values': attrib_values,
             'attrib_set': attrib_set,
             'pager': pager,
-            'pricelist': campaign.get_pricelist(),
-            'products': campaign.with_context({'pricelist': context.get('pricelist')}).product_ids,
+            'pricelist': pricelist,
+            'products': campaign.product_ids,
             'bins': table_compute().process(campaign.product_ids),
             'rows': PPR,
             'styles': styles,

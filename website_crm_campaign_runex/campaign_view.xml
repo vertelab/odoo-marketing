@@ -37,7 +37,7 @@
             </field>
         </record>
 
-<!--
+        <!--
         <record id="product_public_category_form_view" model="ir.ui.view">
             <field name="name">product.public.category.form.inherited.website_crm_campaign_runex</field>
             <field name="model">product.public.category</field>
@@ -68,7 +68,7 @@
             <field name="view_id" ref="crm.crm_tracking_campaign_form"/>
         </record>
 
-<!--
+        <!--
         <template id="products_list" inherit_id="website_sale.products" name="Products List">
             <xpath expr="//t[@t-set='additional_title']" position="replace">
                 <t t-if="campaign">
@@ -149,10 +149,12 @@
         <template id="products" inherit_id="website_sale.products">
             <xpath expr="//t[@t-set='additional_title']" position="replace">
                 <t t-if="campaign">
-                    <t t-set="additional_title">Campaign</t>
+                    <t t-set="additional_title">Campaign
+                    </t>
                 </t>
                 <t t-if="not campaign">
-                    <t t-set="additional_title">Shop</t>
+                    <t t-set="additional_title">Shop
+                    </t>
                 </t>
             </xpath>
             <xpath expr="//div[@class='container oe_website_sale']" position="before">
@@ -174,7 +176,8 @@
 
         <template id="product" inherit_id="website_sale.product">
             <xpath expr="//h1[@itemprop='name']" position="replace">
-                <h4 itemprop="name" style="color: #3E96CA;" t-field="product.name">Product Name</h4>
+                <h4 itemprop="name" style="color: #3E96CA;" t-field="product.name">Product Name
+                </h4>
             </xpath>
         </template>
 
@@ -192,7 +195,9 @@
         <template id="search" inherit_id="website_sale.search">
             <xpath expr="//input[@name='search']" position="before">
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-info hidden-lg hidden-md hidden-sm" data-toggle="modal" data-target="#pc_modal"><i class="fa fa-tags"/></button>
+                    <button type="button" class="btn btn-info hidden-lg hidden-md hidden-sm" data-toggle="modal" data-target="#pc_modal">
+                        <i class="fa fa-tags"/>
+                    </button>
                 </span>
             </xpath>
             <xpath expr="//div[@class='input-group']" position="before">
@@ -200,24 +205,25 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&amp;times;</button>
-                                <h4 class="modal-title">Public Category</h4>
+                                <button type="button" class="close" data-dismiss="modal">&amp;times;
+                                </button>
+                                <h4 class="modal-title">Public Category
+                                </h4>
                             </div>
                             <div class="modal-body">
                                 <div class="container">
                                     <t t-set="categs" t-value="request.env['product.public.category'].search([], order='sequence')"/>
                                     <ul t-if="len(categs) &gt; 0" style="list-style-type:none">
                                         <t t-foreach="categs" t-as="categ">
-                                            <li t-att-data-value="categ.id"><a t-att-href="'/shop/category/%s' %categ.id"><h4 class="text-left" t-field="categ.name"/></a></li>
+                                            <li t-att-data-value="categ.id">
+                                                <a t-att-href="'/shop/category/%s' %categ.id">
+                                                    <h4 class="text-left" t-field="categ.name"/>
+                                                </a>
+                                            </li>
                                         </t>
                                     </ul>
                                 </div>
                             </div>
-<!--
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
--->
                         </div>
                     </div>
                 </div>

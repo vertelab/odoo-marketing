@@ -61,11 +61,11 @@
 }
 
 .oe_product h5 {
-    height: 2.9em;
+    height: 3.3em;
     overflow: hidden;
     position: relative;
     margin: 20px 0px 0px 0px;
-    line-height: 1em;
+    line-height: 1.1em;
 }
 
 .oe_product h5::after {
@@ -74,7 +74,7 @@
     bottom: 0;
     right: 0;
     width: 20%;
-    height: 1em;
+    height: 1.1em;
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
 
