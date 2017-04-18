@@ -58,7 +58,11 @@ class res_partner(models.Model):
     def default_pricelist(self):
         return self.env.ref('product.list0')
     partner_product_pricelist = fields.Many2one(comodel_name='product.pricelist', domain=[('type','=','sale')], string='Sale Pricelist', help="This pricelist will be used, instead of the default one, for sales to the current partner", default=default_pricelist)
-    property_product_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Sale Pricelist', compute='get_pricelist')
+    property_product_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Sale Pricelist', compute='get_pricelist', search='search_pricelist')
+
+    @api.model
+    def search_pricelist(self, operator, value):
+        return [('partner_product_pricelist', operator, value)]
 
     @api.one
     def get_pricelist(self):
