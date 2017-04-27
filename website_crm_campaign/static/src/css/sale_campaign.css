@@ -82,6 +82,7 @@
 
 .oe_product.oe_list.oe_product_cart h5 {
     height: 2.2em;
+    max-width: 660px;
 }
 
 /* ---- Product Sizes ---- */
