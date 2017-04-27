@@ -43,7 +43,7 @@ class crm_tracking_campaign(models.Model):
     @api.multi
     def get_pricelist(self):
         self.ensure_one()
-        return request.env['product.pricelist'].browse(request.context['pricelist'])
+        return self.env['product.pricelist'].browse(self.context['pricelist'])
         #~ if not context.get('pricelist'):
             #~ pricelist = self.get_pricelist()
             #~ context['pricelist'] = int(pricelist)
@@ -58,7 +58,7 @@ class res_partner(models.Model):
     def default_pricelist(self):
         return self.env.ref('product.list0')
     partner_product_pricelist = fields.Many2one(comodel_name='product.pricelist', domain=[('type','=','sale')], string='Sale Pricelist', help="This pricelist will be used, instead of the default one, for sales to the current partner", default=default_pricelist)
-    property_product_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Sale Pricelist', compute='get_pricelist', search='search_pricelist')
+    #property_product_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Sale Pricelist', compute='get_pricelist', search='search_pricelist')
 
     @api.model
     def search_pricelist(self, operator, value):
@@ -87,6 +87,18 @@ class product_pricelist(models.Model):
 
     is_reseller = fields.Boolean(string='Reseller')
     is_fixed = fields.Boolean(string='Fixed')
+
+class product_product(models.Model):
+    _inherit = 'product.product'
+
+    @api.one
+    def XXX_product_price(self,):  # Not yet
+        pricelist = None
+        raise Warning(self._context)
+        if self._context.get('partner'):
+            partner = self.env('res.partner').browse(int(self._context.get('partner')))
+            pricelist = partner.get_pricelist()
+        self.price = super(product_product, product).with_context({'pricelist': pricelist})._product_price(name,arg)[self.id]
 
 
 class product_public_category(models.Model):
