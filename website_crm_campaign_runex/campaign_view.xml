@@ -196,6 +196,13 @@
                 <h4 itemprop="name" style="color: #3E96CA;" t-field="product.name">Product Name
                 </h4>
             </xpath>
+            <xpath expr="//ol[@class='breadcrumb']" position="replace">
+                <ol class="breadcrumb">
+                    <li><a t-att-href="keep(category=0)" onclick="history.go(-1); return false;">Products</a></li>
+                    <li t-if="category"><a t-att-href="keep('/shop/category/%s' % slug(category), category=0)" t-field="category.name"/></li>
+                    <li class="active hidden"><span t-field="product.name"/></li>
+                </ol>
+            </xpath>
         </template>
 
         <template id="products_item" inherit_id="website_sale.products_item">
