@@ -201,7 +201,7 @@
         <template id="products_item" inherit_id="website_sale.products_item">
             <xpath expr="//img[@itemprop='image']" position="replace">
                 <t t-if="campaign">
-                    <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/product_imagemagick.img_product_thumnail_watermark_right_bottom' %product.id" t-att-alt="product.name"/>
+                    <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/product_imagemagick.img_product_thumnail_watermark_left_top' %product.id" t-att-alt="product.name"/>
                 </t>
                 <t t-if="not campaign">
                     <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/product_imagemagick.img_product_thumnail' %product.id" t-att-alt="product.name"/>
