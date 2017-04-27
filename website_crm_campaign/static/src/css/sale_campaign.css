@@ -42,6 +42,7 @@
     position: unset;
 }
 
+/*
 .oe_vertel_product_info .p_desc {
     height: 3.2em;
     overflow: hidden;
@@ -59,9 +60,10 @@
     height: 1.1em;
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
 }
+*/
 
 .oe_product h5 {
-    height: 3.2em;
+    height: 7.7em;
     overflow: hidden;
     position: relative;
     margin: 20px 0px 0px 0px;
@@ -99,7 +101,7 @@
   height: 70px;
 }
 .col-md-9 .oe-height-2 {
-  height: 437px !important;
+  height: 355px !important;
 }
 .col-md-9 .oe-height-4 {
   height: 280px;
@@ -177,7 +179,7 @@
     height: 72px;
   }
   .col-md-9 .oe-height-2 {
-    height: 432px !important;
+    height: 350px !important;
   }
   .col-md-9 .oe-height-4 {
     height: 288px;
@@ -210,7 +212,7 @@
     height: 95px;
   }
   .col-md-9 .oe-height-2 {
-    height: 470px !important;
+    height: 375px !important;
   }
   .col-md-9 .oe-height-4 {
     height: 430px;
