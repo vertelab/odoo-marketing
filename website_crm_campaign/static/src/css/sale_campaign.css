@@ -35,7 +35,7 @@
 }
 
 .oe_product p {
-    margin: 10px 0px 0px 0px;
+    margin: 3px 0px 0px 0px;
 }
 
 .oe_product .product_price {
@@ -121,6 +121,10 @@
 
 .oe_product section {
     padding: 0px 10px 10px 10px !important;
+}
+
+.oe_product .oe_subdescription {
+    margin-bottom: 3px !important;
 }
 
 @media (max-width: 768px) {
