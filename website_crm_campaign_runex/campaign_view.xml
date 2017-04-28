@@ -232,7 +232,7 @@
         <template id="search" inherit_id="website_sale.search">
             <xpath expr="//span[@class='input-group-btn']" position="after">
                 <span class="input-group-btn">
-                    <form t-att-action="url" method="post">
+                    <form t-att-action="'%s?search=%s' %(url, search)" method="post">
                         <input type="hidden" name="view_type" value="grid_view"/>
                         <button type="submit" class="btn btn-default hidden-xs">
                             <i class="fa fa-table"></i>
@@ -240,7 +240,7 @@
                     </form>
                 </span>
                 <span class="input-group-btn">
-                    <form t-att-action="url" method="post">
+                    <form t-att-action="'%s?search=%s' %(url, search)" method="post">
                         <input type="hidden" name="view_type" value="list_view"/>
                         <button type="submit" class="btn btn-default hidden-xs">
                             <i class="fa fa-list-alt"></i>
