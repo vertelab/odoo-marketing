@@ -16,11 +16,6 @@
 
         <template id="products_item" inherit_id="website_sale.products_item" name="Product item">
             <xpath expr="//section/h5" position="after">
-<!--
-                <div class="oe_vertel_product_info">
-                    <p class="p_desc" t-field="product.description_sale" />
-                </div>
--->
                 <p class="text-muted" t-field="product.default_code" />
             </xpath>
             <xpath expr="//div[@itemprop='offers']" position="after">
