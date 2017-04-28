@@ -180,7 +180,6 @@ class website_sale(website_sale):
         from_currency = request.env['product.price.type']._get_field_currency('list_price', context)
         to_currency = pricelist.currency_id
         compute_currency = lambda price: request.env['res.currency']._compute(from_currency, to_currency, price)
-        campaign_products = campaign.product_ids.sorted(key=lambda p: p.name)
         view_type = 'grid_view'
         if post.get('view_type') and post.get('view_type') == 'list_view':
             view_type = 'list_view'
@@ -192,7 +191,7 @@ class website_sale(website_sale):
             'attrib_set': attrib_set,
             'pager': pager,
             'pricelist': pricelist,
-            'products': campaign_products,
+            'products': campaign.product_ids.sorted(key=lambda r: r.name),
             'bins': table_compute().process(campaign.product_ids),
             'rows': PPR,
             'styles': styles,
@@ -252,6 +251,8 @@ class website_sale(website_sale):
             except:
                 pass
         pager = request.website.pager(url=url, total=product_count, page=page, step=ppg, scope=7, url_args=post)
+        #~ product_ids = product_obj.search(cr, uid, domain, limit=ppg, offset=pager['offset'], order=self._get_search_order(post), context=context)
+        post['order'] = post.get('order', 'name')
         product_ids = product_obj.search(cr, uid, domain, limit=ppg, offset=pager['offset'], order=self._get_search_order(post), context=context)
         products = product_obj.browse(cr, uid, product_ids, context=context)
 
@@ -270,7 +271,6 @@ class website_sale(website_sale):
         from_currency = pool.get('product.price.type')._get_field_currency(cr, uid, 'list_price', context)
         to_currency = pricelist.currency_id
         compute_currency = lambda price: pool['res.currency']._compute(cr, uid, from_currency, to_currency, price, context=context)
-        products = products.sorted(key=lambda p: p.name)
         view_type = 'grid_view'
         if post.get('view_type') and post.get('view_type') == 'list_view':
             view_type = 'list_view'
@@ -297,3 +297,9 @@ class website_sale(website_sale):
             'url': url,
         }
         return request.website.render("website_sale.products", values)
+
+    def get_translation(self, product):
+        try:
+            return request.env['ir.translation'].search([('res_id', '=', product.id), ('name', '=', 'product.template,name'), ('type', '=', 'model'), ('lang', '=', context.get('lang'))])[-1].value
+        except:
+            return product.name
