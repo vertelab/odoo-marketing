@@ -202,7 +202,7 @@ class website_sale(website_sale):
             'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
             'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
             'campaign': campaign,
-            'product_count': product_count,
+            'product_count': len(campaign.product_ids),
             'view_type': view_type,
             'url': url,
         })
