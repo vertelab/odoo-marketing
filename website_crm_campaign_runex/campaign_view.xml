@@ -234,7 +234,7 @@
                 <span class="input-group-btn">
                     <form t-att-action="'%s?search=%s' %(url, search)" method="post">
                         <input type="hidden" name="view_type" value="grid_view"/>
-                        <button type="submit" class="btn btn-default hidden-xs">
+                        <button type="submit" t-att-class="'btn btn-%s hidden-xs' %('primary' if view_type == 'grid_view' else 'default')">
                             <i class="fa fa-table"></i>
                         </button>
                     </form>
@@ -242,7 +242,7 @@
                 <span class="input-group-btn">
                     <form t-att-action="'%s?search=%s' %(url, search)" method="post">
                         <input type="hidden" name="view_type" value="list_view"/>
-                        <button type="submit" class="btn btn-default hidden-xs">
+                        <button type="submit" t-att-class="'btn btn-%s hidden-xs' %('primary' if view_type == 'list_view' else 'default')">
                             <i class="fa fa-list-alt"></i>
                         </button>
                     </form>
@@ -250,7 +250,7 @@
             </xpath>
             <xpath expr="//input[@name='search']" position="before">
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-info hidden-lg hidden-md hidden-sm" data-toggle="modal" data-target="#pc_modal">
+                    <button type="button" class="btn btn-primary hidden-lg hidden-md hidden-sm" data-toggle="modal" data-target="#pc_modal">
                         <i class="fa fa-tags"/>
                     </button>
                 </span>
