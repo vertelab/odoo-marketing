@@ -189,6 +189,19 @@
                     </t>
                 </div>
             </xpath>
+            <xpath expr="//div[@id='products_grid']//table" position="before">
+                <t t-foreach="products" t-as="product">
+                    <div t-if="view_type == 'list_view' and view_type != 'grid_view'" class="oe_product oe_list oe_product_cart" t-att-data-publish="product.website_published and 'on' or 'off'">
+                        <t t-call="website_sale.products_item"/>
+                    </div>
+                </t>
+            </xpath>
+            <xpath expr="//div[@id='products_grid']//table" position="attributes">
+                <attribute name="t-if">view_type == 'grid_view' and view_type != 'list_view'</attribute>
+            </xpath>
+            <xpath expr="//div[@id='products_grid']/*[1]" position="before">
+                <strong><t t-esc="product_count"/> Produkter</strong>
+            </xpath>
         </template>
 
         <template id="product" inherit_id="website_sale.product">
@@ -217,6 +230,24 @@
         </template>
 
         <template id="search" inherit_id="website_sale.search">
+            <xpath expr="//span[@class='input-group-btn']" position="after">
+                <span class="input-group-btn">
+                    <form t-att-action="url" method="post">
+                        <input type="hidden" name="view_type" value="grid_view"/>
+                        <button type="submit" class="btn btn-default hidden-xs">
+                            <i class="fa fa-table"></i>
+                        </button>
+                    </form>
+                </span>
+                <span class="input-group-btn">
+                    <form t-att-action="url" method="post">
+                        <input type="hidden" name="view_type" value="list_view"/>
+                        <button type="submit" class="btn btn-default hidden-xs">
+                            <i class="fa fa-list-alt"></i>
+                        </button>
+                    </form>
+                </span>
+            </xpath>
             <xpath expr="//input[@name='search']" position="before">
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-info hidden-lg hidden-md hidden-sm" data-toggle="modal" data-target="#pc_modal">
