@@ -274,7 +274,7 @@ class website_sale(website_sale):
         view_type = 'grid_view'
         if post.get('view_type') and post.get('view_type') == 'list_view':
             view_type = 'list_view'
-        _logger.warn(product_count)
+
         values = {
             'search': search,
             'category': category,
