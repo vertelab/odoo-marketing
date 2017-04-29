@@ -109,3 +109,13 @@ msgstr "pagination form-inline col-md-3"
 #: view:website:website_sale.products
 msgid "view_type == 'grid_view' and view_type != 'list_view'"
 msgstr "view_type == 'grid_view' and view_type != 'list_view'"
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.products
+msgid "Show"
+msgstr "Visa"
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.products
+msgid "per page"
+msgstr "per sida"

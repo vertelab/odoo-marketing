@@ -24,12 +24,79 @@ from openerp.http import request
 import werkzeug
 from openerp.addons.website.controllers.main import Website
 from openerp.addons.website.models.website import slug
-from openerp.addons.website_sale.controllers.main import website_sale, QueryURL, table_compute
+from openerp.addons.website_sale.controllers.main import website_sale, QueryURL
 import datetime
-PPG = 20 # Products Per Page
+PPG = 52 # Products Per Page
 PPR = 4  # Products Per Row
 import logging
 _logger = logging.getLogger(__name__)
+
+class table_compute(object):
+    def __init__(self):
+        self.table = {}
+
+    def _check_place(self, posx, posy, sizex, sizey):
+        res = True
+        for y in range(sizey):
+            for x in range(sizex):
+                if posx+x>=PPR:
+                    res = False
+                    break
+                row = self.table.setdefault(posy+y, {})
+                if row.setdefault(posx+x) is not None:
+                    res = False
+                    break
+            for x in range(PPR):
+                self.table[posy+y].setdefault(x, None)
+        return res
+
+    def process(self, products, ppg):
+        # Compute products positions on the grid
+        minpos = 0
+        index = 0
+        maxy = 0
+        for p in products:
+            x = min(max(p.website_size_x, 1), PPR)
+            y = min(max(p.website_size_y, 1), PPR)
+            if index>=ppg:
+                x = y = 1
+
+            pos = minpos
+            while not self._check_place(pos%PPR, pos/PPR, x, y):
+                pos += 1
+            # if 21st products (index 20) and the last line is full (PPR products in it), break
+            # (pos + 1.0) / PPR is the line where the product would be inserted
+            # maxy is the number of existing lines
+            # + 1.0 is because pos begins at 0, thus pos 20 is actually the 21st block
+            # and to force python to not round the division operation
+            if index >= ppg and ((pos + 1.0) / PPR) > maxy:
+                break
+
+            if x==1 and y==1:   # simple heuristic for CPU optimization
+                minpos = pos/PPR
+
+            for y2 in range(y):
+                for x2 in range(x):
+                    self.table[(pos/PPR)+y2][(pos%PPR)+x2] = False
+            self.table[pos/PPR][pos%PPR] = {
+                'product': p, 'x':x, 'y': y,
+                'class': " ".join(map(lambda x: x.html_class or '', p.website_style_ids))
+            }
+            if index<=ppg:
+                maxy=max(maxy,y+(pos/PPR))
+            index += 1
+
+        # Format table according to HTML needs
+        rows = self.table.items()
+        rows.sort()
+        rows = map(lambda x: x[1], rows)
+        for col in range(len(rows)):
+            cols = rows[col].items()
+            cols.sort()
+            x += len(cols)
+            rows[col] = [c for c in map(lambda x: x[1], cols) if c != False]
+
+        return rows
 
 class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
@@ -192,7 +259,7 @@ class website_sale(website_sale):
             'pager': pager,
             'pricelist': pricelist,
             'products': campaign.product_ids.sorted(key=lambda r: r.name),
-            'bins': table_compute().process(campaign.product_ids),
+            'bins': table_compute().process(campaign.product_ids, ppg),
             'rows': PPR,
             'styles': styles,
             'categories': categs,
@@ -204,6 +271,7 @@ class website_sale(website_sale):
             'campaign': campaign,
             'product_count': len(campaign.product_ids),
             'view_type': view_type,
+            'limit': ppg,
             'url': url,
         })
 
@@ -251,7 +319,6 @@ class website_sale(website_sale):
             except:
                 pass
         pager = request.website.pager(url=url, total=product_count, page=page, step=ppg, scope=7, url_args=post)
-        #~ product_ids = product_obj.search(cr, uid, domain, limit=ppg, offset=pager['offset'], order=self._get_search_order(post), context=context)
         post['order'] = post.get('order', 'name')
         product_ids = product_obj.search(cr, uid, domain, limit=ppg, offset=pager['offset'], order=self._get_search_order(post), context=context)
         products = product_obj.browse(cr, uid, product_ids, context=context)
@@ -283,7 +350,7 @@ class website_sale(website_sale):
             'pager': pager,
             'pricelist': pricelist,
             'products': products,
-            'bins': table_compute().process(products),
+            'bins': table_compute().process(products, ppg),
             'rows': PPR,
             'styles': styles,
             'categories': categs,
@@ -294,6 +361,7 @@ class website_sale(website_sale):
             'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
             'product_count': product_count,
             'view_type': view_type,
+            'limit': ppg,
             'url': url,
         }
         return request.website.render("website_sale.products", values)

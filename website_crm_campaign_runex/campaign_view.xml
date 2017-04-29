@@ -200,7 +200,19 @@
                 <attribute name="t-if">view_type == 'grid_view' and view_type != 'list_view'</attribute>
             </xpath>
             <xpath expr="//div[@id='products_grid']/*[1]" position="before">
-                <strong><t t-esc="product_count"/> Products</strong>
+                <div class="mb16 hidden-xs">
+                    <div style="display: inline">
+                        <form t-att-action="'%s?search=%s' %(url, search)" method="post" class="form-inline">
+                            <span>Show </span>
+                            <input type="hidden" name="view_type" t-att-value="view_type"/>
+                            <input type="submit" name="limit" t-att-class="'btn btn-%s' %('primary' if limit == 52 else 'default')" value="52"/>
+                            <input type="submit" name="limit" t-att-class="'btn btn-%s' %('primary' if limit == 100 else 'default')" value="100"/>
+                            <input type="submit" name="limit" t-att-class="'btn btn-%s' %('primary' if limit == 200 else 'default')" value="200"/>
+                            <span> per page</span>
+                        </form>
+                    </div>
+                </div>
+                <strong><p><t t-esc="product_count"/> Products</p></strong>
             </xpath>
         </template>
 
@@ -234,6 +246,7 @@
                 <span class="input-group-btn">
                     <form t-att-action="'%s?search=%s' %(url, search)" method="post">
                         <input type="hidden" name="view_type" value="grid_view"/>
+                        <input type="hidden" name="limit" t-att-value="limit"/>
                         <button type="submit" t-att-class="'btn btn-%s hidden-xs' %('primary' if view_type == 'grid_view' else 'default')">
                             <i class="fa fa-table"></i>
                         </button>
@@ -242,6 +255,7 @@
                 <span class="input-group-btn">
                     <form t-att-action="'%s?search=%s' %(url, search)" method="post">
                         <input type="hidden" name="view_type" value="list_view"/>
+                        <input type="hidden" name="limit" t-att-value="limit"/>
                         <button type="submit" t-att-class="'btn btn-%s hidden-xs' %('primary' if view_type == 'list_view' else 'default')">
                             <i class="fa fa-list-alt"></i>
                         </button>
