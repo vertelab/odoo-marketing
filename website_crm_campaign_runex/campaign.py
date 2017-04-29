@@ -188,9 +188,10 @@ class product_public_category(models.Model):
 class website_sale(website_sale):
     @http.route([
         '/campaign',
+        '/campaign/page/<int:page>',
         '/campaign/<model("crm.tracking.campaign"):campaign>',
     ], type='http', auth="public", website=True)
-    def campaign_shop(self, page=0, category=None, campaign=None, search='', **post):
+    def campaign_shop(self, page=1, category=None, campaign=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
         attrib_list = request.httprequest.args.getlist('attrib')
@@ -256,6 +257,7 @@ class website_sale(website_sale):
             'category': category,
             'attrib_values': attrib_values,
             'attrib_set': attrib_set,
+            'page': page,
             'pager': pager,
             'pricelist': pricelist,
             'products': campaign.product_ids.sorted(key=lambda r: r.name),
@@ -281,7 +283,7 @@ class website_sale(website_sale):
         '/shop/category/<model("product.public.category"):category>',
         '/shop/category/<model("product.public.category"):category>/page/<int:page>'
     ], type='http', auth="public", website=True)
-    def shop(self, page=0, category=None, search='', **post):
+    def shop(self, page=1, category=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
         attrib_list = request.httprequest.args.getlist('attrib')
@@ -347,6 +349,7 @@ class website_sale(website_sale):
             'category': category,
             'attrib_values': attrib_values,
             'attrib_set': attrib_set,
+            'page': page,
             'pager': pager,
             'pricelist': pricelist,
             'products': products,

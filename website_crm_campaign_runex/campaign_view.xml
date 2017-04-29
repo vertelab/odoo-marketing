@@ -202,9 +202,10 @@
             <xpath expr="//div[@id='products_grid']/*[1]" position="before">
                 <div class="mb16 hidden-xs">
                     <div style="display: inline">
-                        <form t-att-action="'%s?search=%s' %(url, search)" method="post" class="form-inline">
+                        <form t-att-action="'%s/page/%s?search=%s' %(url, page, search)" method="post" class="form-inline">
                             <span>Show </span>
                             <input type="hidden" name="view_type" t-att-value="view_type"/>
+                            <input type="hidden" name="page" t-att-value="page"/>
                             <input type="submit" name="limit" t-att-class="'btn btn-%s' %('primary' if limit == 52 else 'default')" value="52"/>
                             <input type="submit" name="limit" t-att-class="'btn btn-%s' %('primary' if limit == 100 else 'default')" value="100"/>
                             <input type="submit" name="limit" t-att-class="'btn btn-%s' %('primary' if limit == 200 else 'default')" value="200"/>
@@ -244,18 +245,20 @@
         <template id="search" inherit_id="website_sale.search">
             <xpath expr="//span[@class='input-group-btn']" position="after">
                 <span class="input-group-btn">
-                    <form t-att-action="'%s?search=%s' %(url, search)" method="post">
+                    <form t-att-action="'%s/page/%s?search=%s' %(url, page, search)" method="post">
                         <input type="hidden" name="view_type" value="grid_view"/>
                         <input type="hidden" name="limit" t-att-value="limit"/>
+                        <input type="hidden" name="page" t-att-value="page"/>
                         <button type="submit" t-att-class="'btn btn-%s hidden-xs' %('primary' if view_type == 'grid_view' else 'default')">
                             <i class="fa fa-table"></i>
                         </button>
                     </form>
                 </span>
                 <span class="input-group-btn">
-                    <form t-att-action="'%s?search=%s' %(url, search)" method="post">
+                    <form t-att-action="'%s/page/%s?search=%s' %(url, page, search)" method="post">
                         <input type="hidden" name="view_type" value="list_view"/>
                         <input type="hidden" name="limit" t-att-value="limit"/>
+                        <input type="hidden" name="page" t-att-value="page"/>
                         <button type="submit" t-att-class="'btn btn-%s hidden-xs' %('primary' if view_type == 'list_view' else 'default')">
                             <i class="fa fa-list-alt"></i>
                         </button>
