@@ -200,7 +200,7 @@
                 <attribute name="t-if">view_type == 'grid_view' and view_type != 'list_view'</attribute>
             </xpath>
             <xpath expr="//div[@id='products_grid']/*[1]" position="before">
-                <strong><t t-esc="product_count"/> Produkter</strong>
+                <strong><t t-esc="product_count"/> Products</strong>
             </xpath>
         </template>
 

@@ -1,0 +1,111 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* website_crm_campaign_runex
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0-20170423\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-29 04:07+0000\n"
+"PO-Revision-Date: 2017-04-29 06:14+0200\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: sv\n"
+"X-Generator: Poedit 2.0.1\n"
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.search
+msgid "&times;"
+msgstr "&times;"
+
+#. module: website_crm_campaign_runex
+#: model:ir.model,name:website_crm_campaign_runex.model_crm_tracking_campaign
+#: view:website:website_sale.products
+msgid "Campaign"
+msgstr "Kampanj"
+
+#. module: website_crm_campaign_runex
+#: model:ir.actions.act_window,name:website_crm_campaign_runex.crm_tracking_campaign_act_form
+msgid "Campaigns Form"
+msgstr "Kampanj formulär"
+
+#. module: website_crm_campaign_runex
+#: field:product.pricelist,is_fixed:0
+msgid "Fixed"
+msgstr "Fast"
+
+#. module: website_crm_campaign_runex
+#: model:ir.model,name:website_crm_campaign_runex.model_res_partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: website_crm_campaign_runex
+#: field:crm.tracking.campaign,pricelist:0
+#: model:ir.model,name:website_crm_campaign_runex.model_product_pricelist
+msgid "Pricelist"
+msgstr "Prislista"
+
+#. module: website_crm_campaign_runex
+#: model:ir.model,name:website_crm_campaign_runex.model_product_product
+msgid "Product"
+msgstr "Produkt"
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.product
+msgid "Product Name"
+msgstr "Produkt namn"
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.product
+msgid "Products"
+msgstr "Produkter"
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.products
+msgid "Products"
+msgstr "Produkter"
+
+#. module: website_crm_campaign_runex
+#: model:ir.model,name:website_crm_campaign_runex.model_product_public_category
+#: view:website:website_sale.search
+msgid "Public Category"
+msgstr "Publik katergori"
+
+#. module: website_crm_campaign_runex
+#: field:product.pricelist,is_reseller:0
+msgid "Reseller"
+msgstr "Reseller"
+
+#. module: website_crm_campaign_runex
+#: field:crm.tracking.campaign,reseller_pricelist:0
+msgid "Reseller Pricelist"
+msgstr "Återförsäljare prislista"
+
+#. module: website_crm_campaign_runex
+#: field:res.partner,partner_product_pricelist:0
+msgid "Sale Pricelist"
+msgstr "Prislista"
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.products
+msgid "Shop"
+msgstr "Shop"
+
+#. module: website_crm_campaign_runex
+#: help:res.partner,partner_product_pricelist:0
+msgid "This pricelist will be used, instead of the default one, for sales to the current partner"
+msgstr "This pricelist will be used, instead of the default one, for sales to the current partner"
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.products
+msgid "pagination form-inline col-md-3"
+msgstr "pagination form-inline col-md-3"
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.products
+msgid "view_type == 'grid_view' and view_type != 'list_view'"
+msgstr "view_type == 'grid_view' and view_type != 'list_view'"
