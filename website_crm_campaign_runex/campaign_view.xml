@@ -249,7 +249,7 @@
                         <input type="hidden" name="view_type" value="grid_view"/>
                         <input type="hidden" name="limit" t-att-value="limit"/>
                         <input type="hidden" name="page" t-att-value="page"/>
-                        <button type="submit" t-att-class="'btn btn-%s hidden-xs' %('primary' if view_type == 'grid_view' else 'default')">
+                        <button t-if="products" type="submit" t-att-class="'btn btn-%s hidden-xs' %('primary' if view_type == 'grid_view' else 'default')">
                             <i class="fa fa-table"></i>
                         </button>
                     </form>
@@ -259,7 +259,7 @@
                         <input type="hidden" name="view_type" value="list_view"/>
                         <input type="hidden" name="limit" t-att-value="limit"/>
                         <input type="hidden" name="page" t-att-value="page"/>
-                        <button type="submit" t-att-class="'btn btn-%s hidden-xs' %('primary' if view_type == 'list_view' else 'default')">
+                        <button t-if="products" type="submit" t-att-class="'btn btn-%s hidden-xs' %('primary' if view_type == 'list_view' else 'default')">
                             <i class="fa fa-list-alt"></i>
                         </button>
                     </form>
