@@ -150,11 +150,19 @@ class res_partner(models.Model):
         else:
             self.sudo().property_product_pricelist = None
 
+
+#~ class res_lang(models.Model):
+    #~ _inherit = 'res.lang'
+
+    #~ pricelist = fields.Many2one(comodel_name='product.pricelist', string='Price List')
+
+
 class product_pricelist(models.Model):
     _inherit = 'product.pricelist'
 
     is_reseller = fields.Boolean(string='Reseller')
     is_fixed = fields.Boolean(string='Fixed')
+
 
 class product_product(models.Model):
     _inherit = 'product.product'
@@ -285,6 +293,9 @@ class website_sale(website_sale):
     ], type='http', auth="public", website=True)
     def shop(self, page=1, category=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
+
+        #~ _logger.warn(context.get('lang'))
+        #~ _logger.warn(pool.get('website').get_languages(cr, uid, context))
 
         attrib_list = request.httprequest.args.getlist('attrib')
         attrib_values = [map(int, v.split("-")) for v in attrib_list if v]

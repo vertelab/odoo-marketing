@@ -243,6 +243,11 @@
         </template>
 
         <template id="search" inherit_id="website_sale.search">
+            <xpath expr="//form" position="before">
+                <a href="/page/how-to-search"><button class="btn btn-default">
+                    <i class="fa fa-question "></i>
+                </button></a>
+            </xpath>
             <xpath expr="//span[@class='input-group-btn']" position="after">
                 <span class="input-group-btn">
                     <form t-att-action="'%s/page/%s?search=%s' %(url, page, search)" method="post">
@@ -299,6 +304,18 @@
                         </div>
                     </div>
                 </div>
+            </xpath>
+        </template>
+
+        <template id="contact_form" inherit_id="website.contactus">
+            <xpath expr="//div[@class='container']" position="attributes">
+                <attribute name="class">container text-center</attribute>
+            </xpath>
+            <xpath expr="//div[@class='col-md-8']" position="attributes">
+                <attribute name="class">col-md-12</attribute>
+            </xpath>
+            <xpath expr="//div[@class='col-md-4 mb32']" position="attributes">
+                <attribute name="class">col-md-4 mb32 hidden</attribute>
             </xpath>
         </template>
 

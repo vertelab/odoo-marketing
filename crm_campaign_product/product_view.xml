@@ -3,7 +3,7 @@
     <data noupdate="0">
 
         <record id="product_template_form_view" model="ir.ui.view">
-            <field name="name">product.template.common.form.inherited.sale_campaign</field>
+            <field name="name">product.template.common.form.inherited.crm_campaign_product</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
@@ -12,6 +12,27 @@
                         <field name="campaign_ids" widget="many2many_tags"/>
                     </group>
                 </group>
+            </field>
+        </record>
+
+        <record id="crm_tracking_campaign_form" model="ir.ui.view">
+            <field name="name">crm.tracking.campaign.form.inherited.crm_campaign_product</field>
+            <field name="model">crm.tracking.campaign</field>
+            <field name="inherit_id" ref="crm_campaign_addons.crm_tracking_campaign_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Products">
+                        <field name="product_ids">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="type"/>
+                                <field name="list_price"/>
+                                <field name="qty_available"/>
+                                <field name="virtual_available"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
             </field>
         </record>
 
