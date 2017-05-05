@@ -33,6 +33,7 @@
                 <field name="section_id" position="after">
                     <field name="pricelist" />
                     <field name="reseller_pricelist" />
+                    <field name="lang" />
                 </field>
             </field>
         </record>
@@ -66,6 +67,17 @@
             <field name="res_model">crm.tracking.campaign</field>
             <field name="view_type">form</field>
             <field name="view_id" ref="crm.crm_tracking_campaign_form"/>
+        </record>
+
+        <record id="res_lang_form" model="ir.ui.view">
+            <field name="name">res.lang.form.inherited.website_crm_campaign_runex</field>
+            <field name="model">res.lang</field>
+            <field name="inherit_id" ref="base.res_lang_form"/>
+            <field name="arch" type="xml">
+                <field name="translatable" position="after">
+                    <field name="pricelist"/>
+                </field>
+            </field>
         </record>
 
         <!--
@@ -239,6 +251,22 @@
                 <t t-if="not campaign">
                     <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/product_imagemagick.img_product_thumnail' %product.id" t-att-alt="product.name"/>
                 </t>
+            </xpath>
+            <xpath expr="//form" position="after">
+                <t t-esc="pricelist"/>
+            </xpath>
+            <xpath expr="//b" position="replace">
+                <b>
+                    <span t-field="product.price"/>
+
+                  <span t-field="product.price" style="white-space: nowrap;"  t-field-options='{
+                       "widget": "monetary",
+                       "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
+                   }'>
+                  </span>
+                  <span itemprop="price" style="display:none;" t-esc="product.price"/>
+                  <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding"/>
+              </b>
             </xpath>
         </template>
 

@@ -103,10 +103,11 @@ class crm_tracking_campaign(models.Model):
 
     pricelist = fields.Many2one(comodel_name='product.pricelist', string='Pricelist')
     reseller_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Reseller Pricelist')
+    lang = fields.Many2one(comodel_name='res.lang', string='Language Area')
 
     @api.model
     def get_campaigns(self):
-        return super(crm_tracking_campaign, self).get_campaigns().filtered(lambda c: c.reseller_pricelist or c.pricelist)
+        return super(crm_tracking_campaign, self).get_campaigns().filtered(lambda c: (c.reseller_pricelist or c.pricelist) and self.env.context.get('lang') == c.lang.code)
 
     @api.multi
     def get_pricelist(self):
@@ -126,35 +127,48 @@ class res_partner(models.Model):
     def default_pricelist(self):
         return self.env.ref('product.list0')
     partner_product_pricelist = fields.Many2one(comodel_name='product.pricelist', domain=[('type','=','sale')], string='Sale Pricelist', help="This pricelist will be used, instead of the default one, for sales to the current partner", default=default_pricelist)
-    #property_product_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Sale Pricelist', compute='get_pricelist', search='search_pricelist')
 
     @api.model
     def search_pricelist(self, operator, value):
         return [('partner_product_pricelist', operator, value)]
 
+    @api.model
+    def _i_said_do_it_ffs(self, partner, pl):
+        partner.property_product_pricelist = pl
+
     @api.one
-    def get_pricelist(self):
-        pricelist = self.partner_product_pricelist
-        if pricelist:
-            if pricelist.is_fixed:
-                self.sudo().property_product_pricelist = pricelist
-            else:
-                current_campaign = self.env['crm.tracking.campaign'].get_campaigns()
-                if len(current_campaign) > 0:
-                    if pricelist.is_reseller:
-                        self.sudo().property_product_pricelist = current_campaign[0].reseller_pricelist.id if current_campaign[0].reseller_pricelist else current_campaign[0].pricelist.id
-                    else:
-                        self.sudo().property_product_pricelist = current_campaign[0].pricelist.id if current_campaign[0].pricelist else pricelist
-                else:
-                    self.sudo().property_product_pricelist = pricelist
+    def _property_product_pricelist(self):
+        if self.env.user == self.env.ref('base.public_user'):
+            pricelist = self.env['res.lang'].sudo().search([('code', '=', request.context.get('lang'))]).pricelist
         else:
-            self.sudo().property_product_pricelist = None
+            pricelist = self.partner_product_pricelist
+        _logger.warn('huur durr %s' % pricelist)
+        #~ if pricelist:
+            #~ if pricelist.is_fixed:
+                #~ _logger.warn('flöjttjo')
+                #~ self.sudo().property_product_pricelist = pricelist
+            #~ else:
+                #~ current_campaign = self.env['crm.tracking.campaign'].get_campaigns()
+                #~ if len(current_campaign) > 0:
+                    #~ if pricelist.is_reseller:
+                        #~ self.sudo().property_product_pricelist = current_campaign[0].reseller_pricelist.id if current_campaign[0].reseller_pricelist else current_campaign[0].pricelist.id
+                    #~ else:
+                        #~ self.sudo().property_product_pricelist = current_campaign[0].pricelist.id if current_campaign[0].pricelist else pricelist
+
+                #~ _logger.warn('tjoflöjt')
+        self.sudo()._i_said_do_it_ffs(self, pricelist)
+                #~ _logger.warn('elsa: %s' % self.property_product_pricelist)
+        #~ else:
+            #~ self.sudo().property_product_pricelist = None
+        #~ _logger.warn('slut på fanskapet: %s' % self.property_product_pricelist)
+
+    property_product_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Sale Pricelist', compute='_property_product_pricelist', search='search_pricelist')
 
 
-#~ class res_lang(models.Model):
-    #~ _inherit = 'res.lang'
+class res_lang(models.Model):
+    _inherit = 'res.lang'
 
-    #~ pricelist = fields.Many2one(comodel_name='product.pricelist', string='Price List')
+    pricelist = fields.Many2one(comodel_name='product.pricelist', string='Price List')
 
 
 class product_pricelist(models.Model):
@@ -194,6 +208,25 @@ class product_public_category(models.Model):
             #~ return res
 
 class website_sale(website_sale):
+
+    def get_pricelist(self):
+        return request.env.user.sudo().partner_id.property_product_pricelist
+
+    def get_user_pricelist(self, user):
+        pricelist = user.partner_id.property_product_pricelist
+        if pricelist.is_fixed:
+            return pricelist
+        else:
+            current_campaign = self.env['crm.tracking.campaign'].get_campaigns()
+            if len(current_campaign) > 0:
+                if pricelist.is_reseller:
+                    return current_campaign[0].reseller_pricelist.id if current_campaign[0].reseller_pricelist else current_campaign[0].pricelist.id
+                else:
+                    return current_campaign[0].pricelist.id if current_campaign[0].pricelist else pricelist
+            else:
+                return pricelist
+
+
     @http.route([
         '/campaign',
         '/campaign/page/<int:page>',
@@ -213,7 +246,8 @@ class website_sale(website_sale):
         keep = QueryURL('/campaign', category=category and int(category), search=search, attrib=attrib_list)
 
         if not context.get('pricelist'):
-            pricelist = self.get_pricelist()
+            if request.env['res.users'].browse(request.env.user.id) == request.env.ref('base.public_user'): #if current user is public user, get price list from language
+                pricelist = request.env['res.lang'].search([('code', '=', request.context.get('lang'))]).pricelist
             context['pricelist'] = int(pricelist)
         else:
             pricelist = request.env['product.pricelist'].browse(context['pricelist'])
@@ -294,9 +328,6 @@ class website_sale(website_sale):
     def shop(self, page=1, category=None, search='', **post):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
 
-        #~ _logger.warn(context.get('lang'))
-        #~ _logger.warn(pool.get('website').get_languages(cr, uid, context))
-
         attrib_list = request.httprequest.args.getlist('attrib')
         attrib_values = [map(int, v.split("-")) for v in attrib_list if v]
         attrib_set = set([v[1] for v in attrib_values])
@@ -304,6 +335,20 @@ class website_sale(website_sale):
         domain = self._get_search_domain(search, category, attrib_values)
 
         keep = QueryURL('/shop', category=category and int(category), search=search, attrib=attrib_list)
+
+        #~ if not context.get('pricelist'):
+            #~ if request.env['res.users'].browse(request.env.user.id) == request.env.ref('base.public_user'):
+                #~ pricelist = request.env['res.lang'].search([('code', '=', request.context.get('lang'))]).pricelist or self.env.ref('product.list0')
+            #~ else:
+                #~ ppp = user.partner_id.property_product_pricelist
+                #~ if ppp:
+                    #~ pricelist = get_user_pricelist(request.env.user)
+                #~ else:
+                    #~ pricelist = request.env['res.lang'].search([('code', '=', request.context.get('lang'))]).pricelist or self.env.ref('product.list0')
+            #~ context['pricelist'] = int(pricelist)
+        #~ else:
+            #~ pricelist = request.env['product.pricelist'].browse(context['pricelist'])
+
 
         if not context.get('pricelist'):
             pricelist = self.get_pricelist()
