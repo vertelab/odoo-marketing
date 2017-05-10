@@ -30,7 +30,7 @@ Special configuration for Runex
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_crm_campaign', 'product_imagemagick'],
+    'depends': ['website_crm_campaign', 'product_imagemagick', 'mrp'],
     'data': [
         'campaign_view.xml',
     ],
