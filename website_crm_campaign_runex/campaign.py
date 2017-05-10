@@ -21,6 +21,8 @@
 from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
+from openerp.osv import fields as osv_fields
+from openerp.osv import osv
 import werkzeug
 from openerp.addons.website.controllers.main import Website
 from openerp.addons.website.models.website import slug
@@ -101,7 +103,7 @@ class table_compute(object):
 class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
 
-    pricelist = fields.Many2one(comodel_name='product.pricelist', string='Pricelist')
+    pricelist = fields.Many2one(comodel_name='product.pricelist', string='Pricelist', company_dependent=False)
     reseller_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Reseller Pricelist')
     lang = fields.Many2one(comodel_name='res.lang', string='Language Area')
 
@@ -119,9 +121,94 @@ class crm_tracking_campaign(models.Model):
         #~ else:
             #~ pricelist = request.env['product.pricelist'].browse(request.context['pricelist'])
 
-
-class res_partner(models.Model):
+class res_partner(osv.osv):
     _inherit = 'res.partner'
+    
+    def _property_product_pricelist(self, cr, uid, ids, name, arg, context=None):
+        res = {}
+        for id in ids:
+            if id == self.pool.get('ir.model.data').get_object_reference(cr, uid, 'base', 'public_partner')[1]:
+                #~ _logger.warn('public')
+                pricelist = self.pool.get('product.pricelist').browse(cr, uid,
+                    self.pool.get('product.pricelist').search(cr, uid,
+                        [('language_ids', 'in', self.pool.get('res.lang').search(cr, uid,
+                            [('code', '=', request.context.get('lang'))], context=context))], context=context), context=context)
+            else:
+                #~ _logger.warn('not public')
+                pricelist = self.pool.get('product.pricelist').browse(cr, uid,
+                    self.pool.get('res.partner').read(cr, uid, id, ['partner_product_pricelist'], context=context)['partner_product_pricelist'][0], context=context)
+            #~ _logger.warn('pricelist: %s' % pricelist)
+            if pricelist:
+                if pricelist.is_fixed:
+                    #~ _logger.warn('fixed pricelist')
+                    res[id] = pricelist.id
+                else:
+                    current_campaign = self.pool.get('crm.tracking.campaign').get_campaigns(cr, uid, context=context)
+                    if len(current_campaign) > 0:
+                        #~ _logger.warn('active campaign')
+                        if pricelist.is_reseller:
+                            res[id] = current_campaign[0].reseller_pricelist.id if current_campaign[0].reseller_pricelist else current_campaign[0].pricelist.id
+                        else:
+                            res[id] = current_campaign[0].pricelist.id if current_campaign[0].pricelist else pricelist.id
+                    else:
+                        res[id] = pricelist.id
+        return res
+    
+    _columns = {
+        'property_product_pricelist': osv_fields.function(
+            _property_product_pricelist,
+            type='many2one', 
+            relation='product.pricelist', 
+            domain=[('type','=','sale')],
+            string="Sale Pricelist", 
+            help="This pricelist will be used, instead of the default one, for sales to the current partner"),
+    }
+    
+    #property_product_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Sale Pricelist', compute='_property_product_pricelist', search='search_pricelist')
+    
+
+    
+
+
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+        
+    #~ property_product_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Sale Pricelist', compute='_property_product_pricelist', compute_sudo=True, search='search_pricelist', store=False)
+    
+    #~ @api.one
+    #~ def _property_product_pricelist(self):
+        #~ _logger.warn(self._fields['property_product_pricelist']._slots)
+        #~ _logger.warn('\n_property_product_pricelist\n')
+        #~ _logger.warn(self._fields['property_product_pricelist'])
+        #~ if self.env.user == self.sudo().env.ref('base.public_user'):
+            #~ pricelist = self.env['res.lang'].sudo().search([('code', '=', request.context.get('lang'))]).pricelist
+        #~ else:
+            #~ pricelist = self.partner_product_pricelist
+        #~ _logger.warn('pricelist: %s' % pricelist)
+        #~ if pricelist:
+            #~ if pricelist.is_fixed:
+                #~ _logger.warn('fixed pricelist')
+                #~ self.property_product_pricelist = pricelist
+            #~ else:
+                #~ current_campaign = self.env['crm.tracking.campaign'].get_campaigns()
+                #~ if len(current_campaign) > 0:
+                    #~ _logger.warn('active campaign')
+                    #~ if pricelist.is_reseller:
+                        #~ self.property_product_pricelist = current_campaign[0].reseller_pricelist.id if current_campaign[0].reseller_pricelist else current_campaign[0].pricelist.id
+                    #~ else:
+                        #~ self.property_product_pricelist = current_campaign[0].pricelist.id if current_campaign[0].pricelist else pricelist
+                #~ else:
+                    #~ self.property_product_pricelist = pricelist
+        #~ _logger.warn('set pricelist: %s' % self.property_product_pricelist)
+                
+        
+        #self.sudo()._i_said_do_it_ffs(self, pricelist)
+                #~ _logger.warn('elsa: %s' % self.property_product_pricelist)
+        #~ else:
+            #~ self.sudo().property_product_pricelist = None
+        #~ _logger.warn('slut på fanskapet: %s' % self.property_product_pricelist)
+    
+    
 
     @api.model
     def default_pricelist(self):
@@ -131,39 +218,6 @@ class res_partner(models.Model):
     @api.model
     def search_pricelist(self, operator, value):
         return [('partner_product_pricelist', operator, value)]
-
-    @api.model
-    def _i_said_do_it_ffs(self, partner, pl):
-        partner.property_product_pricelist = pl
-
-    @api.one
-    def _property_product_pricelist(self):
-        if self.env.user == self.env.ref('base.public_user'):
-            pricelist = self.env['res.lang'].sudo().search([('code', '=', request.context.get('lang'))]).pricelist
-        else:
-            pricelist = self.partner_product_pricelist
-        _logger.warn('huur durr %s' % pricelist)
-        #~ if pricelist:
-            #~ if pricelist.is_fixed:
-                #~ _logger.warn('flöjttjo')
-                #~ self.sudo().property_product_pricelist = pricelist
-            #~ else:
-                #~ current_campaign = self.env['crm.tracking.campaign'].get_campaigns()
-                #~ if len(current_campaign) > 0:
-                    #~ if pricelist.is_reseller:
-                        #~ self.sudo().property_product_pricelist = current_campaign[0].reseller_pricelist.id if current_campaign[0].reseller_pricelist else current_campaign[0].pricelist.id
-                    #~ else:
-                        #~ self.sudo().property_product_pricelist = current_campaign[0].pricelist.id if current_campaign[0].pricelist else pricelist
-
-                #~ _logger.warn('tjoflöjt')
-        self.sudo()._i_said_do_it_ffs(self, pricelist)
-                #~ _logger.warn('elsa: %s' % self.property_product_pricelist)
-        #~ else:
-            #~ self.sudo().property_product_pricelist = None
-        #~ _logger.warn('slut på fanskapet: %s' % self.property_product_pricelist)
-
-    property_product_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Sale Pricelist', compute='_property_product_pricelist', search='search_pricelist')
-
 
 class res_lang(models.Model):
     _inherit = 'res.lang'
@@ -176,6 +230,8 @@ class product_pricelist(models.Model):
 
     is_reseller = fields.Boolean(string='Reseller')
     is_fixed = fields.Boolean(string='Fixed')
+    
+    language_ids = fields.One2many(comodel_name='res.lang', inverse_name='pricelist', string='Languages')
 
 
 class product_product(models.Model):
