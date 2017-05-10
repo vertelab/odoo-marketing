@@ -263,6 +263,11 @@ class product_public_category(models.Model):
         #~ else:
             #~ return res
 
+class mrp_routing_workcenter(models.Model):
+    _inherit = 'mrp.routing.workcenter'
+
+    hour_nbr = fields.Float('Number of Hours', required=True, help="Time in hours for this Work Center to achieve the operation of the specified routing.", digits=(8, 4))
+
 class website_sale(website_sale):
 
     def get_pricelist(self):

@@ -353,5 +353,11 @@
             </xpath>
         </template>
 
+        <template id="assets_backend" inherit_id="web.assets_backend" name="Inherit Assets Backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/website_crm_campaign_runex/static/src/js/web.js" />
+            </xpath>
+        </template>
+
     </data>
 </openerp>
