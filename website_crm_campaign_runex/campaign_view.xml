@@ -252,13 +252,8 @@
                     <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/product_imagemagick.img_product_thumnail' %product.id" t-att-alt="product.name"/>
                 </t>
             </xpath>
-            <xpath expr="//form" position="after">
-                <t t-esc="pricelist"/>
-            </xpath>
             <xpath expr="//b" position="replace">
                 <b>
-                    <span t-field="product.price"/>
-
                   <span t-field="product.price" style="white-space: nowrap;"  t-field-options='{
                        "widget": "monetary",
                        "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"

@@ -111,19 +111,10 @@ class crm_tracking_campaign(models.Model):
     def get_campaigns(self):
         return super(crm_tracking_campaign, self).get_campaigns().filtered(lambda c: (c.reseller_pricelist or c.pricelist) and self.env.context.get('lang') == c.lang.code)
 
-    @api.multi
-    def get_pricelist(self):
-        self.ensure_one()
-        return self.env['product.pricelist'].browse(self.context['pricelist'])
-        #~ if not context.get('pricelist'):
-            #~ pricelist = self.get_pricelist()
-            #~ context['pricelist'] = int(pricelist)
-        #~ else:
-            #~ pricelist = request.env['product.pricelist'].browse(request.context['pricelist'])
 
 class res_partner(osv.osv):
     _inherit = 'res.partner'
-    
+
     def _property_product_pricelist(self, cr, uid, ids, name, arg, context=None):
         res = {}
         for id in ids:
@@ -153,28 +144,28 @@ class res_partner(osv.osv):
                     else:
                         res[id] = pricelist.id
         return res
-    
+
     _columns = {
         'property_product_pricelist': osv_fields.function(
             _property_product_pricelist,
-            type='many2one', 
-            relation='product.pricelist', 
+            type='many2one',
+            relation='product.pricelist',
             domain=[('type','=','sale')],
-            string="Sale Pricelist", 
+            string="Sale Pricelist",
             help="This pricelist will be used, instead of the default one, for sales to the current partner"),
     }
-    
-    #property_product_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Sale Pricelist', compute='_property_product_pricelist', search='search_pricelist')
-    
 
-    
+    #property_product_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Sale Pricelist', compute='_property_product_pricelist', search='search_pricelist')
+
+
+
 
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
-        
+
     #~ property_product_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Sale Pricelist', compute='_property_product_pricelist', compute_sudo=True, search='search_pricelist', store=False)
-    
+
     #~ @api.one
     #~ def _property_product_pricelist(self):
         #~ _logger.warn(self._fields['property_product_pricelist']._slots)
@@ -200,15 +191,15 @@ class ResPartner(models.Model):
                 #~ else:
                     #~ self.property_product_pricelist = pricelist
         #~ _logger.warn('set pricelist: %s' % self.property_product_pricelist)
-                
-        
+
+
         #self.sudo()._i_said_do_it_ffs(self, pricelist)
                 #~ _logger.warn('elsa: %s' % self.property_product_pricelist)
         #~ else:
             #~ self.sudo().property_product_pricelist = None
         #~ _logger.warn('slut på fanskapet: %s' % self.property_product_pricelist)
-    
-    
+
+
 
     @api.model
     def default_pricelist(self):
@@ -230,7 +221,7 @@ class product_pricelist(models.Model):
 
     is_reseller = fields.Boolean(string='Reseller')
     is_fixed = fields.Boolean(string='Fixed')
-    
+
     language_ids = fields.One2many(comodel_name='res.lang', inverse_name='pricelist', string='Languages')
 
 
@@ -307,8 +298,7 @@ class website_sale(website_sale):
         keep = QueryURL('/campaign', category=category and int(category), search=search, attrib=attrib_list)
 
         if not context.get('pricelist'):
-            if request.env['res.users'].browse(request.env.user.id) == request.env.ref('base.public_user'): #if current user is public user, get price list from language
-                pricelist = request.env['res.lang'].search([('code', '=', request.context.get('lang'))]).pricelist
+            pricelist = self.get_pricelist()
             context['pricelist'] = int(pricelist)
         else:
             pricelist = request.env['product.pricelist'].browse(context['pricelist'])
