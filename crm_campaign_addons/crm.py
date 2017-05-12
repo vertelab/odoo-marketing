@@ -29,7 +29,6 @@ class crm_tracking_campaign(models.Model):
     date_start = fields.Date(string='Start Date')
     date_stop = fields.Date(string='Start Stop')
     object_ids = fields.One2many(comodel_name='crm.campaign.object', inverse_name='campaign_id', string='Objects')
-    description = fields.Text(string='Description')
     @api.one
     def _object_names(self):
         self.object_names = ', '.join(self.object_ids.mapped('name'))
