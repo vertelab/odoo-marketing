@@ -133,7 +133,12 @@
                         </group>
                         <notebook>
                             <page string="Objects">
-                                <field name="object_ids"/>
+                                <field name="object_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="object_id"/>
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
                     </sheet>
