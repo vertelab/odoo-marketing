@@ -242,7 +242,7 @@
 
         <template id="product" inherit_id="website_sale.product">
             <xpath expr="//t[@t-call='website_sale.product_price']" position="after">
-                <p>SKU: <t-esc="product.default_code" class="text-muted"/></p>
+                <p>SKU: <t t-esc="product.default_code" class="text-muted"/></p>
             </xpath>
             <xpath expr="//h1[@itemprop='name']" position="replace">
                 <h4 itemprop="name" style="color: #3E96CA;" t-field="product.name">Product Name
