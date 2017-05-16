@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 8.0-20170423\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-29 04:07+0000\n"
-"PO-Revision-Date: 2017-04-29 06:14+0200\n"
+"PO-Revision-Date: 2017-05-16 17:28+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -119,3 +119,9 @@ msgstr "Visa"
 #: view:website:website_sale.products
 msgid "per page"
 msgstr "per sida"
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.product
+msgid "SKU:"
+msgstr "Art nr:"
+

@@ -241,6 +241,9 @@
         </template>
 
         <template id="product" inherit_id="website_sale.product">
+            <xpath expr="//t[@t-call='website_sale.product_price']" position="after">
+                SKU: <p t-field="product.default_code" class="text-muted"/>
+            </xpath>
             <xpath expr="//h1[@itemprop='name']" position="replace">
                 <h4 itemprop="name" style="color: #3E96CA;" t-field="product.name">Product Name
                 </h4>
@@ -277,10 +280,12 @@
         </template>
 
         <template id="search" inherit_id="website_sale.search">
-            <xpath expr="//form" position="before">
-                <a href="/page/how-to-search"><button class="btn btn-default">
-                    <i class="fa fa-question "></i>
-                </button></a>
+            <xpath expr="//a[@class='btn btn-default a-submit']/.." position="after">
+                <span class="input-group-btn">
+                    <a href="/page/how-to-search"><button class="btn btn-default">
+                        <i class="fa fa-question "></i>
+                    </button></a>
+                </span>
             </xpath>
             <xpath expr="//span[@class='input-group-btn']" position="after">
                 <span class="input-group-btn">
