@@ -38,6 +38,17 @@
             </field>
         </record>
 
+        <record id="mrp_routing_workcenter_tree_view" model="ir.ui.view">
+            <field name="name">mrp.routing.workcenter.tree</field>
+            <field name="model">mrp.routing.workcenter</field>
+            <field name="inherit_id" ref="mrp.mrp_routing_workcenter_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="hour_nbr" position="replace">
+                    <field name="hour_nbr" widget="float_time"/>
+                </field>
+            </field>
+        </record>
+
         <!--
         <record id="product_public_category_form_view" model="ir.ui.view">
             <field name="name">product.public.category.form.inherited.website_crm_campaign_runex</field>
@@ -230,6 +241,9 @@
         </template>
 
         <template id="product" inherit_id="website_sale.product">
+            <xpath expr="//t[@t-call='website_sale.product_price']" position="after">
+                <p>SKU: <t t-esc="product.default_code" class="text-muted"/></p>
+            </xpath>
             <xpath expr="//h1[@itemprop='name']" position="replace">
                 <h4 itemprop="name" style="color: #3E96CA;" t-field="product.name">Product Name
                 </h4>
@@ -252,13 +266,8 @@
                     <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/product_imagemagick.img_product_thumnail' %product.id" t-att-alt="product.name"/>
                 </t>
             </xpath>
-            <xpath expr="//form" position="after">
-                <t t-esc="pricelist"/>
-            </xpath>
             <xpath expr="//b" position="replace">
                 <b>
-                    <span t-field="product.price"/>
-
                   <span t-field="product.price" style="white-space: nowrap;"  t-field-options='{
                        "widget": "monetary",
                        "display_currency": "user_id.partner_id.property_product_pricelist.currency_id"
@@ -271,10 +280,12 @@
         </template>
 
         <template id="search" inherit_id="website_sale.search">
-            <xpath expr="//form" position="before">
-                <a href="/page/how-to-search"><button class="btn btn-default">
-                    <i class="fa fa-question "></i>
-                </button></a>
+            <xpath expr="//a[@class='btn btn-default a-submit']/.." position="after">
+                <span class="input-group-btn">
+                    <a href="/page/how-to-search" type="button" class="btn btn-default">
+                        <i class="fa fa-question "/>
+                    </a>
+                </span>
             </xpath>
             <xpath expr="//span[@class='input-group-btn']" position="after">
                 <span class="input-group-btn">

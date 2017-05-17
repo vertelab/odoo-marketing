@@ -1,0 +1,204 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* website_crm_campaign_runex
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0-20170514\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-16 15:25+0000\n"
+"PO-Revision-Date: 2017-05-16 15:25+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.search
+msgid "&times;"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#. openerp-web
+#: code:addons/website_crm_campaign_runex/static/src/js/web.js:184
+#, python-format
+msgid "'%s' is not a correct date"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#. openerp-web
+#: code:addons/website_crm_campaign_runex/static/src/js/web.js:171
+#, python-format
+msgid "'%s' is not a correct datetime"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#. openerp-web
+#: code:addons/website_crm_campaign_runex/static/src/js/web.js:134
+#, python-format
+msgid "'%s' is not a correct float"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#. openerp-web
+#: code:addons/website_crm_campaign_runex/static/src/js/web.js:123
+#, python-format
+msgid "'%s' is not a correct integer"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#. openerp-web
+#: code:addons/website_crm_campaign_runex/static/src/js/web.js:192
+#, python-format
+msgid "'%s' is not a correct time"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#. openerp-web
+#: code:addons/website_crm_campaign_runex/static/src/js/web.js:75
+#, python-format
+msgid "(%d records)"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: model:ir.model,name:website_crm_campaign_runex.model_crm_tracking_campaign
+#: view:website:website_sale.products
+msgid "Campaign"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: model:ir.actions.act_window,name:website_crm_campaign_runex.crm_tracking_campaign_act_form
+msgid "Campaigns Form"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: field:product.pricelist,is_fixed:0
+msgid "Fixed"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: field:crm.tracking.campaign,lang:0
+msgid "Language Area"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: model:ir.model,name:website_crm_campaign_runex.model_res_lang
+#: field:product.pricelist,language_ids:0
+msgid "Languages"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: model:ir.model,name:website_crm_campaign_runex.model_res_partner
+msgid "Partner"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: field:res.lang,pricelist:0
+msgid "Price List"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: field:crm.tracking.campaign,pricelist:0
+#: model:ir.model,name:website_crm_campaign_runex.model_product_pricelist
+msgid "Pricelist"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: model:ir.model,name:website_crm_campaign_runex.model_product_product
+msgid "Product"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.product
+msgid "Product Name"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: model:ir.model,name:website_crm_campaign_runex.model_product_template
+msgid "Product Template"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.product
+#: view:website:website_sale.products
+msgid "Products"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: model:ir.model,name:website_crm_campaign_runex.model_product_public_category
+#: view:website:website_sale.search
+msgid "Public Category"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: field:product.pricelist,is_reseller:0
+msgid "Reseller"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: field:crm.tracking.campaign,reseller_pricelist:0
+msgid "Reseller Pricelist"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.product
+msgid "SKU:"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: field:res.partner,partner_product_pricelist:0
+msgid "Sale Pricelist"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.products
+msgid "Shop"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.products
+msgid "Show"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: help:res.partner,partner_product_pricelist:0
+msgid "This pricelist will be used, instead of the default one, for sales to the current partner"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: model:ir.model,name:website_crm_campaign_runex.model_mrp_routing_workcenter
+msgid "Work Center Usage"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: view:website:website.contactus
+msgid "col-md-12"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: view:website:website.contactus
+msgid "col-md-4 mb32 hidden"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: view:website:website.contactus
+msgid "container text-center"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.products
+msgid "pagination form-inline col-md-3"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.products
+msgid "per page"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: view:website:website_sale.products
+msgid "view_type == 'grid_view' and view_type != 'list_view'"
+msgstr ""
+

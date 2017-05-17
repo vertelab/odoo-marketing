@@ -118,21 +118,27 @@
             <field name="arch" type="xml">
                 <form string="Campaign">
                     <sheet>
+                        <h1>
+                            <field name="name" default_focus="1" placeholder="Name" />
+                        </h1>
+<!--
+                        <button class="oe_inline oe_stat_button" type="action" icon="fa-dropbox" name="%(action_crm_campaign_object_view)d" context="{'search_default_campaign_id': active_id}">
+                            <field string="Objects" name="object_count" widget="statinfo"/>
+                        </button>
+-->
                         <group>
-                            <h1>
-                                <field name="name" default_focus="1" placeholder="Name" />
-                            </h1>
-                            <button class="oe_inline oe_stat_button" type="action" icon="fa-dropbox" name="%(action_crm_campaign_object_view)d" context="{'search_default_campaign_id': active_id}">
-                                <field string="Objects" name="object_count" widget="statinfo"/>
-                            </button>
                             <field name="date_start"/>
                             <field name="date_stop"/>
                             <field name="section_id" groups="base.group_multi_salesteams"/>
-                            <field name="object_ids" widget="many2many_tags"/>
                         </group>
                         <notebook>
-                            <page string="Information">
-                                <field name="description"/>
+                            <page string="Objects">
+                                <field name="object_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="object_id"/>
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
                     </sheet>
