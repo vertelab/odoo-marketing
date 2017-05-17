@@ -109,6 +109,7 @@ class crm_tracking_campaign(models.Model):
 
     @api.model
     def get_campaigns(self):
+        _logger.warn(self.env.context.get('lang'))
         return super(crm_tracking_campaign, self).get_campaigns().filtered(lambda c: (c.reseller_pricelist or c.pricelist) and self.env.context.get('lang') == c.lang.code)
 
     @api.multi
@@ -128,24 +129,31 @@ class res_partner(osv.osv):
         res = {}
         for id in ids:
             if id == self.pool.get('ir.model.data').get_object_reference(cr, uid, 'base', 'public_partner')[1]:
-                #~ _logger.warn('public')
+                lang = request.context.get('lang')
                 pricelist = self.pool.get('product.pricelist').browse(cr, uid,
                     self.pool.get('product.pricelist').search(cr, uid,
-                        [('language_ids', 'in', self.pool.get('res.lang').search(cr, uid,
-                            [('code', '=', request.context.get('lang'))], context=context))], context=context), context=context)
+                        [('language_ids.code', '=', lang)], context=context), context=context)
+                if not pricelist:
+                    raise Warning(_("No pricelist found for your language! Please contact the administrator."))
             else:
-                #~ _logger.warn('not public')
+                partner = self.pool.get('res.partner').read(cr, uid, id, ['partner_product_pricelist', 'lang', 'commercial_partner_id'], context=context)
+                # The compute breaks the commercial fields handling. Check if this partner is it's own commercial partner to account for that.
+                if partner['commercial_partner_id'][0] != id:
+                    # Get the pricelist from the commercial partner and move along.
+                    res[id] = self._property_product_pricelist(cr, uid, [partner['commercial_partner_id'][0]], name, arg, context)[partner['commercial_partner_id'][0]]
+                    continue
+                lang = partner['lang']
                 pricelist = self.pool.get('product.pricelist').browse(cr, uid,
-                    self.pool.get('res.partner').read(cr, uid, id, ['partner_product_pricelist'], context=context)['partner_product_pricelist'][0], context=context)
-            #~ _logger.warn('pricelist: %s' % pricelist)
+                    partner['partner_product_pricelist'][0], context=context)
             if pricelist:
                 if pricelist.is_fixed:
-                    #~ _logger.warn('fixed pricelist')
                     res[id] = pricelist.id
                 else:
-                    current_campaign = self.pool.get('crm.tracking.campaign').get_campaigns(cr, uid, context=context)
+                    # Fetch the active campaign for this partner's language.
+                    c_context = dict(context)
+                    c_context['lang'] = lang
+                    current_campaign = self.pool.get('crm.tracking.campaign').get_campaigns(cr, uid, context=c_context)
                     if len(current_campaign) > 0:
-                        #~ _logger.warn('active campaign')
                         if pricelist.is_reseller:
                             res[id] = current_campaign[0].reseller_pricelist.id if current_campaign[0].reseller_pricelist else current_campaign[0].pricelist.id
                         else:
@@ -163,52 +171,13 @@ class res_partner(osv.osv):
             string="Sale Pricelist", 
             help="This pricelist will be used, instead of the default one, for sales to the current partner"),
     }
-    
-    #property_product_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Sale Pricelist', compute='_property_product_pricelist', search='search_pricelist')
-    
-
-    
-
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
-        
-    #~ property_product_pricelist = fields.Many2one(comodel_name='product.pricelist', string='Sale Pricelist', compute='_property_product_pricelist', compute_sudo=True, search='search_pricelist', store=False)
     
-    #~ @api.one
-    #~ def _property_product_pricelist(self):
-        #~ _logger.warn(self._fields['property_product_pricelist']._slots)
-        #~ _logger.warn('\n_property_product_pricelist\n')
-        #~ _logger.warn(self._fields['property_product_pricelist'])
-        #~ if self.env.user == self.sudo().env.ref('base.public_user'):
-            #~ pricelist = self.env['res.lang'].sudo().search([('code', '=', request.context.get('lang'))]).pricelist
-        #~ else:
-            #~ pricelist = self.partner_product_pricelist
-        #~ _logger.warn('pricelist: %s' % pricelist)
-        #~ if pricelist:
-            #~ if pricelist.is_fixed:
-                #~ _logger.warn('fixed pricelist')
-                #~ self.property_product_pricelist = pricelist
-            #~ else:
-                #~ current_campaign = self.env['crm.tracking.campaign'].get_campaigns()
-                #~ if len(current_campaign) > 0:
-                    #~ _logger.warn('active campaign')
-                    #~ if pricelist.is_reseller:
-                        #~ self.property_product_pricelist = current_campaign[0].reseller_pricelist.id if current_campaign[0].reseller_pricelist else current_campaign[0].pricelist.id
-                    #~ else:
-                        #~ self.property_product_pricelist = current_campaign[0].pricelist.id if current_campaign[0].pricelist else pricelist
-                #~ else:
-                    #~ self.property_product_pricelist = pricelist
-        #~ _logger.warn('set pricelist: %s' % self.property_product_pricelist)
-                
-        
-        #self.sudo()._i_said_do_it_ffs(self, pricelist)
-                #~ _logger.warn('elsa: %s' % self.property_product_pricelist)
-        #~ else:
-            #~ self.sudo().property_product_pricelist = None
-        #~ _logger.warn('slut på fanskapet: %s' % self.property_product_pricelist)
-    
-    
+    @api.model
+    def _commercial_fields(self):
+        return super(ResPartner, self)._commercial_fields() + ['partner_product_pricelist']
 
     @api.model
     def default_pricelist(self):
