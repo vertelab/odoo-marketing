@@ -23,7 +23,7 @@
                 <notebook position="inside">
                     <page string="Products">
                         <field name="product_ids">
-                            <tree editable="bottom">
+                            <tree editable="bottom" default_order="campaign_sequence">
                                 <field name="name"/>
                                 <field name="type"/>
                                 <field name="list_price"/>

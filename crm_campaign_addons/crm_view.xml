@@ -135,6 +135,7 @@
                             <page string="Objects">
                                 <field name="object_ids">
                                     <tree>
+                                        <field name="sequence" widget="handle"/>
                                         <field name="name"/>
                                         <field name="object_id"/>
                                     </tree>

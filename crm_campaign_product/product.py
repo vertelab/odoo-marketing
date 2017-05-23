@@ -32,6 +32,7 @@ class crm_tracking_campaign(models.Model):
         for o in self.object_ids:
             if o.object_id._name == 'product.template':
                 products |= o.object_id
+                self.env['product.template'].browse(o.object_id.id).write({'campaign_sequence': o.sequence})
             elif o.object_id._name == 'product.product':
                 products |= o.object_id.product_tmpl_id
             elif o.object_id._name == 'product.public.category':
@@ -48,6 +49,7 @@ class product_template(models.Model):
     def _campaign_ids(self):
         self.campaign_ids = [(6, 0, self.env['crm.campaign.object'].search([('object_id', '=', self.id)]).filtered(lambda o: o.object_id._name == 'product.template').mapped('campaign_id').mapped('id'))]
     campaign_ids = fields.Many2many(comodel_name='crm.tracking.campaign', string='Campaign')
+    campaign_sequence = fields.Integer()
 
 
 class crm_campaign_object(models.Model):

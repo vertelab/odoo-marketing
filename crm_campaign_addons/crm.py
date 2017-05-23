@@ -52,6 +52,8 @@ class crm_tracking_campaign(models.Model):
 class crm_campaign_object(models.Model):
     _name = 'crm.campaign.object'
 
+    _order = 'campaign_id, sequence, name'
+
     name = fields.Char(string='Name')
     description = fields.Text(string='Description')
     image = fields.Binary(string='Image')

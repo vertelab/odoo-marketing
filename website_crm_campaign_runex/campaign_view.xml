@@ -213,7 +213,7 @@
                 </div>
             </xpath>
             <xpath expr="//div[@id='products_grid']//table" position="before">
-                <t t-foreach="products" t-as="product">
+                <t t-foreach="products.sorted(key=lambda r: r.campaign_sequence)" t-as="product">
                     <div t-if="view_type == 'list_view' and view_type != 'grid_view'" class="oe_product oe_list oe_product_cart" t-att-data-publish="product.website_published and 'on' or 'off'">
                         <t t-call="website_sale.products_item"/>
                     </div>
