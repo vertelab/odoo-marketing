@@ -48,3 +48,5 @@ class crm_tracking_campaign(models.Model):
             if o.object_id._name == 'res.partner':
                 products |= self.env['product.template'].search([('seller_ids.name', '=', o.object_id.id)])
         self.product_ids |= products
+    
+    
