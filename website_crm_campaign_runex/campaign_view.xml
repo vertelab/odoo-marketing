@@ -274,6 +274,7 @@
                 </ol>
             </xpath>
 
+            <!-- replace this to the code above after upgraded module -->
             <!--
             <xpath expr="//span[@itemprop='image']" position="replace">
                 <span itemprop="image" t-field="product.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;product_detail_img hidden&quot;, &quot;alt-field&quot;: &quot;name&quot;}"/>
@@ -281,10 +282,10 @@
 
             <xpath expr="//span[@itemprop='image']" position="after">
                 <t t-set="current_campaign" t-value="request.env['crm.tracking.campaign'].get_campaigns()"/>
-                <t t-if="current_campaign and product in current_campaign.product_ids">
+                <t t-if="current_campaign and product in current_campaign[0].product_ids">
                     <img t-att-src="'/imagefield/product.template/image/%s/ref/website_imagemagick.product_detail_with_watermark_left_top' %product.id" class="img imag-responsive"/>
                 </t>
-                <t t-if="not current_campaign or (product not in current_campaign.product_ids)">
+                <t t-if="not current_campaign or (product not in current_campaign[0].product_ids)">
                     <span itemprop="image" t-field="product.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;product_detail_img&quot;, &quot;alt-field&quot;: &quot;name&quot;}"/>
                 </t>
             </xpath>
@@ -299,12 +300,13 @@
                 <t t-if="not campaign">
                     <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/product_imagemagick.img_product_thumnail' %product.id" t-att-alt="product.name"/>
                 </t>
+                <!-- replace this to the code above after upgraded module -->
                 <!--
                 <t t-set="current_campaign" t-value="request.env['crm.tracking.campaign'].get_campaigns()"/>
-                <t t-if="current_campaign and product in current_campaign.product_ids">
+                <t t-if="current_campaign and product in current_campaign[0].product_ids">
                     <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/product_imagemagick.img_product_thumnail_watermark_left_top' %product.id" t-att-alt="product.name"/>
                 </t>
-                <t t-if="not current_campaign or (product not in current_campaign.product_ids)">
+                <t t-if="not current_campaign or (product not in current_campaign[0].product_ids)">
                     <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/product_imagemagick.img_product_thumnail' %product.id" t-att-alt="product.name"/>
                 </t>
                 -->
