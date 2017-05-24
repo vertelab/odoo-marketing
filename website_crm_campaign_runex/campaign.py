@@ -167,11 +167,11 @@ class res_partner(osv.osv):
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
-    
+
     @api.model
     def _commercial_fields(self):
         return super(ResPartner, self)._commercial_fields() + ['partner_product_pricelist']
-    
+
     @api.model
     def default_pricelist(self):
         return self.env.ref('product.list0')
@@ -194,6 +194,13 @@ class product_pricelist(models.Model):
     is_fixed = fields.Boolean(string='Fixed')
 
     language_ids = fields.One2many(comodel_name='res.lang', inverse_name='pricelist', string='Languages')
+
+
+class product_template(models.Model):
+    _inherit = 'product.template'
+
+    sale_ok_b2b = fields.Boolean(string='Can be sold for B2B')
+    sale_ok_b2c = fields.Boolean(string='Can be sold for B2C')
 
 
 class product_product(models.Model):

@@ -34,6 +34,18 @@ msgid "Campaigns Form"
 msgstr "Kampanj formulär"
 
 #. module: website_crm_campaign_runex
+#: field:product.product,sale_ok_b2b:0
+#: field:product.template,sale_ok_b2b:0
+msgid "Can be sold for B2B"
+msgstr "Kan säljas för B2B"
+
+#. module: website_crm_campaign_runex
+#: field:product.product,sale_ok_b2c:0
+#: field:product.template,sale_ok_b2c:0
+msgid "Can be sold for B2C"
+msgstr "Kan säljas för B2C"
+
+#. module: website_crm_campaign_runex
 #: field:product.pricelist,is_fixed:0
 msgid "Fixed"
 msgstr "Fast"

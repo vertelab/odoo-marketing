@@ -2,6 +2,24 @@
 <openerp>
     <data>
 
+        <record id="product_template_form_view" model="ir.ui.view">
+            <field name="name">product.template.common.form.inherited.website_crm_campaign_runex</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='sale_ok']/.." position="after">
+                    <div>
+                        <field name="sale_ok_b2b"/>
+                        <label for="sale_ok_b2b"/>
+                    </div>
+                    <div>
+                        <field name="sale_ok_b2c"/>
+                        <label for="sale_ok_b2c"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
         <record id="product_pricelist_view" model="ir.ui.view">
             <field name="name">product.pricelist.form.inherited.website_crm_campaign_runex</field>
             <field name="model">product.pricelist</field>

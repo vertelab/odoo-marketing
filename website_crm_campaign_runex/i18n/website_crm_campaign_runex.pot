@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* website_crm_campaign_runex
+#   * website_crm_campaign_runex
 #
 msgid ""
 msgstr ""
@@ -71,6 +71,18 @@ msgstr ""
 #. module: website_crm_campaign_runex
 #: model:ir.actions.act_window,name:website_crm_campaign_runex.crm_tracking_campaign_act_form
 msgid "Campaigns Form"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: field:product.product,sale_ok_b2b:0
+#: field:product.template,sale_ok_b2b:0
+msgid "Can be sold for B2B"
+msgstr ""
+
+#. module: website_crm_campaign_runex
+#: field:product.product,sale_ok_b2c:0
+#: field:product.template,sale_ok_b2c:0
+msgid "Can be sold for B2C"
 msgstr ""
 
 #. module: website_crm_campaign_runex
