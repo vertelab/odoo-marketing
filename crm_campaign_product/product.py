@@ -68,7 +68,7 @@ class crm_tracking_campaign(models.Model):
         if obj.object_id._name == 'product.template':
             return [{
                     'campaign_id': campaign_id,
-                    'product_id': obj.object_id.product_tmpl_id.id,
+                    'product_id': obj.object_id.id,
                     'sequence': sequence,
                     }]
         elif obj.object_id._name == 'product.product':
@@ -89,7 +89,7 @@ class crm_tracking_campaign(models.Model):
         self.env['crm.campaign.product'].search([('campaign_id','=',self.id)]).unlink()
         i = 10
         for o in self.object_ids:
-            self.env['crm.campaign.product'].create(self._object2campaign_product(self.id,o,i))
+            self.env['crm.campaign.product'].create(self._object2campaign_product(self.id,o,i))  # eventuellt forsnurra
             i += 10
 
 class product_template(models.Model):
