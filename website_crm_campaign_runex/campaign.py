@@ -222,15 +222,15 @@ class product_public_category(models.Model):
     description = fields.Text(string='Description')
     #~ mobile_icon = fields.Char(string='Mobile Icon', help='This icon will display on smaller devices')
 
-#~ class website_campaign(Website):
-    #~ @http.route('/', type='http', auth="public", website=True)
-    #~ def index(self, **kw):
-        #~ res = super(website_campaign, self).index(**kw)
-        #~ campaign = request.env['crm.tracking.campaign'].get_campaigns()
-        #~ if len(campaign) > 0:
-            #~ return werkzeug.utils.redirect('/campaign', 302)
-        #~ else:
-            #~ return res
+class website_campaign(Website):
+    @http.route('/', type='http', auth="public", website=True)
+    def index(self, **kw):
+        res = super(website_campaign, self).index(**kw)
+        campaign = request.env['crm.tracking.campaign'].get_campaigns()
+        if len(campaign) > 0:
+            return werkzeug.utils.redirect('/campaign', 302)
+        else:
+            return res
 
 class mrp_routing_workcenter(models.Model):
     _inherit = 'mrp.routing.workcenter'

@@ -273,6 +273,23 @@
                     <li class="active hidden"><span t-field="product.name"/></li>
                 </ol>
             </xpath>
+
+            <!-- replace this to the code above after upgraded module -->
+            <!--
+            <xpath expr="//span[@itemprop='image']" position="replace">
+                <span itemprop="image" t-field="product.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;product_detail_img hidden&quot;, &quot;alt-field&quot;: &quot;name&quot;}"/>
+            </xpath>
+
+            <xpath expr="//span[@itemprop='image']" position="after">
+                <t t-set="current_campaign" t-value="request.env['crm.tracking.campaign'].get_campaigns()"/>
+                <t t-if="current_campaign and product in current_campaign[0].product_ids">
+                    <img t-att-src="'/imagefield/product.template/image/%s/ref/website_imagemagick.product_detail_with_watermark_left_top' %product.id" class="img imag-responsive"/>
+                </t>
+                <t t-if="not current_campaign or (product not in current_campaign[0].product_ids)">
+                    <span itemprop="image" t-field="product.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;product_detail_img&quot;, &quot;alt-field&quot;: &quot;name&quot;}"/>
+                </t>
+            </xpath>
+            -->
         </template>
 
         <template id="products_item" inherit_id="website_sale.products_item">
@@ -283,6 +300,16 @@
                 <t t-if="not campaign">
                     <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/product_imagemagick.img_product_thumnail' %product.id" t-att-alt="product.name"/>
                 </t>
+                <!-- replace this to the code above after upgraded module -->
+                <!--
+                <t t-set="current_campaign" t-value="request.env['crm.tracking.campaign'].get_campaigns()"/>
+                <t t-if="current_campaign and product in current_campaign[0].product_ids">
+                    <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/product_imagemagick.img_product_thumnail_watermark_left_top' %product.id" t-att-alt="product.name"/>
+                </t>
+                <t t-if="not current_campaign or (product not in current_campaign[0].product_ids)">
+                    <img class="img img-responsive" t-att-src="'/imagefield/product.template/image/%s/ref/product_imagemagick.img_product_thumnail' %product.id" t-att-alt="product.name"/>
+                </t>
+                -->
             </xpath>
             <xpath expr="//b" position="replace">
                 <b>
@@ -294,6 +321,9 @@
                   <span itemprop="price" style="display:none;" t-esc="product.price"/>
                   <span itemprop="priceCurrency" style="display:none;" t-esc="user_id.partner_id.property_product_pricelist.currency_id.name" class='decimal_precision' t-att-data-precision="website.pricelist_id.currency_id.rounding"/>
               </b>
+            </xpath>
+            <xpath expr="//div[@class='ribbon btn btn-danger']" position="attributes">
+                <attribute name="class">ribbon btn btn-danger ribbon-runex</attribute>
             </xpath>
         </template>
 
@@ -387,6 +417,6 @@
                 <script type="text/javascript" src="/website_crm_campaign_runex/static/src/js/web.js" />
             </xpath>
         </template>
-
     </data>
+
 </openerp>
