@@ -323,6 +323,10 @@ class website_sale(website_sale):
         if post.get('view_type') and post.get('view_type') == 'list_view':
             view_type = 'list_view'
 
+        product_list = []
+        for product in campaign.campaign_product_ids.sorted(key=lambda c: c.sequence):
+            product_list.append(product.product_id)
+
         return request.website.render("website_sale.products", {
             'search': search,
             'category': category,
@@ -331,8 +335,8 @@ class website_sale(website_sale):
             'page': page,
             'pager': pager,
             'pricelist': pricelist,
-            'products': campaign.campaign_product_ids.mapped('product_id'),
-            'bins': table_compute().process(campaign.campaign_product_ids.mapped('product_id'), ppg),
+            'products': product_list,
+            'bins': table_compute().process(product_list, ppg),
             'rows': PPR,
             'styles': styles,
             'categories': categs,
@@ -342,7 +346,7 @@ class website_sale(website_sale):
             'style_in_product': lambda style, product: style.id in [s.id for s in product.website_style_ids],
             'attrib_encode': lambda attribs: werkzeug.url_encode([('attrib',i) for i in attribs]),
             'campaign': campaign,
-            'product_count': len(campaign.campaign_product_ids.mapped('product_id')),
+            'product_count': len(product_list),
             'view_type': view_type,
             'limit': ppg,
             'url': url,
