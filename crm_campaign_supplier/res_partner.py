@@ -40,13 +40,14 @@ class crm_campaign_object(models.Model):
 class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
 
-    @api.one
-    def _product_ids(self):
-        super(crm_tracking_campaign, self)._product_ids()
-        products = self.env['product.template'].browse([])
-        for o in self.object_ids:
-            if o.object_id._name == 'res.partner':
-                products |= self.env['product.template'].search([('seller_ids.name', '=', o.object_id.id)])
-        self.product_ids |= products
-    
-    
+    def values_to_create(self, o, sequence):
+        super(crm_tracking_campaign, self).values_to_create(o, sequence)
+        if o.object_id._name == 'res.partner':
+            cps = []
+            for product in self.env['product.template'].search([('seller_ids.name', '=', o.object_id.id)]):
+                cps.append({
+                    'campaign_id': self.id,
+                    'product_id': product.id,
+                    'sequence': sequence + 1,
+                })
+            return cps

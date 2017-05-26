@@ -26,71 +26,68 @@ _logger = logging.getLogger(__name__)
 class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
 
-    #~ @api.one
-    #~ def _get_product_ids(self):
-        #~ self.product_ids = [(6,_,self.env['crm.campaign.product'].search([('')]))
-        #~ products = self.env['product.template'].browse([])
-        #~ for o in self.object_ids:
-            #~ if o.object_id._name == 'product.template':
-                #~ products |= o.object_id
-                #~ self.env['product.template'].browse(o.object_id.id).write({'campaign_sequence': o.sequence})
-            #~ elif o.object_id._name == 'product.product':
-                #~ products |= o.object_id.product_tmpl_id
-            #~ elif o.object_id._name == 'product.public.category':
-                #~ products |= self.env['product.template'].search([('public_categ_ids', 'in', o.object_id.id)])
-        #~ self.product_ids = products
-    #~ @api.one
-    #~ def _set_product_ids(self):
-        
-        #~ products = self.env['product.template'].browse([])
-        #~ for o in self.object_ids:
-            #~ if o.object_id._name == 'product.template':
-                #~ products |= o.object_id
-                #~ self.env['product.template'].browse(o.object_id.id).write({'campaign_sequence': o.sequence})
-            #~ elif o.object_id._name == 'product.product':
-                #~ products |= o.object_id.product_tmpl_id
-            #~ elif o.object_id._name == 'product.public.category':
-                #~ products |= self.env['product.template'].search([('public_categ_ids', 'in', o.object_id.id)])
-        #~ self.product_ids = products
-        
-    #~ product_ids = fields.One2many(comodel_name='product.template', compute="_get_product_ids", inverse='_set_product_ids',string='Products')
-
+    product_ids = fields.Many2many(comodel_name='product.template', string='Products')
+    campaign_product_ids = fields.One2many(comodel_name='crm.campaign.product', inverse_name='campaign_id', string='Products')
 
     @api.one
-    @api.onchange('object_ids.object_id')
-    def _update_product_ids(self):
-        if self.object_id._name == ''
+    def update_campaign_product_ids(self):
+        for product in self.env['product.template'].search([('campaign_ids', 'in', self.id)]):
+            product.campaign_ids = [(3, self.id, 0)]
+        self.env['crm.campaign.product'].search([('campaign_id', '=', self.id)]).unlink()
+        if len(self.object_ids) > 0:
+            cps = self.env['crm.campaign.product'].browse([])
+            sequence = 0
+            for o in self.object_ids:
+                vals = []
+                for val in self.values_to_create(o, sequence):
+                    cp = self.env['crm.campaign.product'].create(val)
+                    cp.product_id.campaign_ids = [(4, self.id, 0)]
+                    cps |= cp
+            self.campaign_product_ids = cps
+        else:
             pass
 
+    def values_to_create(self, o, sequence):
+        if o.object_id._name == 'product.template':
+            cps = []
+            cps.append({
+                'campaign_id': self.id,
+                'product_id': o.object_id.id,
+                'sequence': sequence + 1,
+            })
+            return cps
+        if o.object_id._name == 'product.product':
+            cps = []
+            cps.append({
+                'campaign_id': self.id,
+                'product_id': o.object_id.product_tmpl_id.id,
+                'sequence': sequence + 1,
+            })
+            return cps
+        if o.object_id._name == 'product.public.category':
+            cps = []
+            for product in self.env['product.template'].search([('public_categ_ids', 'in', o.object_id.id)]):
+                cps.append({
+                    'campaign_id': self.id,
+                    'product_id': product.id,
+                    'sequence': sequence + 1,
+                })
+            return cps
 
-    @api.model
-    def _object2campaign_product(self,campaign_id,obj,sequence):
-        if obj.object_id._name == 'product.template':
-            return [{
-                    'campaign_id': campaign_id,
-                    'product_id': obj.object_id.id,
-                    'sequence': sequence,
-                    }]
-        elif obj.object_id._name == 'product.product':
-            return [{
-                    'campaign_id': campaign_id,
-                    'product_id': obj.object_id.product_tmpl_id.id,
-                    'sequence': sequence,
-                }]
-        elif obj.object_id._name == 'product.public.category':
-            return [{
-                    'campaign_id': campaign_id,
-                    'product_id': p.id,
-                    'sequence': sequence += 1,
-                } for p in self.env['product.template'].search([('public_categ_ids', 'in', obj.object_id.id)])]
-                            
-    @api.one
-    def _create_product_ids(self):
-        self.env['crm.campaign.product'].search([('campaign_id','=',self.id)]).unlink()
-        i = 10
-        for o in self.object_ids:
-            self.env['crm.campaign.product'].create(self._object2campaign_product(self.id,o,i))  # eventuellt forsnurra
-            i += 10
+
+class crm_campaign_product(models.Model):
+    _name = 'crm.campaign.product'
+
+    sequence = fields.Integer()
+    campaign_id = fields.Many2one(comodel_name="crm.tracking.campaign")
+    product_id = fields.Many2one(comodel_name="product.template")
+    name = fields.Char(related='product_id.name')
+    default_code = fields.Char(related='product_id.default_code')
+    type = fields.Selection(related='product_id.type')
+    list_price = fields.Float(related='product_id.list_price')
+    qty_available = fields.Float(related='product_id.qty_available')
+    virtual_available = fields.Float(related='product_id.virtual_available')
+
 
 class product_template(models.Model):
     _inherit = 'product.template'
@@ -100,9 +97,6 @@ class product_template(models.Model):
     def _campaign_ids(self):
         self.campaign_ids = [(6, 0, self.env['crm.campaign.object'].search([('object_id', '=', self.id)]).filtered(lambda o: o.object_id._name == 'product.template').mapped('campaign_id').mapped('id'))]
     campaign_ids = fields.Many2many(comodel_name='crm.tracking.campaign', string='Campaign')
-    campaign_sequence = fields.Integer()
-
-
 
 
 class crm_campaign_object(models.Model):
@@ -119,15 +113,3 @@ class crm_campaign_object(models.Model):
                 self.description = self.object_id.description_sale
                 self.image = self.object_id.image
         return super(crm_campaign_object, self).get_object_value()
-
-
-class crm_campaign_product(models.Model):
-    _name = 'crm.campaign.product'
-
-    product_id = fields.Many2one(comodel_name="product.template")
-    campaign_id = fields.Many2one(comodel_name="crm.tracking.campaign")
-    
-    object_id = fields.Many2one(comodel_name='crm.campaign.object')
-    sequence = fields.Integer()
-    partner_id = fields.Many2one(comodel_name="res.partner")
-

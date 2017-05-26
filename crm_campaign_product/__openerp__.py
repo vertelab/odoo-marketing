@@ -32,6 +32,8 @@
     'depends': ['crm_campaign_addons','stock'],
     'data': [
         'product_view.xml',
+        'security/ir.model.access.csv',
+
     ],
     'installable': True,
 }
