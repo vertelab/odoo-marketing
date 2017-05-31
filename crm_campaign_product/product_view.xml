@@ -24,7 +24,7 @@
                     <page string="Products">
                         <button name="update_campaign_product_ids" type="object" class="oe_highlight" style="margin-top: 15px;" string="Get Products"/>
                         <field name="campaign_product_ids">
-                            <tree default_order="sequence">
+                            <tree>
                                 <field name="sequence" widget="handle"/>
                                 <field name="default_code"/>
                                 <field name="name"/>

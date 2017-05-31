@@ -324,7 +324,7 @@ class website_sale(website_sale):
             view_type = 'list_view'
 
         product_list = []
-        for product in campaign.campaign_product_ids.sorted(key=lambda c: c.sequence):
+        for product in campaign.campaign_product_ids:
             product_list.append(product.product_id)
 
         return request.website.render("website_sale.products", {

@@ -77,6 +77,7 @@ class crm_tracking_campaign(models.Model):
 
 class crm_campaign_product(models.Model):
     _name = 'crm.campaign.product'
+    _order = 'sequence'
 
     sequence = fields.Integer()
     campaign_id = fields.Many2one(comodel_name="crm.tracking.campaign")
