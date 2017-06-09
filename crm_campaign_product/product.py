@@ -25,6 +25,7 @@ _logger = logging.getLogger(__name__)
 
 class crm_campaign_product(models.Model):
     _name = 'crm.campaign.product'
+    _order = 'sequence'
 
     sequence = fields.Integer()
     campaign_id = fields.Many2one(comodel_name="crm.tracking.campaign")
@@ -39,7 +40,6 @@ class crm_campaign_product(models.Model):
 class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
 
-    #~ product_ids = fields.Many2many(comodel_name='product.template', string='Products')
     product_ids = fields.Many2many(comodel_name='product.template', relation="crm_campaign_product", column1='campaign_id',column2='product_id', string='Products')
     campaign_product_ids = fields.One2many(comodel_name='crm.campaign.product', inverse_name='campaign_id', string='Products')
 
@@ -58,11 +58,6 @@ class crm_tracking_campaign(models.Model):
 class product_template(models.Model):
     _inherit = 'product.template'
 
-    @api.one
-    @api.depends('')
-    def _campaign_ids(self):
-        self.campaign_ids = [(6, 0, self.env['crm.campaign.object'].search([('object_id', '=', self.id)]).filtered(lambda o: o.object_id._name == 'product.template').mapped('campaign_id').mapped('id'))]
-    #~ campaign_ids = fields.Many2many(comodel_name='crm.tracking.campaign', string='Campaign')
     campaign_ids = fields.Many2many(comodel_name='crm.tracking.campaign', relation="crm_campaign_product", column1='product_id', column2='campaign_id',string='Campaigns')
 
 
