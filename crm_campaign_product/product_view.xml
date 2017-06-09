@@ -22,19 +22,25 @@
             <field name="arch" type="xml">
                 <notebook position="inside">
                     <page string="Products">
-                        <button name="update_campaign_product_ids" type="object" class="oe_highlight" style="margin-top: 15px;" string="Get Products"/>
+                        <button name="update_campaign_product_ids" type="object" class="oe_highlight" style="margin-top: 15px;" string="Get Products" help="Create campaign products from the list of objects"/>
                         <field name="campaign_product_ids">
-                            <tree default_order="sequence">
+                            <tree default_order="sequence" editable='bottom'>
                                 <field name="sequence" widget="handle"/>
-                                <field name="default_code"/>
-                                <field name="name"/>
-                                <field name="type"/>
-                                <field name="list_price"/>
-                                <field name="qty_available"/>
-                                <field name="virtual_available"/>
+                                <field name="product_id"/>
+                                <field name="default_code" readonly="1"/>
+                                <field name="name" readonly="1"/>
+                                <field name="type" readonly="1"/>
+                                <field name="list_price" readonly="1"/>
+                                <field name="qty_available" readonly="1"/>
+                                <field name="virtual_available" readonly="1"/>
                             </tree>
                         </field>
                     </page>
+<!--
+                    <page string="Products Real">
+                        <field name="product_ids"/>
+                    </page>
+-->
                 </notebook>
             </field>
         </record>

@@ -25,12 +25,12 @@
                     <sheet string="Object CRM Campaign">
                         <field name="image" widget="image" class="oe_avatar oe_right"/>
                         <div class="oe_left">
-                            <group>
-                                <field name="name"/>
-                                <field name="sequence"/>
-                                <field name="campaign_id"/>
+                            <group> 
+                                <field name="sequence" invisible="0" />
                                 <field name="object_id"/>
-                                <field name="color"/>
+                                <field name="name"/>
+                                <field name="campaign_id" invisible="1"/>
+                                <field name="color" invisible="1"/>
                             </group>
                         </div>
                         <notebook>

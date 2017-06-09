@@ -30,24 +30,21 @@ class crm_campaign_object(models.Model):
     @api.one
     @api.onchange('object_id')
     def get_object_value(self):
-        if self.object_id:
-            if self.object_id._name == 'res.partner':
-                self.res_id = self.object_id.id
-                self.name = self.object_id.name
+        if self.object_id and self.object_id._name == 'res.partner':
+            self.name = self.object_id.name
+            self.description = self.object_id.comment
+            self.image = self.object_id.image
         return super(crm_campaign_object, self).get_object_value()
 
 
-class crm_tracking_campaign(models.Model):
-    _inherit = 'crm.tracking.campaign'
-
-    def values_to_create(self, o, sequence):
-        super(crm_tracking_campaign, self).values_to_create(o, sequence)
-        if o.object_id._name == 'res.partner':
-            cps = []
-            for product in self.env['product.template'].search([('seller_ids.name', '=', o.object_id.id)]):
-                cps.append({
-                    'campaign_id': self.id,
+    @api.one
+    def create_campaign_product(self,campaign):
+        if self.object_id._name == 'res.partner':
+            for product in self.env['product.template'].search([('seller_ids.name', '=', self.object_id.id)]):
+                self.env['crm.campaign.product'].create({
+                    'campaign_id': campaign.id,
                     'product_id': product.id,
-                    'sequence': sequence + 1,
+                    'sequence': len(campaign.product_ids) + 1,
                 })
-            return cps
+        else:
+            super(crm_campaign_object, self).create_campaign_product(campaign)

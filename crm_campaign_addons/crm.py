@@ -39,15 +39,9 @@ class crm_tracking_campaign(models.Model):
     object_count = fields.Integer(compute='_object_count')
 
     @api.model
-    def get_campaigns(self):
+    def get_current_campaigns(self):
         return self.env['crm.tracking.campaign'].search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today())])
 
-    @api.model
-    def get_objects(self):
-        objects = self.env['crm.campaign.object'].browse([])
-        for campaign in self.get_campaigns():
-            objects |= campaign.object_ids
-        return objects
 
 class crm_campaign_object(models.Model):
     _name = 'crm.campaign.object'
@@ -61,7 +55,11 @@ class crm_campaign_object(models.Model):
     color = fields.Integer('Color Index')
     campaign_id = fields.Many2one(comodel_name='crm.tracking.campaign', string='Campaign')
     object_id = fields.Reference(selection=[], string='Object')
-    @api.one
+
     @api.onchange('object_id')
     def get_object_value(self):
-        return None
+        pass
+
+    @api.one
+    def create_campaign_product(self,campaign):
+        pass
