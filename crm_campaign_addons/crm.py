@@ -39,7 +39,7 @@ class crm_tracking_campaign(models.Model):
     object_count = fields.Integer(compute='_object_count')
 
     @api.model
-    def get_current_campaigns(self):
+    def get_campaigns(self):
         return self.env['crm.tracking.campaign'].search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today())])
 
 
