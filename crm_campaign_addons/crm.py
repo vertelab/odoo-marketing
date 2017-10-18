@@ -23,7 +23,8 @@ import logging
 _logger = logging.getLogger(__name__)
 
 class crm_tracking_campaign(models.Model):
-    _inherit = 'crm.tracking.campaign'
+    _name = 'crm.tracking.campaign'
+    _inherit = ['crm.tracking.campaign','mail.thread']
 
     color = fields.Integer('Color Index')
     date_start = fields.Date(string='Start Date')
@@ -42,6 +43,17 @@ class crm_tracking_campaign(models.Model):
     def get_campaigns(self):
         return self.env['crm.tracking.campaign'].search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today())])
 
+    state = fields.Selection([
+            ('draft','Draft'),
+            ('open','Open'),
+            ('closed','Closed'),
+            ('cancel','Cancelled'),
+        ], string='Status', index=True, readonly=False, default='draft',
+        track_visibility='onchange', copy=False,
+        help=" * The 'Draft' status is used during planning.\n"
+             " * The 'Open' status is used when the campaing are running.\n"
+             " * The 'Closed' status is when the campaing is over.\n"
+             " * The 'Cancelled' status is used when the campaign is stopped.")
 
 class crm_campaign_object(models.Model):
     _name = 'crm.campaign.object'

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+    <record id="phase_type_form_view" model="ir.ui.view">
+      <field name="name">phase_type_form</field>
+      <field name="model">crm.tracking.phase.type</field>
+      <field name="arch" type="xml">
+        <field name="name" />
+        <field name="start_days" />
+        <field name="start_days_from_start" />
+        <field name="end_days" />
+        <field name="end_days_from_start" />
+      </field>
+    </record>
+    <record id="crm_tracking_campaign_form" model="ir.ui.view">
+      <field name="name">crm.tracking.campaign.form.inherited.crm_campaign_product</field>
+      <field name="model">crm.tracking.campaign</field>
+      <field name="inherit_id" ref="crm_campaign_addons.crm_tracking_campaign_form" />
+      <field name="arch" type="xml">
+        <notebook position="inside">
+          <page string="Phases">
+            <field name="phase_ids">
+              <tree default_order="sequence" editable='bottom'>
+                <field name="sequence" widget="handle" />
+                <field name="phase_type" />
+                <field name="start_date" />
+                <field name="end_date" />
+              </tree>
+            </field>
+          </page>
+        </notebook>
+      </field>
+    </record>
+  </data>
+</openerp>
