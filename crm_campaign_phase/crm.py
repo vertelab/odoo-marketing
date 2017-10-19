@@ -34,7 +34,7 @@ class crm_tracking_campaign(models.Model):
     #~ def get_pricelist(self,date,prod_id,is_reseller):
         #~ self.ensure_one()
         #~ return self.phase_ids.mapped(lambda p: p.get_pricelist(date,prod_id,is_reseller))
-    
+
 class crm_tracking_phase(models.Model):
     _name = "crm.tracking.phase"
     _order = 'campaign_id, sequence, name'
@@ -68,6 +68,13 @@ class crm_tracking_phase(models.Model):
                     return self.pricelist_id
         return None
 
+    @api.multi
+    def get_phase(self,date,is_reseller):
+        self.ensure_one()
+        if date >= self.start_date and date <= self.end_date and self.env['product.product'].browse(prod_id).product_tmpl_id.id in self.campaign_id.product_ids.mapped('id') and is_reseller == self.reseller_pricelist:
+                return self
+        return None
+
 class crm_tracking_phase_type(models.Model):
     _name = "crm.tracking.phase.type"
 
@@ -91,10 +98,59 @@ class product_pricelist(models.Model):
                 campaign_price = [p[0] for key, p in pricelist.price_rule_get(prod_id, qty, partner=partner).items()][0]
             except:
                 pass
-        #~ for c in self.env['crm.tracking.campaign'].search([('state','=','open')]):
-            #~ for p in c.phase_ids:
-                #~ try:
-                    #~ campaign_price = [p[0] for key, p in p.get_pricelist(self.env.context['date'],prod_id,is_reseller).price_rule_get(prod_id, qty, partner=partner).items()][0]
-                #~ except:
-                    #~ campaign_price = 999999999999999999999999999999.0   
         return {self.id:campaign_price if campaign_price < price else price}
+
+class product_template(models.Model):
+    _inherit = "product.template"
+
+    @api.model
+    def get_campaign_products(self,for_reseller=False):
+        products = self.env['product.template'].browse([])
+        for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
+            if len(campaign.mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)))>0:
+                products |= campaign.product_ids 
+        return products
+    
+    @api.multi
+    def get_campaign_image(self,for_reseller=False):
+        self.ensure_one()
+        for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.id in c.product_ids.mapped('id')):
+            if len(campaign.mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)))>0:
+                return campaign.image 
+    
+    @api.model
+    def get_campaign_date(self,for_reseller=False):
+        self.ensure_one()
+        date = None
+        for phase in self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.id in c.product_ids.mapped('id')).mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)):
+            if phase.end_date > date:
+                date = phase.end_date
+        return date
+        
+class product_product(models.Model):
+    _inherit = "product.product"
+
+    @api.model
+    def get_campaign_products(self,for_reseller=False):
+        products = self.env['product.product'].browse([])
+        for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
+            if len(campaign.mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)))>0:
+                for variant in self.env['product.product'].search([('product_tmpl_id','in',campaign.product_ids.mapped('id'))]):
+                    products |= variant 
+        return products
+    
+    @api.multi
+    def get_campaign_image(self,for_reseller=False):
+        self.ensure_one()
+        for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id')):
+            if len(campaign.mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)))>0:
+                return campaign.image 
+    
+    @api.model
+    def get_campaign_date(self,for_reseller=False):
+        self.ensure_one()
+        date = None
+        for phase in self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id')).mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)):
+            if phase.end_date > date:
+                date = phase.end_date
+        return date

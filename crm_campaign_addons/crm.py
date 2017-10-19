@@ -77,3 +77,5 @@ class crm_campaign_object(models.Model):
     @api.one
     def create_campaign_product(self,campaign):
         pass
+        
+
