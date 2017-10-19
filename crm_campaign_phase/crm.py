@@ -62,7 +62,6 @@ class crm_tracking_phase(models.Model):
     
     @api.multi
     def get_pricelist(self,date,prod_id,is_reseller):
-        self.ensure_one()
         for phase in self:
             if date >= phase.start_date and date <= phase.end_date and phase.env['product.product'].browse(prod_id).product_tmpl_id.id in phase.campaign_id.product_ids.mapped('id') and \
                     phase.pricelist_id and (phase.reseller_pricelist and is_reseller or not phase.reseller_pricelist):
