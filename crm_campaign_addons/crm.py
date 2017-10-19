@@ -27,8 +27,8 @@ class crm_tracking_campaign(models.Model):
     _inherit = ['crm.tracking.campaign','mail.thread']
 
     color = fields.Integer('Color Index')
-    date_start = fields.Date(string='Start Date')
-    date_stop = fields.Date(string='Start Stop')
+    date_start = fields.Date(string='Start Date',track_visibility='onchange', )
+    date_stop = fields.Date(string='Start Stop',track_visibility='onchange', )
     image = fields.Binary(string='Image')
     
     object_ids = fields.One2many(comodel_name='crm.campaign.object', inverse_name='campaign_id', string='Objects')

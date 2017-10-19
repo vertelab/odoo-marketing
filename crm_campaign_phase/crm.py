@@ -122,9 +122,14 @@ class product_template(models.Model):
     def get_campaign_date(self,for_reseller=False):
         self.ensure_one()
         date = None
-        for phase in self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.id in c.product_ids.mapped('id')).mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)):
-            if phase.end_date > date:
-                date = phase.end_date
+        if for_reseller:
+            for phase in self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.id in c.product_ids.mapped('id')).mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)):
+                if phase.end_date > date:
+                    date = phase.end_date
+        else:
+            for campaign in self.env['crm.tracking.campaign'].search([('state','=','open'),('date_start','>=',fields.Date.today()),('date_stop','<=',fields.Date.today())]).filtered(lambda c: self.id in c.product_ids.mapped('id')):
+                if campaign.date_stop > date:
+                    date = campaign.date_stop
         return date
         
 class product_product(models.Model):
@@ -150,7 +155,12 @@ class product_product(models.Model):
     def get_campaign_date(self,for_reseller=False):
         self.ensure_one()
         date = None
-        for phase in self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id')).mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)):
-            if phase.end_date > date:
-                date = phase.end_date
+        if for_reseller:
+            for phase in self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id')).mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)):
+                if phase.end_date > date:
+                    date = phase.end_date
+        else:
+            for campaign in self.env['crm.tracking.campaign'].search([('state','=','open'),('date_start','>=',fields.Date.today()),('date_stop','<=',fields.Date.today())]).filtered(lambda c: self.product_tmpl_ids.id in c.product_ids.mapped('id')):
+                if campaign.date_stop > date:
+                    date = campaign.date_stop
         return date
