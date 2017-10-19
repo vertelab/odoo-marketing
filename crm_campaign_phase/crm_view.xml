@@ -5,11 +5,23 @@
       <field name="name">phase_type_form</field>
       <field name="model">crm.tracking.phase.type</field>
       <field name="arch" type="xml">
-        <field name="name" />
-        <field name="start_days" />
-        <field name="start_days_from_start" />
-        <field name="end_days" />
-        <field name="end_days_from_start" />
+        <form>
+          <group>
+            <field name="name" />
+              <label for="start_days" />
+            <div >
+              <field name="start_days" class="oe_inline" />
+              <field name="start_days_from_start" class="oe_inline" />
+              from start
+            </div>
+            <label for="end_days" />
+            <div>
+              <field name="end_days" class="oe_inline" />
+              <field name="end_days_from_start" class="oe_inline" />
+              from start
+            </div>
+          </group>
+        </form>
       </field>
     </record>
     <record id="crm_tracking_campaign_form" model="ir.ui.view">
@@ -25,6 +37,8 @@
                 <field name="phase_type" />
                 <field name="start_date" />
                 <field name="end_date" />
+                <field name="pricelist_id" />
+                <field name="reseller_pricelist" />
               </tree>
             </field>
           </page>

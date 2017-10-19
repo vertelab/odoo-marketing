@@ -29,6 +29,8 @@ class crm_tracking_campaign(models.Model):
     color = fields.Integer('Color Index')
     date_start = fields.Date(string='Start Date')
     date_stop = fields.Date(string='Start Stop')
+    image = fields.Binary(string='Image')
+    
     object_ids = fields.One2many(comodel_name='crm.campaign.object', inverse_name='campaign_id', string='Objects')
     @api.one
     def _object_names(self):

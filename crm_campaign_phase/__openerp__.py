@@ -29,7 +29,8 @@
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['crm_campaign_addons',],
+    'depends': ['crm_campaign_product','reseller_dermanord'],
+    'sequence': 50,
     'data': [
         'crm_view.xml',
         'security/ir.model.access.csv',

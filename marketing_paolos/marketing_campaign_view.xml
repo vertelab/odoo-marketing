@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+    <record model="ir.ui.view" id="view_marketing_campaign_form">
+      <field name="name">marketing.campaign.form</field>
+      <field name="model">marketing.campaign</field>
+      <field name="inherit_id" ref="marketing_campaign.view_marketing_campaign_form" />
+      <field name="arch" type="xml">
+        <field name="unique_field_id" position="after">
+          <field name="cycle_id" />
+        </field>
+      </field>
+    </record>
+  </data>
+</openerp>
