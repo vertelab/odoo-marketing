@@ -68,10 +68,10 @@ class crm_tracking_phase(models.Model):
 
     @api.multi
     def get_pricelist(self,date,prod_id,is_reseller):
-        self.ensure_one()
-        if date >= self.start_date and date <= self.end_date and self.env['product.product'].browse(prod_id).product_tmpl_id.id in self.campaign_id.product_ids.mapped('id') and \
-                self.pricelist_id and (self.reseller_pricelist and is_reseller or not self.reseller_pricelist):
-                    return self.pricelist_id
+        for phase in self:
+            if date >= phase.start_date and date <= phase.end_date and phase.env['product.product'].browse(prod_id).product_tmpl_id.id in phase.campaign_id.product_ids.mapped('id') and \
+                    phase.pricelist_id and (phase.reseller_pricelist and is_reseller or not phase.reseller_pricelist):
+                        return phase.pricelist_id
         return None
 
     @api.multi
@@ -99,7 +99,8 @@ class product_pricelist(models.Model):
         is_reseller = self.env.ref('base.public_user').property_product_pricelist != self.env['res.partner'].browse(partner).property_product_pricelist
         price = [p[0] for key, p in self.price_rule_get(prod_id, qty, partner=partner).items()][0]
         campaign_price = 999999999999999999999999999999.0
-        for pricelist in self.env['crm.tracking.campaign'].search([('state','=','open')]).mapped('phase_ids').mapped(lambda p: p.get_pricelist(self.env.context['date'],prod_id,is_reseller)):
+        date = self.env.context['date'] if self.env.context.get('date') else fields.Date.today()
+        for pricelist in self.env['crm.tracking.campaign'].search([('state','=','open')]).mapped('phase_ids').mapped(lambda p: p.get_pricelist(date,prod_id,is_reseller)):
             try:
                 campaign_price = [p[0] for key, p in pricelist.price_rule_get(prod_id, qty, partner=partner).items()][0]
             except:
