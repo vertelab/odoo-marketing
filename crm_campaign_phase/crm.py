@@ -35,6 +35,12 @@ class crm_tracking_campaign(models.Model):
         #~ self.ensure_one()
         #~ return self.phase_ids.mapped(lambda p: p.get_pricelist(date,prod_id,is_reseller))
 
+    @api.multi
+    def get_phase(self, date, is_reseller):
+        self.ensure_one()
+        return filter(None, self.phase_ids.filtered(lambda p: p.start_date <= date and p.end_date >= date and p.reseller_pricelist == is_reseller))
+
+
 class crm_tracking_phase(models.Model):
     _name = "crm.tracking.phase"
     _order = 'campaign_id, sequence, name'
@@ -52,14 +58,14 @@ class crm_tracking_phase(models.Model):
     start_date = fields.Date(compute='_start_date')
     @api.one
     def _end_date(self):
-        if self.phase_type.end_days_from_start:        
+        if self.phase_type.end_days_from_start:
             self.end_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_start) + timedelta(days = self.phase_type.end_days))
         else:
             self.end_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_stop) + timedelta(days = self.phase_type.end_days))
     end_date = fields.Date(compute='_end_date')
     reseller_pricelist = fields.Boolean(string="Reseller",help="Use this pricelist for resellers, otherwise instead of default pricelist")
     pricelist_id = fields.Many2one(comodel_name="product.pricelist",string="Pricelist")
-    
+
     @api.multi
     def get_pricelist(self,date,prod_id,is_reseller):
         self.ensure_one()
@@ -71,9 +77,9 @@ class crm_tracking_phase(models.Model):
     @api.multi
     def get_phase(self,date,is_reseller):
         self.ensure_one()
-        if date >= self.start_date and date <= self.end_date and self.env['product.product'].browse(prod_id).product_tmpl_id.id in self.campaign_id.product_ids.mapped('id') and is_reseller == self.reseller_pricelist:
-                return self
-        return None
+        if date >= self.start_date and date <= self.end_date and is_reseller == self.reseller_pricelist:
+            return self
+
 
 class crm_tracking_phase_type(models.Model):
     _name = "crm.tracking.phase.type"
@@ -86,13 +92,13 @@ class crm_tracking_phase_type(models.Model):
 
 class product_pricelist(models.Model):
     _inherit = "product.pricelist"
-    
+
     @api.multi
     def price_get(self,prod_id, qty, partner=None):
         self.ensure_one()
         is_reseller = self.env.ref('base.public_user').property_product_pricelist != self.env['res.partner'].browse(partner).property_product_pricelist
         price = [p[0] for key, p in self.price_rule_get(prod_id, qty, partner=partner).items()][0]
-        campaign_price = 999999999999999999999999999999.0   
+        campaign_price = 999999999999999999999999999999.0
         for pricelist in self.env['crm.tracking.campaign'].search([('state','=','open')]).mapped('phase_ids').mapped(lambda p: p.get_pricelist(self.env.context['date'],prod_id,is_reseller)):
             try:
                 campaign_price = [p[0] for key, p in pricelist.price_rule_get(prod_id, qty, partner=partner).items()][0]
@@ -107,17 +113,17 @@ class product_template(models.Model):
     def get_campaign_products(self,for_reseller=False):
         products = self.env['product.template'].browse([])
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
-            if len(campaign.mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)))>0:
-                products |= campaign.product_ids 
+            if len(campaign.get_phase(fields.Date.today(),for_reseller))>0:
+                products |= campaign.product_ids
         return products
-    
+
     @api.multi
     def get_campaign_image(self,for_reseller=False):
         self.ensure_one()
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.id in c.product_ids.mapped('id')):
-            if len(campaign.mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)))>0:
-                return campaign.image 
-    
+            if len(campaign.get_phase(fields.Date.today(),for_reseller))>0:
+                return campaign.image
+
     @api.model
     def get_campaign_date(self,for_reseller=False):
         self.ensure_one()
@@ -131,7 +137,7 @@ class product_template(models.Model):
                 if campaign.date_stop > date:
                     date = campaign.date_stop
         return date
-        
+
 class product_product(models.Model):
     _inherit = "product.product"
 
@@ -139,18 +145,18 @@ class product_product(models.Model):
     def get_campaign_products(self,for_reseller=False):
         products = self.env['product.product'].browse([])
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
-            if len(campaign.mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)))>0:
+            if len(campaign.get_phase(fields.Date.today(),for_reseller))>0:
                 for variant in self.env['product.product'].search([('product_tmpl_id','in',campaign.product_ids.mapped('id'))]):
-                    products |= variant 
+                    products |= variant
         return products
-    
+
     @api.multi
     def get_campaign_image(self,for_reseller=False):
         self.ensure_one()
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id')):
-            if len(campaign.mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)))>0:
-                return campaign.image 
-    
+            if len(campaign.get_phase(fields.Date.today(),for_reseller))>0:
+                return campaign.image
+
     @api.model
     def get_campaign_date(self,for_reseller=False):
         self.ensure_one()
