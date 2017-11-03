@@ -45,7 +45,7 @@ website_crm_campaign
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_sale', 'crm_campaign_product'],
+    'depends': ['website_sale', 'sale_crm', 'crm_campaign_product'],
     'data': [
         'campaign_view.xml',
     ],
