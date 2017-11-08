@@ -96,7 +96,7 @@ class product_pricelist(models.Model):
     @api.multi
     def price_get(self,prod_id, qty, partner=None):
         self.ensure_one()
-        is_reseller = self.env.ref('base.public_user').property_product_pricelist != self.env['res.partner'].browse(partner).property_product_pricelist
+        is_reseller = self.sudo().env.ref('base.public_user').property_product_pricelist != self.env['res.partner'].browse(partner).property_product_pricelist
         price = [p[0] for key, p in self.price_rule_get(prod_id, qty, partner=partner).items()][0]
         campaign_price = 999999999999999999999999999999.0
         date = self.env.context['date'] if self.env.context.get('date') else fields.Date.today()
