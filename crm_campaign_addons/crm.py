@@ -19,6 +19,7 @@
 #
 ##############################################################################
 from openerp import models, fields, api, _
+from openerp.http import request
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -30,7 +31,7 @@ class crm_tracking_campaign(models.Model):
     date_start = fields.Date(string='Start Date',track_visibility='onchange', )
     date_stop = fields.Date(string='Start Stop',track_visibility='onchange', )
     image = fields.Binary(string='Image')
-    
+
     object_ids = fields.One2many(comodel_name='crm.campaign.object', inverse_name='campaign_id', string='Objects')
     @api.one
     def _object_names(self):
@@ -77,5 +78,20 @@ class crm_campaign_object(models.Model):
     @api.one
     def create_campaign_product(self,campaign):
         pass
-        
+
+
+class CampaignOverview(models.TransientModel):
+    _name = 'campaign.overview'
+
+    date = fields.Date(string='Date', required=True)
+
+    @api.multi
+    def overview(self):
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/?campaign_date=%s' %self.date,
+            'target': 'new',
+            'res_id': self.id,
+        }
+
 
