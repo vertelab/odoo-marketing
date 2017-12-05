@@ -18,37 +18,18 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+from openerp import models, fields, api, _
+from datetime import datetime, timedelta
+import logging
+_logger = logging.getLogger(__name__)
 
-{
-    'name': 'Sale Campaign',
-    'version': '0.1',
-    'category': 'crm',
-    'description': """
-Different pricelists on campaign
-================================
-* Hook product.template with crm.tracking.campaign
-* Start and stop date on a campaign
-* Show current campaign as first page on website
-
-crm_campaign
-    crm.tracking.campaign
-    crm.tracking.campaign.object  (title,description,image)
-    start/stop-date
-    pricelists
-    campaign_objects
-     get_campaign_objs
-crm_campaign_product
-     get_campaign_products
-crm_campaign_blog
-website_crm_campaign
-
-""",
-    'author': 'Vertel AB',
-    'website': 'http://www.vertel.se',
-    'depends': ['website_sale', 'sale_crm', 'crm_campaign_product'],
-    'data': [
-        'campaign_view.xml',
-    ],
-    'installable': True,
-}
-
+class product_template(models.Model):
+    _inherit = "product.template"
+    @api.multi
+    def get_default_variant(self):  
+        self.ensure_one()
+        intersect = self.product_variant_ids & self.get_campaign_variants(for_reseller=self.uid.parnter_id.commercial_partner_id.pricelist_id.for_reseller)
+        if len(intersect)>0:
+            return intersect[0]
+        else:
+            return super(product_template,self).get_default_variant()

@@ -20,34 +20,18 @@
 ##############################################################################
 
 {
-    'name': 'Sale Campaign',
+    'name': 'CRM Campaign Phase Default Variant',
     'version': '0.1',
     'category': 'crm',
     'description': """
-Different pricelists on campaign
-================================
-* Hook product.template with crm.tracking.campaign
-* Start and stop date on a campaign
-* Show current campaign as first page on website
-
-crm_campaign
-    crm.tracking.campaign
-    crm.tracking.campaign.object  (title,description,image)
-    start/stop-date
-    pricelists
-    campaign_objects
-     get_campaign_objs
-crm_campaign_product
-     get_campaign_products
-crm_campaign_blog
-website_crm_campaign
+        Extends Crm Campaign with phases and new calucalatopn of default variant 
 
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_sale', 'sale_crm', 'crm_campaign_product'],
+    'depends': ['crm_campaign_phase','website_sale_product_variant'],
+    'sequence': 50,
     'data': [
-        'campaign_view.xml',
     ],
     'installable': True,
 }

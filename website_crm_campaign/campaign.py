@@ -63,3 +63,15 @@ class product_public_category(models.Model):
 
     description = fields.Text(string='Description')
     mobile_icon = fields.Char(string='Mobile Icon', help='This icon will display on smaller devices')
+
+class sale_order(models.Model):
+    _inherit = 'sale.order'
+
+    @api.model
+    def create(self, vals):
+        campaign = self.env['crm.tracking.campaign'].get_campaigns()
+        if len(campaign):
+            if not vals.get('campaign_id'):
+                vals['campaign_id'] = campaign[0].id
+        return super(sale_order, self).create(vals)
+
