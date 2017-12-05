@@ -121,7 +121,6 @@ class product_template(models.Model):
                 products |= campaign.product_ids
         return products
 
-<<<<<<< HEAD
     @api.model
     def get_campaign_variants(self,for_reseller=False):
         products = self.env['product.product'].browse([])
@@ -131,9 +130,6 @@ class product_template(models.Model):
                     products |= variant 
         return products
 
-    
-=======
->>>>>>> c928c0a5c2a95c34b69b2162efbad29c1aca0f7e
     @api.multi
     def get_campaign_image(self,for_reseller=False):
         self.ensure_one()
@@ -166,7 +162,7 @@ class product_product(models.Model):
                 for variant in self.env['product.product'].search([('product_tmpl_id','in',campaign.product_ids.mapped('id'))]):
                     products |= variant
         return products
-<<<<<<< HEAD
+
     
     @api.model
     def get_campaign_variants(self,for_reseller=False):
@@ -176,10 +172,7 @@ class product_product(models.Model):
                 for variant in campaign.object_ids.filtered(lambda o: o._name = 'product.product')
                     products |= variant 
         return products
-    
-=======
 
->>>>>>> c928c0a5c2a95c34b69b2162efbad29c1aca0f7e
     @api.multi
     def get_campaign_image(self,for_reseller=False):
         self.ensure_one()
