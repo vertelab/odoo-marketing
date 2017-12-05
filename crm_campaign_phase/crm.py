@@ -126,8 +126,8 @@ class product_template(models.Model):
         products = self.env['product.product'].browse([])
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
             if len(campaign.mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)))>0:
-                for variant in campaign.object_ids.filtered(lambda o: o._name = 'product.product')
-                    products |= variant 
+                for variant in campaign.object_ids.filtered(lambda o: o._name == 'product.product'):
+                    products |= variant
         return products
 
     @api.multi
@@ -163,14 +163,14 @@ class product_product(models.Model):
                     products |= variant
         return products
 
-    
+
     @api.model
     def get_campaign_variants(self,for_reseller=False):
         products = self.env['product.product'].browse([])
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
             if len(campaign.mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)))>0:
-                for variant in campaign.object_ids.filtered(lambda o: o._name = 'product.product')
-                    products |= variant 
+                for variant in campaign.object_ids.filtered(lambda o: o._name == 'product.product'):
+                    products |= variant
         return products
 
     @api.multi
