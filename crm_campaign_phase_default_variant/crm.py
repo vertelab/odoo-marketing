@@ -28,7 +28,7 @@ class product_template(models.Model):
     @api.multi
     def get_default_variant(self):
         self.ensure_one()
-        intersect = self.product_variant_ids & self.get_campaign_variants(for_reseller=self.env.user.partner_id.commercial_partner_id.pricelist_id.for_reseller)
+        intersect = self.product_variant_ids & self.get_campaign_variants(for_reseller=self.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller)
         if len(intersect)>0:
             return intersect[0]
         else:
