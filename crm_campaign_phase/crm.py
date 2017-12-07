@@ -40,6 +40,14 @@ class crm_tracking_campaign(models.Model):
         self.ensure_one()
         return filter(None, self.phase_ids.filtered(lambda p: p.start_date <= date and p.end_date >= date and p.reseller_pricelist == is_reseller))
 
+    @api.multi
+    def is_current(self, date, is_reseller):
+        self.ensure_one()
+        if is_reseller:
+            return len(filter(None, self.phase_ids.filtered(lambda p: p.start_date <= date and p.end_date >= date and p.reseller_pricelist == is_reseller))) > 0
+        else:
+            return self.date_start <= date and self.date_stop >= date
+
 
 class crm_tracking_phase(models.Model):
     _name = "crm.tracking.phase"
@@ -117,7 +125,7 @@ class product_template(models.Model):
     def get_campaign_products(self,for_reseller=False):
         products = self.env['product.template'].browse([])
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
-            if len(campaign.get_phase(fields.Date.today(),for_reseller))>0:
+            if campaign.is_current(fields.Date.today(),for_reseller):
                 products |= campaign.product_ids
         return products
 
@@ -125,9 +133,18 @@ class product_template(models.Model):
     def get_campaign_variants(self,for_reseller=False):
         products = self.env['product.product'].browse([])
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
-            if len(campaign.mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)))>0:
-                for variant in campaign.object_ids.filtered(lambda o: o._name == 'product.product'):
-                    products |= variant
+            if campaign.is_current(fields.Date.today(),for_reseller):
+                for o in campaign.object_ids.filtered(lambda o: o.object_id._name == 'product.product'):
+                    products |= o.object_id
+        return products
+
+    @api.model
+    def get_campaign_tmpl(self,for_reseller=False):
+        products = self.env['product.template'].browse([])
+        for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
+            if campaign.is_current(fields.Date.today(),for_reseller):
+                for o in campaign.object_ids.filtered(lambda o: o.object_id._name == 'product.template'):
+                    products |= o.object_id
         return products
 
     @api.multi
@@ -158,9 +175,9 @@ class product_product(models.Model):
     def get_campaign_products(self,for_reseller=False):
         products = self.env['product.product'].browse([])
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
-            if len(campaign.get_phase(fields.Date.today(),for_reseller))>0:
-                for variant in self.env['product.product'].search([('product_tmpl_id','in',campaign.product_ids.mapped('id'))]):
-                    products |= variant
+            if campaign.is_current(fields.Date.today(),for_reseller):
+                for o in self.env['product.product'].search([('product_tmpl_id','in',campaign.product_ids.mapped('id'))]):
+                    products |= o.object_id
         return products
 
 
@@ -168,9 +185,9 @@ class product_product(models.Model):
     def get_campaign_variants(self,for_reseller=False):
         products = self.env['product.product'].browse([])
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
-            if len(campaign.mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)))>0:
-                for variant in campaign.object_ids.filtered(lambda o: o._name == 'product.product'):
-                    products |= variant
+            if campaign.is_current(fields.Date.today(),for_reseller):
+                for o in campaign.object_ids.filtered(lambda o: o.object_id._name == 'product.product'):
+                    products |= o.object_id
         return products
 
     @api.multi
