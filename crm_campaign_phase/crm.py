@@ -135,8 +135,7 @@ class product_template(models.Model):
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in campaign.object_ids.filtered(lambda o: o.object_id._name == 'product.product'):
-                    if o.object_id.check_access_group(self.env.user):
-                        products |= o.object_id
+                    products |= o.object_id
         return products
 
     @api.model
@@ -145,8 +144,7 @@ class product_template(models.Model):
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in campaign.object_ids.filtered(lambda o: o.object_id._name == 'product.template'):
-                    if o.object_id.check_access_group(self.env.user):
-                        products |= o.object_id
+                    products |= o.object_id
         return products
 
     @api.multi
@@ -179,8 +177,7 @@ class product_product(models.Model):
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in self.env['product.product'].search([('product_tmpl_id','in',campaign.product_ids.mapped('id'))]):
-                    if o.object_id.check_access_group(self.env.user):
-                        products |= o.object_id
+                    products |= o.object_id
         return products
 
 
@@ -190,8 +187,7 @@ class product_product(models.Model):
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open')]):
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in campaign.object_ids.filtered(lambda o: o.object_id._name == 'product.product'):
-                    if o.object_id.check_access_group(self.env.user):
-                        products |= o.object_id
+                    products |= o.object_id
         return products
 
     @api.multi
