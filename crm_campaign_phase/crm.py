@@ -107,6 +107,8 @@ class product_pricelist(models.Model):
         # A bug in sale_stock means partner can sometimes be a partner record instead of the expected integer.
         if type(partner) == type(self.env['res.partner']):
             partner = partner.id
+        else:
+            partner = self.sudo().env.ref('base.public_partner').id
         is_reseller = self.sudo().env.ref('base.public_user').property_product_pricelist != self.env['res.partner'].browse(partner).property_product_pricelist
         price = [p[0] for key, p in self.price_rule_get(prod_id, qty, partner=partner).items()][0]
         campaign_price = 999999999999999999999999999999.0
