@@ -128,7 +128,7 @@ class product_template(models.Model):
         products = self.env['product.template'].browse([])
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)]):
             if campaign.is_current(fields.Date.today(),for_reseller):
-                products |= campaign.product_ids.filtered(lambda p: len(self.env.user.access_group_ids & p.access_group_ids) > 0)
+                products |= campaign.product_ids.filtered(lambda p: len(self.env.user.partner_id.commercial_partner_id.access_group_ids & p.access_group_ids) > 0)
         return products
 
     @api.model
@@ -138,7 +138,7 @@ class product_template(models.Model):
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in campaign.object_ids:
                     if o.object_id._name == 'product.product':
-                        if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
+                        if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
                             products |= o.object_id
         return products
 
@@ -149,7 +149,7 @@ class product_template(models.Model):
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in campaign.object_ids:
                     if o.object_id._name == 'product.template':
-                        if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
+                        if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
                             products |= o.object_id
         return products
 
@@ -183,7 +183,7 @@ class product_product(models.Model):
         for campaign in self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)]):
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in self.env['product.product'].search([('product_tmpl_id','in',campaign.product_ids.mapped('id'))]):
-                    products |= o.object_id.filtered(lambda p: len(self.env.user.access_group_ids & p.access_group_ids) > 0)
+                    products |= o.object_id.filtered(lambda p: len(self.env.user.partner_id.commercial_partner_id.access_group_ids & p.access_group_ids) > 0)
         return products
 
 
@@ -194,7 +194,7 @@ class product_product(models.Model):
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in campaign.object_ids:
                     if o.object_id._name == 'product.product':
-                        if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
+                        if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
                             products |= o.object_id
         return products
 
