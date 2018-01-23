@@ -29,6 +29,9 @@
       <field name="model">crm.tracking.campaign</field>
       <field name="inherit_id" ref="crm_campaign_addons.crm_tracking_campaign_form" />
       <field name="arch" type="xml">
+          <field name="section_id" position="after">
+            <field name="country_id"/>
+          </field>
         <notebook position="inside">
           <page string="Phases">
             <field name="phase_ids">
