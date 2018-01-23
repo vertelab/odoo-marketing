@@ -147,8 +147,7 @@ class product_template(models.Model):
     @api.model
     def get_campaign_products(self,for_reseller=False):
         products = self.env['product.template'].browse([])
-        is_reseller = self.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller
-        if is_reseller:
+        if for_reseller:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')])
         else:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
@@ -160,8 +159,7 @@ class product_template(models.Model):
     @api.model
     def get_campaign_variants(self,for_reseller=False):
         products = self.env['product.product'].browse([])
-        is_reseller = self.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller
-        if is_reseller:
+        if for_reseller:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')])
         else:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
@@ -176,8 +174,7 @@ class product_template(models.Model):
     @api.model
     def get_campaign_tmpl(self,for_reseller=False):
         products = self.env['product.template'].browse([])
-        is_reseller = self.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller
-        if is_reseller:
+        if for_reseller:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')])
         else:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
@@ -192,8 +189,7 @@ class product_template(models.Model):
     @api.multi
     def get_campaign_image(self,for_reseller=False):
         self.ensure_one()
-        is_reseller = self.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller
-        if is_reseller:
+        if for_reseller:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.id in c.product_ids.mapped('id'))
         else:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)]).filtered(lambda c: self.id in c.product_ids.mapped('id'))
@@ -221,8 +217,7 @@ class product_product(models.Model):
     @api.model
     def get_campaign_products(self,for_reseller=False):
         products = self.env['product.product'].browse([])
-        is_reseller = self.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller
-        if is_reseller:
+        if for_reseller:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')])
         else:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
@@ -236,8 +231,7 @@ class product_product(models.Model):
     @api.model
     def get_campaign_variants(self,for_reseller=False):
         products = self.env['product.product'].browse([])
-        is_reseller = self.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller
-        if is_reseller:
+        if for_reseller:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')])
         else:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
@@ -252,8 +246,7 @@ class product_product(models.Model):
     @api.multi
     def get_campaign_image(self,for_reseller=False):
         self.ensure_one()
-        is_reseller = self.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller
-        if is_reseller:
+        if for_reseller:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id'))
         else:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id'))
