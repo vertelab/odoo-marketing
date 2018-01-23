@@ -19,6 +19,7 @@
 #
 ##############################################################################
 from openerp import models, fields, api, _
+from openerp.exceptions import except_orm, Warning, RedirectWarning
 from datetime import datetime, timedelta
 import logging
 _logger = logging.getLogger(__name__)
@@ -46,7 +47,10 @@ class crm_tracking_campaign(models.Model):
         if is_reseller:
             return len(filter(None, self.phase_ids.filtered(lambda p: p.start_date <= date and p.end_date >= date and p.reseller_pricelist == is_reseller))) > 0
         else:
-            return self.date_start <= date and self.date_stop >= date
+            if self.date_stop:
+                return self.date_start <= date and self.date_stop >= date
+            else:
+                return self.date_start <= date
 
 
 class crm_tracking_phase(models.Model):
@@ -62,14 +66,25 @@ class crm_tracking_phase(models.Model):
         if self.phase_type.start_days_from_start:
             self.start_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_start) + timedelta(days = self.phase_type.start_days))
         else:
-            self.start_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_stop) + timedelta(days = self.phase_type.start_days))
+            if self.campaign_id.date_stop:
+                self.start_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_stop) + timedelta(days = self.phase_type.start_days))
     start_date = fields.Date(compute='_start_date')
     @api.one
     def _end_date(self):
         if self.phase_type.end_days_from_start:
             self.end_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_start) + timedelta(days = self.phase_type.end_days))
         else:
-            self.end_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_stop) + timedelta(days = self.phase_type.end_days))
+            if self.campaign_id.date_stop:
+                self.end_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_stop) + timedelta(days = self.phase_type.end_days))
+            else:
+                if self.phase_type.start_days_from_start and self.phase_type.end_days_from_start:
+                    if self.phase_type.end_days >= self.phase_type.start_days:
+                        self.end_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_start) + timedelta(days = self.phase_type.end_days))
+                    else:
+                        self.phase_type.end_days = self.phase_type.start_days
+                        raise Warning('End days must be greater than or equal to start days')
+                else:
+                    raise Warning("You can only use days from start when there's no end date")
     end_date = fields.Date(compute='_end_date')
     reseller_pricelist = fields.Boolean(string="Reseller",help="Use this pricelist for resellers, otherwise instead of default pricelist")
     pricelist_id = fields.Many2one(comodel_name="product.pricelist",string="Pricelist")
@@ -97,6 +112,12 @@ class crm_tracking_phase_type(models.Model):
     start_days_from_start = fields.Boolean(help="Checked: days are counted from start date otherwise from end date")
     end_days = fields.Integer()
     end_days_from_start = fields.Boolean(help="Checked: days are counted from start date otherwise from end date")
+
+    @api.onchange('end_days')
+    def end_days_check(self):
+        if self.start_days_from_start and self.end_days_from_start:
+            if self.end_days < self.start_days:
+                raise Warning('End days must be greater than or equal to start days')
 
 class product_pricelist(models.Model):
     _inherit = "product.pricelist"
