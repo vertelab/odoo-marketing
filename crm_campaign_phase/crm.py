@@ -135,7 +135,7 @@ class product_pricelist(models.Model):
         else:
             partner = self.sudo().env.ref('base.public_partner').id
         is_reseller = self.sudo().env.ref('base.public_user').property_product_pricelist != self.env['res.partner'].browse(partner).property_product_pricelist
-        price = [p[0] for key, p in self.price_rule_get(prod_id, qty, partner=partner).items()][0]
+        price = [p[0] for key, p in self.sudo().price_rule_get(prod_id, qty, partner=partner).items()][0]
         campaign_price = 999999999999999999999999999999.0
         date = self.env.context['date'] if self.env.context.get('date') else fields.Date.today()
         for pricelist in self.env['crm.tracking.campaign'].search([('state','=','open')]).mapped('phase_ids').mapped(lambda p: p.get_pricelist(date,prod_id,is_reseller)):
