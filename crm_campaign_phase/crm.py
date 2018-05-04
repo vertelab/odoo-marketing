@@ -65,6 +65,7 @@ class crm_tracking_phase(models.Model):
     name = fields.Char(string='Name')
     phase_type = fields.Many2one(comodel_name="crm.tracking.phase.type",string="Type")
     sequence = fields.Integer()
+
     @api.one
     def _start_date(self):
         if self.phase_type.start_days_from_start:
@@ -73,6 +74,7 @@ class crm_tracking_phase(models.Model):
             if self.campaign_id.date_stop:
                 self.start_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_stop) + timedelta(days = self.phase_type.start_days))
     start_date = fields.Date(compute='_start_date')
+
     @api.one
     def _end_date(self):
         if self.phase_type.end_days_from_start:
@@ -87,8 +89,7 @@ class crm_tracking_phase(models.Model):
                     else:
                         self.phase_type.end_days = self.phase_type.start_days
                         raise Warning('End days must be greater than or equal to start days')
-                else:
-                    raise Warning("You can only use days from start when there's no end date")
+
     end_date = fields.Date(compute='_end_date')
     reseller_pricelist = fields.Boolean(string="Reseller",help="Use this pricelist for resellers, otherwise instead of default pricelist")
     pricelist_id = fields.Many2one(comodel_name="product.pricelist",string="Pricelist")
