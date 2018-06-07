@@ -47,7 +47,10 @@ class crm_tracking_campaign(models.Model):
         self.ensure_one()
         if is_reseller:
             if self.country_id == self.env.user.partner_id.commercial_partner_id.country_id or not self.country_id:
-                return len(filter(None, self.phase_ids.filtered(lambda p: p.start_date <= date and p.end_date >= date and p.reseller_pricelist == is_reseller))) > 0
+                if self.date_stop:
+                    return len(filter(None, self.phase_ids.filtered(lambda p: p.start_date <= date and p.end_date >= date and p.reseller_pricelist == is_reseller))) > 0
+                else:
+                    return len(filter(None, self.phase_ids.filtered(lambda p: p.start_date <= date and p.reseller_pricelist == is_reseller))) > 0
             else:
                 return False
         else:
