@@ -245,10 +245,12 @@ class product_product(models.Model):
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
         for campaign in campaigns:
             if campaign.is_current(fields.Date.today(),for_reseller):
-                for o in campaign.object_ids:
-                    if o.object_id._name == 'product.product':
-                        if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
-                            products |= o.object_id
+                variant_ids = [int(d['object_id'].split(',')[1]) for d in self.env['crm.campaign.object'].search_read([('campaign_id', '=', campaign.id), ('object_id', '=like', 'product.product,%')], ['object_id'])]
+                products |= products.search([('id', 'in', variant_ids)])
+                #~ for o in campaign.object_ids:
+                    #~ if o.object_id._name == 'product.product':
+                        #~ if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
+                            #~ products |= o.object_id
         return products
 
     @api.multi
