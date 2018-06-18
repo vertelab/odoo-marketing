@@ -59,6 +59,11 @@ class crm_tracking_campaign(models.Model):
             else:
                 return self.date_start <= date
 
+    @api.multi
+    def check_product(self, prod_id):
+        self.ensure_one()
+        return prod_id in self.env['product.product'].search([('id', 'in', self.env['product.template'].search([('id', 'in', self.campaign_product_ids.mapped('product_id').mapped('id'))]).mapped('product_variant_ids').mapped('id'))]).mapped('id')
+
 
 class crm_tracking_phase(models.Model):
     _name = "crm.tracking.phase"
@@ -100,7 +105,7 @@ class crm_tracking_phase(models.Model):
     @api.multi
     def get_pricelist(self,date,prod_id,is_reseller):
         for phase in self:
-            if date >= phase.start_date and date <= phase.end_date and phase.env['product.product'].browse(prod_id).product_tmpl_id.id in phase.campaign_id.product_ids.mapped('id') and \
+            if date >= phase.start_date and date <= phase.end_date and phase.campaign_id.check_product(prod_id) and \
                     phase.pricelist_id and (phase.reseller_pricelist and is_reseller or not phase.reseller_pricelist):
                         return phase.pricelist_id
         return None
@@ -175,7 +180,8 @@ class product_template(models.Model):
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in campaign.object_ids:
                     if o.object_id._name == 'product.product':
-                        if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
+                        if self.env['product.product'].search([('id', '=', o.object_id.id)]) and self.env['product.template'].search([('id', '=', o.object_id.product_tmpl_id.id)]):
+                        # ~ if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
                             products |= o.object_id
         return products
 
@@ -190,7 +196,8 @@ class product_template(models.Model):
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in campaign.object_ids:
                     if o.object_id._name == 'product.template':
-                        if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
+                        if self.env['product.template'].search([('id', '=', o.object_id.id)]):
+                        # ~ if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
                             products |= o.object_id
         return products
 
