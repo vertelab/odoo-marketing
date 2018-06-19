@@ -32,11 +32,6 @@ class crm_tracking_campaign(models.Model):
     phase_ids = fields.One2many(comodel_name='crm.tracking.phase', inverse_name='campaign_id', string='Phases')
     country_id = fields.Many2one(comodel_name='res.country', string='Country')
 
-    #~ @api.multi
-    #~ def get_pricelist(self,date,prod_id,is_reseller):
-        #~ self.ensure_one()
-        #~ return self.phase_ids.mapped(lambda p: p.get_pricelist(date,prod_id,is_reseller))
-
     @api.multi
     def get_phase(self, date, is_reseller):
         self.ensure_one()
