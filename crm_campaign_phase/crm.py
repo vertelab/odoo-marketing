@@ -42,7 +42,10 @@ class crm_tracking_campaign(models.Model):
         self.ensure_one()
         if is_reseller:
             if self.country_id == self.env.user.partner_id.commercial_partner_id.country_id or not self.country_id:
-                return len(filter(None, self.phase_ids.filtered(lambda p: p.start_date <= date and p.end_date >= date and p.reseller_pricelist == is_reseller))) > 0
+                if self.date_stop:
+                    return len(filter(None, self.phase_ids.filtered(lambda p: p.start_date <= date and p.end_date >= date and p.reseller_pricelist == is_reseller))) > 0
+                else:
+                    return len(filter(None, self.phase_ids.filtered(lambda p: p.start_date <= date and p.reseller_pricelist == is_reseller))) > 0
             else:
                 return False
         else:
@@ -50,6 +53,11 @@ class crm_tracking_campaign(models.Model):
                 return self.date_start <= date and self.date_stop >= date
             else:
                 return self.date_start <= date
+
+    @api.multi
+    def check_product(self, prod_id):
+        self.ensure_one()
+        return prod_id in self.env['product.product'].search([('id', 'in', self.env['product.template'].search([('id', 'in', self.campaign_product_ids.mapped('product_id').mapped('id'))]).mapped('product_variant_ids').mapped('id'))]).mapped('id')
 
 
 class crm_tracking_phase(models.Model):
@@ -60,6 +68,7 @@ class crm_tracking_phase(models.Model):
     name = fields.Char(string='Name')
     phase_type = fields.Many2one(comodel_name="crm.tracking.phase.type",string="Type")
     sequence = fields.Integer()
+
     @api.one
     def _start_date(self):
         if self.phase_type.start_days_from_start:
@@ -68,6 +77,7 @@ class crm_tracking_phase(models.Model):
             if self.campaign_id.date_stop:
                 self.start_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_stop) + timedelta(days = self.phase_type.start_days))
     start_date = fields.Date(compute='_start_date')
+
     @api.one
     def _end_date(self):
         if self.phase_type.end_days_from_start:
@@ -82,8 +92,7 @@ class crm_tracking_phase(models.Model):
                     else:
                         self.phase_type.end_days = self.phase_type.start_days
                         raise Warning('End days must be greater than or equal to start days')
-                else:
-                    raise Warning("You can only use days from start when there's no end date")
+
     end_date = fields.Date(compute='_end_date')
     reseller_pricelist = fields.Boolean(string="Reseller",help="Use this pricelist for resellers, otherwise instead of default pricelist")
     pricelist_id = fields.Many2one(comodel_name="product.pricelist",string="Pricelist")
@@ -91,7 +100,7 @@ class crm_tracking_phase(models.Model):
     @api.multi
     def get_pricelist(self,date,prod_id,is_reseller):
         for phase in self:
-            if date >= phase.start_date and date <= phase.end_date and phase.env['product.product'].browse(prod_id).product_tmpl_id.id in phase.campaign_id.product_ids.mapped('id') and \
+            if date >= phase.start_date and date <= phase.end_date and phase.campaign_id.check_product(prod_id) and \
                     phase.pricelist_id and (phase.reseller_pricelist and is_reseller or not phase.reseller_pricelist):
                         return phase.pricelist_id
         return None
@@ -129,8 +138,8 @@ class product_pricelist(models.Model):
             partner = partner.id
         else:
             partner = self.sudo().env.ref('base.public_partner').id
-        is_reseller = self.sudo().env.ref('base.public_user').property_product_pricelist != self.env['res.partner'].browse(partner).property_product_pricelist
-        price = [p[0] for key, p in self.price_rule_get(prod_id, qty, partner=partner).items()][0]
+        is_reseller = self.sudo().env.ref('base.public_user').property_product_pricelist != self.env['res.partner'].sudo().browse(partner).property_product_pricelist
+        price = [p[0] for key, p in self.sudo().price_rule_get(prod_id, qty, partner=partner).items()][0]
         campaign_price = 999999999999999999999999999999.0
         date = self.env.context['date'] if self.env.context.get('date') else fields.Date.today()
         for pricelist in self.env['crm.tracking.campaign'].search([('state','=','open')]).mapped('phase_ids').mapped(lambda p: p.get_pricelist(date,prod_id,is_reseller)):
@@ -166,7 +175,8 @@ class product_template(models.Model):
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in campaign.object_ids:
                     if o.object_id._name == 'product.product':
-                        if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
+                        if self.env['product.product'].search([('id', '=', o.object_id.id)]) and self.env['product.template'].search([('id', '=', o.object_id.product_tmpl_id.id)]):
+                        # ~ if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
                             products |= o.object_id
         return products
 
@@ -181,7 +191,8 @@ class product_template(models.Model):
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in campaign.object_ids:
                     if o.object_id._name == 'product.template':
-                        if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
+                        if self.env['product.template'].search([('id', '=', o.object_id.id)]):
+                        # ~ if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
                             products |= o.object_id
         return products
 
@@ -236,10 +247,12 @@ class product_product(models.Model):
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
         for campaign in campaigns:
             if campaign.is_current(fields.Date.today(),for_reseller):
-                for o in campaign.object_ids:
-                    if o.object_id._name == 'product.product':
-                        if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
-                            products |= o.object_id
+                variant_ids = [int(d['object_id'].split(',')[1]) for d in self.env['crm.campaign.object'].search_read([('campaign_id', '=', campaign.id), ('object_id', '=like', 'product.product,%')], ['object_id'])]
+                products |= products.search([('id', 'in', variant_ids)])
+                #~ for o in campaign.object_ids:
+                    #~ if o.object_id._name == 'product.product':
+                        #~ if len(o.object_id.sudo().access_group_ids) == 0 or len(self.env.user.partner_id.commercial_partner_id.access_group_ids & o.object_id.sudo().access_group_ids) > 0:
+                            #~ products |= o.object_id
         return products
 
     @api.multi

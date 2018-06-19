@@ -28,6 +28,7 @@ Base class that bind together crm.tracking.campaign with different object
 
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['crm',],
     'data': [

@@ -64,7 +64,7 @@ class crm_campaign_object(models.Model):
     _order = 'campaign_id, sequence, name'
 
     name = fields.Char(string='Name')
-    description = fields.Text(string='Description')
+    description = fields.Text(string='Description', translate=True)
     image = fields.Binary(string='Image')
     sequence = fields.Integer()
     color = fields.Integer('Color Index')
