@@ -103,7 +103,7 @@ class crm_tracking_phase(models.Model):
             if date >= phase.start_date and date <= phase.end_date and phase.campaign_id.check_product(prod_id) and \
                     phase.pricelist_id and (phase.reseller_pricelist and is_reseller or not phase.reseller_pricelist):
                         return phase.pricelist_id
-        return None
+        return self.env['product.pricelist'].browse()
 
     @api.multi
     def get_phase(self,date,is_reseller):
