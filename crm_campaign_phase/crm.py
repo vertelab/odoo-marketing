@@ -30,7 +30,7 @@ class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
 
     phase_ids = fields.One2many(comodel_name='crm.tracking.phase', inverse_name='campaign_id', string='Phases')
-    country_id = fields.Many2one(comodel_name='res.country', string='Country')
+    country_ids = fields.Many2one(comodel_name='res.country', string='Country')
 
     @api.multi
     def get_phase(self, date, is_reseller):
@@ -41,7 +41,7 @@ class crm_tracking_campaign(models.Model):
     def is_current(self, date, is_reseller):
         self.ensure_one()
         if is_reseller:
-            if self.country_id == self.env.user.partner_id.commercial_partner_id.country_id or not self.country_id:
+            if not self.country_ids or (self.env.user.partner_id.commercial_partner_id.country_id in self.country_ids):
                 if self.date_stop:
                     return len(filter(None, self.phase_ids.filtered(lambda p: p.start_date <= date and p.end_date >= date and p.reseller_pricelist == is_reseller))) > 0
                 else:
