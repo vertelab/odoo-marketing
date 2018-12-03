@@ -30,7 +30,7 @@ class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
 
     phase_ids = fields.One2many(comodel_name='crm.tracking.phase', inverse_name='campaign_id', string='Phases')
-    country_ids = fields.Many2one(comodel_name='res.country', string='Country')
+    country_ids = fields.Many2many(comodel_name='res.country', string='Country')
 
     @api.multi
     def get_phase(self, date, is_reseller):
