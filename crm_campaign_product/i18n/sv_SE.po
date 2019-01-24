@@ -34,7 +34,7 @@ msgstr "Baspris för att beräkna kundpriset. Ibland kallas katalogpriset."
 #. module: crm_campaign_product
 #: model:ir.model.fields,field_description:crm_campaign_product.field_crm_campaign_product_campaign_id
 msgid "Campaign id"
-msgstr "Campaign id"
+msgstr "Kampanjer"
 
 #. module: crm_campaign_product
 #: model:ir.model.fields,field_description:crm_campaign_product.field_delivery_carrier_campaign_ids
