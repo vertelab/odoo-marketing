@@ -1,42 +1,45 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-# OpenERP, Open Source Management Solution, third party addon
-# Copyright (C) 2017- Vertel AB (<http://vertel.se>).
+#    Odoo, Open Source Enterprise Management Solution, third party addon
+#    Copyright (C) 2019 Vertel AB (<http://vertel.se>).
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU Affero General Public License for more details.
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
 #
-# You should have received a copy of the GNU Affero General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, fields, api, _
-from openerp.http import request
+from odoo import models, fields, api, _
+from odoo.http import request
 import logging
 _logger = logging.getLogger(__name__)
 
+
 class crm_tracking_campaign(models.Model):
     _name = 'crm.tracking.campaign'
-    _inherit = ['crm.tracking.campaign','mail.thread']
+    _inherit = ['mail.thread']
 
+    name = fields.Char(name='Campaign Name', required=True)
     color = fields.Integer('Color Index')
-    date_start = fields.Date(string='Start Date',track_visibility='onchange', )
-    date_stop = fields.Date(string='Start Stop',track_visibility='onchange', )
+    date_start = fields.Date(string='Start Date',track_visibility='onchange')
+    date_stop = fields.Date(string='Start Stop',track_visibility='onchange')
     image = fields.Binary(string='Image')
-
     object_ids = fields.One2many(comodel_name='crm.campaign.object', inverse_name='campaign_id', string='Objects')
+
     @api.one
     def _object_names(self):
         self.object_names = ', '.join(self.object_ids.mapped('name'))
     object_names = fields.Char(compute='_object_names')
+
     @api.one
     def _object_count(self):
         self.object_count = len(self.object_ids)
@@ -58,9 +61,9 @@ class crm_tracking_campaign(models.Model):
              " * The 'Closed' status is when the campaing is over.\n"
              " * The 'Cancelled' status is used when the campaign is stopped.")
 
+
 class crm_campaign_object(models.Model):
     _name = 'crm.campaign.object'
-
     _order = 'campaign_id, sequence, name'
 
     name = fields.Char(string='Name')

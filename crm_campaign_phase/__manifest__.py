@@ -20,18 +20,22 @@
 ##############################################################################
 
 {
-    'name': 'CRM Campaign Blog',
-    'version': '0.2',
+    'name': 'CRM Campaign Phase',
+    'version': '0.1',
     'category': 'crm',
     'description': """
-        Extends Crm Campaign with blog
+        Extends Crm Campaign with phases
 
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['crm_campaign_addons','website_blog'],
+    'depends': ['website_crm_campaign','product_private'],
+    'sequence': 50,
     'data': [
+        'views/crm_view.xml',
+        'security/ir.model.access.csv',
+
     ],
     'installable': True,
 }

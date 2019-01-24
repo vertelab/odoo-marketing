@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution, third party addon
-#    Copyright (C) 2004-2016 Vertel AB (<http://vertel.se>).
+#    Odoo, Open Source Enterprise Management Solution, third party addon
+#    Copyright (C) 2019 Vertel AB (<http://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,19 +20,36 @@
 ##############################################################################
 
 {
-    'name': 'Marketing Paolos',
+    'name': 'Sale Campaign',
     'version': '0.1',
-    'category': 'marketing',
-    'summary': 'Marketing additions for Paolos',
-    'licence': 'AGPL-3',
+    'category': 'crm',
     'description': """
+Different pricelists on campaign
+================================
+* Hook product.template with crm.tracking.campaign
+* Start and stop date on a campaign
+* Show current campaign as first page on website
+
+crm_campaign
+    crm.tracking.campaign
+    crm.tracking.campaign.object  (title,description,image)
+    start/stop-date
+    pricelists
+    campaign_objects
+     get_campaign_objs
+crm_campaign_product
+     get_campaign_products
+crm_campaign_blog
+website_crm_campaign
+
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['marketing_campaign','sales_cycle'],
-    'data': ['marketing_campaign_view.xml'],
-    'application': False,
+    'depends': ['website_sale', 'sale_crm', 'crm_campaign_product'],
+    'data': [
+        'views/campaign_view.xml',
+    ],
     'installable': True,
-    'auto_install': False,
 }
-# vim:expandtab:smartindent:tabstop=4s:softtabstop=4:shiftwidth=4:
+

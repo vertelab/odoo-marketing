@@ -18,18 +18,24 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from odoo import models, fields, api, _
-from datetime import datetime, timedelta
-import logging
-_logger = logging.getLogger(__name__)
 
-class product_template(models.Model):
-    _inherit = "product.template"
-    @api.multi
-    def get_default_variant(self):
-        self.ensure_one()
-        intersect = self.product_variant_ids & self.get_campaign_variants(for_reseller=self.env.user.partner_id.commercial_partner_id.property_product_pricelist.for_reseller)
-        if len(intersect)>0:
-            return intersect[0]
-        else:
-            return super(product_template,self).get_default_variant()
+{
+    'name': 'CRM Campaign Product',
+    'version': '0.2',
+    'category': 'crm',
+    'description': """
+        Extends Crm Campaign with products
+
+""",
+    'author': 'Vertel AB',
+    'license': 'AGPL-3',
+    'website': 'http://www.vertel.se',
+    'depends': ['crm_campaign_addons','stock'],
+    'data': [
+        'views/product_view.xml',
+        'security/ir.model.access.csv',
+
+    ],
+    'installable': True,
+}
+

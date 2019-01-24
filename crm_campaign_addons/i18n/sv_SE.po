@@ -1,0 +1,287 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * crm_campaign_addons
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0-20190109\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-24 11:02+0000\n"
+"PO-Revision-Date: 2019-01-24 11:02+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,help:crm_campaign_addons.field_crm_tracking_campaign_state
+msgid " * The 'Draft' status is used during planning.\n"
+" * The 'Open' status is used when the campaing are running.\n"
+" * The 'Closed' status is when the campaing is over.\n"
+" * The 'Cancelled' status is used when the campaign is stopped."
+msgstr " * Statusen  'Utkast' används vid planering.\n"
+" * Statusen 'Öppet' används när kampanjen igång.\n"
+" * Statusen 'Stängd' är när kampanjen är slut.\n"
+" * Statusen 'Avbruten' används när kampanjen är avbruten."
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_campaign_object_kanban
+msgid "<b>Campaign:</b>"
+msgstr "<b>Kampanj:</b>"
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_campaign_object_kanban
+msgid "<b>Name:</b>"
+msgstr "<b>Namn:</b>"
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_campaign_object_kanban
+msgid "<b>Object:</b>"
+msgstr "<b>Objekt:</b>"
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_tracking_campaign_calendar
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_tracking_campaign_search
+msgid "CRM Tracking Campaign"
+msgstr "CRM Kampanj"
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.campaign_overview_form
+msgid "Campagin Overview"
+msgstr "Kampanjöversikt"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_campaign_object_campaign_id
+#: model:ir.ui.menu,name:crm_campaign_addons.menu_crm_tracking_campaign
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_campaign_object_search
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_tracking_campaign_form
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_tracking_campaign_tree
+msgid "Campaign"
+msgstr "Kampanj"
+
+#. module: crm_campaign_addons
+#: model:ir.actions.act_window,name:crm_campaign_addons.act_campaign_overview
+msgid "Campaign Overview"
+msgstr "Kampanjöversikt"
+
+#. module: crm_campaign_addons
+#: model:ir.actions.act_window,name:crm_campaign_addons.crm_tracking_campaign_act
+#: model:ir.ui.menu,name:crm_campaign_addons.menu_crm_tracking_campaign_act
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_tracking_campaign_gantt
+msgid "Campaigns"
+msgstr "Kampanjer"
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_tracking_campaign_form
+msgid "Campaign"
+msgstr "Kampanj"
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.campaign_overview_form
+msgid "Cancel"
+msgstr "Avbryt"
+
+#. module: crm_campaign_addons
+#: selection:crm.tracking.campaign,state:0
+msgid "Cancelled"
+msgstr "Avbruten"
+
+#. module: crm_campaign_addons
+#: selection:crm.tracking.campaign,state:0
+msgid "Closed"
+msgstr "Stängd"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_campaign_object_color
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_color
+msgid "Color Index"
+msgstr "Färgindex"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_campaign_overview_create_uid
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_campaign_object_create_uid
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_create_uid
+msgid "Created by"
+msgstr "Skapad av"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_campaign_overview_create_date
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_campaign_object_create_date
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_create_date
+msgid "Created on"
+msgstr "Skapad den"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_campaign_overview_date
+msgid "Date"
+msgstr "Datum"
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_campaign_object_kanban
+msgid "Delete"
+msgstr "Ta bort"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_campaign_object_description
+msgid "Description"
+msgstr "Beskrivning"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_campaign_overview_display_name
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_campaign_object_display_name
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_display_name
+msgid "Display Name"
+msgstr "Visa namn"
+
+#. module: crm_campaign_addons
+#: selection:crm.tracking.campaign,state:0
+msgid "Draft"
+msgstr "Utkast"
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_campaign_object_kanban
+msgid "Edit..."
+msgstr "Redigera..."
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_campaign_object_search
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_tracking_campaign_search
+msgid "Group By"
+msgstr "Gruppera på"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_campaign_overview_id
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_campaign_object_id
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_id
+msgid "ID"
+msgstr "ID"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_campaign_object_image
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_image
+msgid "Image"
+msgstr "Bild"
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_campaign_object_view
+msgid "Information"
+msgstr "Information"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_campaign_overview___last_update
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_campaign_object___last_update
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign___last_update
+msgid "Last Modified on"
+msgstr "Senast redigerad"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_campaign_overview_write_uid
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_campaign_object_write_uid
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_write_uid
+msgid "Last Updated by"
+msgstr "Senast uppdaterad av"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_campaign_overview_write_date
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_campaign_object_write_date
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_write_date
+msgid "Last Updated on"
+msgstr "Senast uppdaterad"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_campaign_object_name
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_name
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_tracking_campaign_search
+msgid "Name"
+msgstr "Namn"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_campaign_object_object_id
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_campaign_object_search
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_tracking_campaign_search
+msgid "Object"
+msgstr "Objekt"
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_campaign_object_view
+msgid "Object CRM Campaign"
+msgstr "Objekt CRM kampanj"
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_campaign_object_search
+msgid "Object Campaign"
+msgstr "Objekt kampanj"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_object_count
+msgid "Object count"
+msgstr "Objekt antal"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_object_names
+msgid "Object names"
+msgstr "Objekt namn"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_object_ids
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_tracking_campaign_form
+msgid "Objects"
+msgstr "Objekter"
+
+#. module: crm_campaign_addons
+#: selection:crm.tracking.campaign,state:0
+msgid "Open"
+msgstr "Öppet"
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.campaign_overview_form
+msgid "Overview"
+msgstr "Översikt"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_campaign_object_sequence
+msgid "Sequence"
+msgstr "Sekvens"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_date_start
+msgid "Start Date"
+msgstr "Startdatum"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_date_stop
+msgid "Start Stop"
+msgstr "Starta Stopp"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_state
+msgid "Status"
+msgstr "Status"
+
+#. module: crm_campaign_addons
+#: model:ir.model,name:crm_campaign_addons.model_campaign_overview
+msgid "campaign.overview"
+msgstr "campaign.overview"
+
+#. module: crm_campaign_addons
+#: model:ir.model,name:crm_campaign_addons.model_crm_campaign_object
+msgid "crm.campaign.object"
+msgstr "crm.campaign.object"
+
+#. module: crm_campaign_addons
+#: model:ir.actions.act_window,name:crm_campaign_addons.action_crm_campaign_object_view
+msgid "crm.campaign.object.act"
+msgstr "crm.campaign.object.act"
+
+#. module: crm_campaign_addons
+#: model:ir.model,name:crm_campaign_addons.model_crm_tracking_campaign
+msgid "crm.tracking.campaign"
+msgstr "crm.tracking.campaign"
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.campaign_overview_form
+msgid "or"
+msgstr "eller"
+

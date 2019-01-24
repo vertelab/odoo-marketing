@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution, third party addon
-#    Copyright (C) 2017- Vertel AB (<http://vertel.se>).
+#    Odoo, Open Source Enterprise Management Solution, third party addon
+#    Copyright (C) 2019 Vertel AB (<http://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,14 +18,15 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, fields, api, _
-from openerp import http
-from openerp.http import request
+from odoo import models, fields, api, _
+from odoo import http
+from odoo.http import request
 import werkzeug
-from openerp.addons.website.controllers.main import Website
+from odoo.addons.website.controllers.main import Website
 import datetime
 import logging
 _logger = logging.getLogger(__name__)
+
 
 class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
@@ -58,11 +59,13 @@ class crm_campaign_object(models.Model):
                 self.image = self.object_id.image
         return super(crm_campaign_object, self).get_object_value()
 
+
 class product_public_category(models.Model):
     _inherit = 'product.public.category'
 
     description = fields.Text(string='Description')
     mobile_icon = fields.Char(string='Mobile Icon', help='This icon will display on smaller devices')
+
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
