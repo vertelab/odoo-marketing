@@ -228,7 +228,7 @@ msgstr "Objekt namn"
 #: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_object_ids
 #: model:ir.ui.view,arch_db:crm_campaign_addons.crm_tracking_campaign_form
 msgid "Objects"
-msgstr "Objekter"
+msgstr "Objekt"
 
 #. module: crm_campaign_addons
 #: selection:crm.tracking.campaign,state:0
@@ -254,6 +254,16 @@ msgstr "Startdatum"
 #: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_date_stop
 msgid "Start Stop"
 msgstr "Starta Stopp"
+
+#. module: crm_campaign_addons
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_date_stop
+msgid "Discount"
+msgstr "Rabatt"
+
+#. module: crm_campaign_addons
+#: model:ir.ui.view,arch_db:crm_campaign_addons.crm_tracking_campaign_form
+msgid "Discount in percent"
+msgstr "Rabatt i procent"
 
 #. module: crm_campaign_addons
 #: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_state

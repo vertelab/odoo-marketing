@@ -120,6 +120,7 @@
                     <field name="name"/>
                     <field name="date_start" />
                     <field name="date_stop" />
+                    <field name="discount" />
                     <field name="state" />
                 </tree>
             </field>
@@ -145,6 +146,10 @@
                                 <field name="date_start" class="oe_inline" />
                                 <span class="oe_inline">-</span>
                                 <field name="date_stop" class="oe_inline" />
+                            </div>
+                            <label for="discount" />
+                            <div>
+                                <field name="discount" help="Discount in percent" />
                             </div>
                         </group>
                         <notebook>
