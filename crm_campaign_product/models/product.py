@@ -47,7 +47,7 @@ class crm_tracking_campaign(models.Model):
     def update_campaign_product_ids(self):
         self.env['crm.campaign.product'].search([('campaign_id', '=', self.id)]).unlink()
         for o in self.object_ids.sorted(lambda o: o.sequence):
-            _logger.error(getattr(o,'create_campaign_product', False))  
+            _logger.error(getattr(o,'create_campaign_product', False))
             if getattr(o,'create_campaign_product', False):
                 o.create_campaign_product(self)
 
@@ -65,7 +65,7 @@ class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
 
     object_id = fields.Reference(selection_add=[('product.template', 'Product Template'), ('product.product', 'Product Variant'),])
-    @api.one
+
     @api.onchange('object_id')
     def get_object_value(self):
         if self.object_id:
