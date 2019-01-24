@@ -256,7 +256,7 @@ msgid "Start Stop"
 msgstr "Starta Stopp"
 
 #. module: crm_campaign_addons
-#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_date_stop
+#: model:ir.model.fields,field_description:crm_campaign_addons.field_crm_tracking_campaign_discount
 msgid "Discount"
 msgstr "Rabatt"
 
