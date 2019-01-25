@@ -37,6 +37,7 @@ class crm_campaign_product(models.Model):
     qty_available = fields.Float(related='product_id.qty_available')
     virtual_available = fields.Float(related='product_id.virtual_available')
 
+
 class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
 
@@ -52,9 +53,6 @@ class crm_tracking_campaign(models.Model):
                 o.create_campaign_product(self)
 
 
-
-
-
 class product_template(models.Model):
     _inherit = 'product.template'
 
@@ -64,7 +62,7 @@ class product_template(models.Model):
 class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
 
-    object_id = fields.Reference(selection_add=[('product.template', 'Product Template'), ('product.product', 'Product Variant'),])
+    object_id = fields.Reference(selection_add=[('product.template', 'Product Template'), ('product.product', 'Product Variant'), ('product.category', 'Product Category')])
 
     @api.onchange('object_id')
     def get_object_value(self):
@@ -74,10 +72,13 @@ class crm_campaign_object(models.Model):
                 self.name = self.object_id.name
                 self.description = self.object_id.description_sale
                 self.image = self.object_id.image
+            if self.object_id._name == 'product.category':
+                self.res_id = self.object_id.id
+                self.name = self.object_id.name
         return super(crm_campaign_object, self).get_object_value()
 
     @api.one
-    def create_campaign_product(self,campaign):
+    def create_campaign_product(self, campaign):
         if self.object_id._name == 'product.template':
             self.env['crm.campaign.product'].create({
                 'campaign_id': campaign.id,
@@ -90,8 +91,8 @@ class crm_campaign_object(models.Model):
                 'product_id': self.object_id.product_tmpl_id.id,
                 'sequence': len(campaign.product_ids) + 1,
             })
-        elif self.object_id._name == 'product.public.category':
-            for product in self.env['product.template'].search([('public_categ_ids', 'in', self.object_id.id)]):
+        elif self.object_id._name == 'product.category':
+            for product in self.env['product.template'].search([('categ_id', '=', [self.object_id.id])]):
                 self.env['crm.campaign.product'].create({
                     'campaign_id': campaign.id,
                     'product_id': product.id,

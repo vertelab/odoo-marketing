@@ -7,11 +7,11 @@
             <field name="inherit_id" ref="crm_campaign_addons.crm_tracking_campaign_form" />
             <field name="arch" type="xml">
                 <h1 position="before">
-                    <field name="website_published" class="pull-right" widget="website_button" />
+                    <p class="pull-right"><field name="website_published" />Published on website</p>
                 </h1>
-                <field name="section_id" position="after">
+                <group position="inside">
                     <field name="website_url" invisible="1" />
-                </field>
+                </group>
                 <notebook position="inside">
                     <page string="Description">
                         <field name="website_description" />

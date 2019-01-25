@@ -47,8 +47,8 @@ class crm_tracking_campaign(models.Model):
 class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
 
-    object_id = fields.Reference(selection_add=[('product.public.category', 'Product Category')])
-    @api.one
+    object_id = fields.Reference(selection_add=[('product.public.category', 'Product Public Category')])
+
     @api.onchange('object_id')
     def get_object_value(self):
         if self.object_id:
@@ -58,6 +58,18 @@ class crm_campaign_object(models.Model):
                 self.description = self.object_id.description
                 self.image = self.object_id.image
         return super(crm_campaign_object, self).get_object_value()
+
+    @api.one
+    def create_campaign_product(self, campaign):
+        if self.object_id._name == 'product.public.category':
+            for product in self.env['product.template'].search([('public_categ_ids', '=', self.object_id.id)]):
+                self.env['crm.campaign.product'].create({
+                    'campaign_id': campaign.id,
+                    'product_id': product.id,
+                    'sequence': len(campaign.product_ids) + 1,
+                })
+        else:
+            super(crm_campaign_object, self).create_campaign_product(campaign)
 
 
 class product_public_category(models.Model):

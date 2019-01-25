@@ -27,7 +27,7 @@ class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
 
     object_id = fields.Reference(selection_add=[('res.partner', 'Supplier')])
-    @api.one
+
     @api.onchange('object_id')
     def get_object_value(self):
         if self.object_id and self.object_id._name == 'res.partner':
