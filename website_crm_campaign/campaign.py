@@ -28,34 +28,32 @@ import logging
 _logger = logging.getLogger(__name__)
 
 class crm_tracking_campaign(models.Model):
-    _inherit = 'crm.tracking.campaign'
+    _inherit = 'utm.campaign'
 
     website_description = fields.Html(string='Website Description')
     website_published = fields.Boolean(string='Available in the website', default=False, copy=False)
     website_url = fields.Char(string='Website url', compute='_website_url')
 
-    @api.one
     def _website_url(self):
         self.website_url = '/campaign/%s' %self.id
 
-    @api.multi
     def get_campaigns(self):
-        return super(crm_tracking_campaign, self).get_campaigns().filtered(lambda c: c.website_published)
+            return super(crm_tracking_campaign, self).get_campaigns().filtered(lambda c: c.website_published)
 
 
 class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
 
     object_id = fields.Reference(selection_add=[('product.public.category', 'Product Category')])
-    @api.one
-    @api.onchange('object_id')
+
     def get_object_value(self):
-        if self.object_id:
-            if self.object_id._name == 'product.public.category':
-                self.res_id = self.object_id.id
-                self.name = self.object_id.name
-                self.description = self.object_id.description
-                self.image = self.object_id.image
+        for objects in self.object_id:
+            if objects:
+                if objects._name == 'product.public.category':
+                    self.res_id = objects.id
+                    self.name = objects.name
+                    self.description = objects.description
+                    self.image = objects.image
         return super(crm_campaign_object, self).get_object_value()
 
 class product_public_category(models.Model):
@@ -69,7 +67,7 @@ class sale_order(models.Model):
 
     @api.model
     def create(self, vals):
-        campaign = self.env['crm.tracking.campaign'].get_campaigns()
+        campaign = self.env['utm.campaign'].get_campaigns()
         if len(campaign):
             if not vals.get('campaign_id'):
                 vals['campaign_id'] = campaign[0].id

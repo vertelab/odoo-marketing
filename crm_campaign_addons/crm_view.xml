@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
   <data>
-    <record id="crm_campaign_object_tree" model="ir.ui.view">
+     <record id="crm_campaign_object_tree" model="ir.ui.view">
       <field name="name">crm.campaign.object.tree</field>
       <field name="model">crm.campaign.object</field>
       <field name="type">tree</field>
       <field name="arch" type="xml">
-        <tree>
+       <tree>
           <field name="sequence" widget="handle" />
           <field name="name" />
           <field name="campaign_id" />
           <field name="object_id" />
-        </tree>
+        </tree> 
       </field>
-    </record>
+    </record>  
+ 
     <record id="crm_campaign_object_view" model="ir.ui.view">
       <field name="name">crm.campaign.object.form</field>
       <field name="model">crm.campaign.object</field>
       <field name="type">form</field>
       <field name="arch" type="xml">
-        <form string="Object CRM Campaign">
+         <form string="Object CRM Campaign">
           <sheet string="Object CRM Campaign">
             <field name="image" widget="image" class="oe_avatar oe_right" />
             <div class="oe_left">
@@ -37,15 +38,16 @@
               </page>
             </notebook>
           </sheet>
-        </form>
+        </form> 
       </field>
     </record>
-    <record id="crm_campaign_object_kanban" model="ir.ui.view">
+
+     <record id="crm_campaign_object_kanban" model="ir.ui.view">
       <field name="name">crm.campaign.object.kanban</field>
       <field name="model">crm.campaign.object</field>
       <field name="type">kanban</field>
       <field name="arch" type="xml">
-        <kanban default_group_by="campaign_id">
+         <kanban default_group_by="campaign_id">
           <field name="color" />
           <field name="campaign_id" />
           <field name="name" />
@@ -89,22 +91,24 @@
               </div>
             </t>
           </templates>
-        </kanban>
+        </kanban> 
       </field>
-    </record>
+    </record> 
+
     <record id="crm_campaign_object_search" model="ir.ui.view">
       <field name="name">crm.campaign.object.search</field>
       <field name="model">crm.campaign.object</field>
       <field name="arch" type="xml">
-        <search string="Object Campaign">
+          <search string="Object Campaign">
           <field name="campaign_id" />
           <group expand="1" string="Group By">
             <filter context="{'group_by' : 'campaign_id'}" string="Campaign" />
-            <filter context="{'group_by' : 'object_id'}" string="Object" />
+            <filter context="{'group_by' : 'object_id'}" string="Object" /> 
           </group>
-        </search>
+        </search>  
       </field>
-    </record>
+    </record>  
+
     <record id="action_crm_campaign_object_view" model="ir.actions.act_window">
       <field name="name">crm.campaign.object.act</field>
       <field name="res_model">crm.campaign.object</field>
@@ -112,14 +116,15 @@
       <field name="view_mode">tree,form,kanban</field>
       <field name="context">{"search_default_current": 1}</field>
     </record>
+
     <record id="crm_tracking_campaign_tree" model="ir.ui.view">
-      <field name="name">crm.tracking.campaign.tree.inherited.crm_campaign_object</field>
-      <field name="model">crm.tracking.campaign</field>
+      <field name="name">utm.campaign.tree.inherited.crm_campaign_object</field>
+      <field name="model">utm.campaign</field>
       <field name="inherit_id" ref="crm.crm_tracking_campaign_tree" />
       <field name="arch" type="xml">
-        <tree position="attributes">
+         <tree position="attributes">
           <attribute name="colors">blue:state == 'draft';red:state in ('open');gray:state in ('cancel','close')</attribute>
-        </tree>
+        </tree> 
         <field name="name" position="after">
           <field name="date_start" />
           <field name="date_stop" />
@@ -127,28 +132,25 @@
         </field>
       </field>
     </record>
-    <record id="crm_tracking_campaign_form" model="ir.ui.view">
-      <field name="name">crm.tracking.campaign.form</field>
-      <field name="model">crm.tracking.campaign</field>
-      <field name="priority" eval="10" />
+ 
+      <record id="crm_tracking_campaign_form" model="ir.ui.view">
+      <field name="name">utm.campaign.form</field>
+      <field name="model">utm.campaign</field>
+      <field name="priority"/>
       <field name="arch" type="xml">
-        <form string="Campaign">
+         <form string="Campaign">
           <header>
-            <!--
-                 <button name="invoice_open" states="draft,proforma2" string="Validate" class="oe_highlight" groups="account.group_account_invoice"/>
-            -->
-            <field name="state" widget="statusbar"  clickable="True" statusbar_colors='{"draft":"blue","open":"red"}' />
+               <button name="invoice_open" states="draft,proforma2" string="Validate" class="oe_highlight" groups="account.group_account_invoice"/> 
+     <field name="state" widget="statusbar"  clickable="True" statusbar_colors='{"draft":"blue","open":"red"}' /> 
           </header>
-          <sheet>
+        <sheet>
             <h1>
               <field name="name" default_focus="1" placeholder="Campaing" class="oe_inline"/><span class="oe_inline"> </span>
             </h1>
-            <!--
-                 <button class="oe_inline oe_stat_button" type="action" icon="fa-dropbox" name="%(action_crm_campaign_object_view)d" context="{'search_default_campaign_id': active_id}">
+          <button class="oe_inline oe_stat_button" type="action" icon="fa-dropbox" name="%(action_crm_campaign_object_view)d" context="{'search_default_campaign_id': active_id}">
                  <field string="Objects" name="object_count" widget="statinfo"/>
                  </button>
-            -->
-
+      
              <field name="image" widget="image" class="oe_avatar oe_right" />
             <group>
                 <label for="date_start"/>
@@ -162,81 +164,84 @@
             <notebook>
               <page string="Objects">
                 <field name="object_ids">
-                  <tree>
+                <tree>
                     <field name="sequence" widget="handle" />
                     <field name="name" />
                     <field name="object_id" />
-                  </tree>
+                  </tree> 
                 </field>
               </page>
             </notebook>
-          </sheet>
-          <div class="oe_chatter">
+          </sheet> 
+        <div class="oe_chatter">
             <field name="message_follower_ids" widget="mail_followers" />
             <field name="message_ids" widget="mail_thread" />
-          </div>
-        </form>
+          </div> 
+        </form> 
       </field>
-    </record>
+    </record> 
+
     <record id="crm_tracking_campaign_calendar" model="ir.ui.view">
-      <field name="name">crm.tracking.campaign.calendar</field>
-      <field name="model">crm.tracking.campaign</field>
+      <field name="name">utm.campaign.calendar</field>
+      <field name="model">utm.campaign</field>
       <field name="arch" type="xml">
-        <calendar string="CRM Tracking Campaign" color="object_names" date_start="date_start" date_stop="date_stop">
+         <calendar string="CRM Tracking Campaign" color="object_names" date_start="date_start" date_stop="date_stop">
           <field name="name" />
           <field name="object_names" />
-        </calendar>
+        </calendar> 
       </field>
     </record>
+
     <record id="crm_tracking_campaign_gantt" model="ir.ui.view">
-      <field name="name">crm.tracking.campaign.gantt</field>
-      <field name="model">crm.tracking.campaign</field>
+      <field name="name">utm.campaign.gantt</field>
+      <field name="model">utm.campaign.campaign</field>
       <field name="type">gantt</field>
       <field name="arch" type="xml">
-        <gantt date_start="date_start" date_stop="date_stop" string="Campaigns" />
+         <field date_start="date_start" date_stop="date_stop" string="Campaigns" /> 
       </field>
-    </record>
+    </record> 
+
     <record id="crm_tracking_campaign_search" model="ir.ui.view">
-      <field name="name">crm.tracking.campaign.search</field>
-      <field name="model">crm.tracking.campaign</field>
+      <field name="name">utm.campaign.search</field>
+      <field name="model">utm.campaign</field>
       <field name="arch" type="xml">
-        <search string="CRM Tracking Campaign">
+         <search string="CRM Tracking Campaign">
           <field name="name" string="Name" filter_domain="[('display_name','ilike',self)]" />
           <group expand="1" string="Group By">
             <filter context="{'group_by' : 'object_ids'}" string="Object" />
           </group>
-        </search>
+        </search> 
       </field>
     </record>
-    <record id="crm.crm_tracking_campaign_act" model="ir.actions.act_window">
+
+   <record id="crm.crm_tracking_campaign_act" model="ir.actions.act_window">
       <field name="view_mode">tree,form,calendar,gantt</field>
-    </record>
-  </data>
-    <data>
-        <act_window id="act_campaign_overview"
+    </record> 
+ <!--
+         <act_window id="act_campaign_overview"
             key2="client_action_multi"
             name="Campaign Overview"
             res_model="campaign.overview"
-            src_model="crm.tracking.campaign"
+            src_model="utm.campaign"
             groups=""
-            view_mode="form" target="new" view_type="form" />
-
-        <record id="campaign_overview_form" model="ir.ui.view">
+            view_mode="form" target="new" view_type="form" />  -->
+<!-- 
+         <record id="campaign_overview_form" model="ir.ui.view">
             <field name="name">campaign.overview.form</field>
             <field name="model">campaign.overview</field>
             <field name="arch" type="xml">
-                <form string="Campagin Overview">
+                 <form string="Campagin Overview">
                     <group>
                         <field name="date"/>
                     </group>
                     <footer>
-                        <div>
+                    <div>
                             <button name="overview" string="Overview" type="object" class="oe_highlight"/> or
                             <button special="cancel" string="Cancel" class="oe_link"/>
-                        </div>
+                        </div> 
                     </footer>
-                </form>
+                </form> 
             </field>
-        </record>
+        </record>  -->
     </data>
-</openerp>
+</odoo>

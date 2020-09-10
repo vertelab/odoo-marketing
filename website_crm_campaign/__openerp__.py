@@ -26,13 +26,13 @@
     'description': """
 Different pricelists on campaign
 ================================
-* Hook product.template with crm.tracking.campaign
+* Hook product.template with utm.campaign
 * Start and stop date on a campaign
 * Show current campaign as first page on website
 
 crm_campaign
-    crm.tracking.campaign
-    crm.tracking.campaign.object  (title,description,image)
+    cutm.campaign
+    utm.campaign.object  (title,description,image)
     start/stop-date
     pricelists
     campaign_objects

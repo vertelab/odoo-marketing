@@ -28,7 +28,7 @@ class crm_campaign_product(models.Model):
     _order = 'sequence'
 
     sequence = fields.Integer()
-    campaign_id = fields.Many2one(comodel_name="crm.tracking.campaign")
+    campaign_id = fields.Many2one(comodel_name="utm.campaign")
     product_id = fields.Many2one(comodel_name="product.template")
     name = fields.Char(related='product_id.name')
     default_code = fields.Char(related='product_id.default_code')
@@ -38,12 +38,11 @@ class crm_campaign_product(models.Model):
     virtual_available = fields.Float(related='product_id.virtual_available')
 
 class crm_tracking_campaign(models.Model):
-    _inherit = 'crm.tracking.campaign'
+    _inherit = 'utm.campaign'
 
     product_ids = fields.Many2many(comodel_name='product.template', relation="crm_campaign_product", column1='campaign_id',column2='product_id', string='Products')
     campaign_product_ids = fields.One2many(comodel_name='crm.campaign.product', inverse_name='campaign_id', string='Products')
 
-    @api.one
     def update_campaign_product_ids(self):
         self.env['crm.campaign.product'].search([('campaign_id', '=', self.id)]).unlink()
         for o in self.object_ids.sorted(lambda o: o.sequence):
@@ -52,21 +51,17 @@ class crm_tracking_campaign(models.Model):
                 o.create_campaign_product(self)
 
 
-
-
-
 class product_template(models.Model):
     _inherit = 'product.template'
 
-    campaign_ids = fields.Many2many(comodel_name='crm.tracking.campaign', relation="crm_campaign_product", column1='product_id', column2='campaign_id',string='Campaigns')
+    campaign_ids = fields.Many2many(comodel_name='utm.campaign', relation="crm_campaign_product", column1='product_id', column2='campaign_id',string='Campaigns')
 
 
 class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
 
     object_id = fields.Reference(selection_add=[('product.template', 'Product Template'), ('product.product', 'Product Variant'),])
-    @api.one
-    @api.onchange('object_id')
+
     def get_object_value(self):
         if self.object_id:
             if self.object_id._name == 'product.template' or self.object_id._name == 'product.product':
@@ -76,7 +71,6 @@ class crm_campaign_object(models.Model):
                 self.image = self.object_id.image
         return super(crm_campaign_object, self).get_object_value()
 
-    @api.one
     def create_campaign_product(self,campaign):
         if self.object_id._name == 'product.template':
             self.env['crm.campaign.product'].create({

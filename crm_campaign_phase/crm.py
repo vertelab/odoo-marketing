@@ -27,9 +27,9 @@ _logger = logging.getLogger(__name__)
 
 
 class crm_tracking_campaign(models.Model):
-    _inherit = 'crm.tracking.campaign'
+    _inherit = 'utm.campaign'
 
-    phase_ids = fields.One2many(comodel_name='crm.tracking.phase', inverse_name='campaign_id', string='Phases')
+    phase_ids = fields.One2many(comodel_name='utm.campaign', inverse_name='campaign_id', string='Phases')
     country_ids = fields.Many2many(comodel_name='res.country', string='Country')
 
     @api.multi
@@ -61,10 +61,10 @@ class crm_tracking_campaign(models.Model):
 
 
 class crm_tracking_phase(models.Model):
-    _name = "crm.tracking.phase"
+    _name = "utm.campaign"
     _order = 'campaign_id, sequence, name'
 
-    campaign_id = fields.Many2one(comodel_name='crm.tracking.campaign', string='Campaign')
+    campaign_id = fields.Many2one(comodel_name='utm.campaign', string='Campaign')
     name = fields.Char(string='Name')
     phase_type = fields.Many2one(comodel_name="crm.tracking.phase.type",string="Type")
     sequence = fields.Integer()
@@ -142,7 +142,7 @@ class product_pricelist(models.Model):
         price = [p[0] for key, p in self.sudo().price_rule_get(prod_id, qty, partner=partner).items()][0]
         campaign_price = 999999999999999999999999999999.0
         date = self.env.context['date'] if self.env.context.get('date') else fields.Date.today()
-        for pricelist in self.env['crm.tracking.campaign'].search([('state','=','open')]).mapped('phase_ids').mapped(lambda p: p.get_pricelist(date,prod_id,is_reseller)):
+        for pricelist in self.env['utm.campaign'].search([('state','=','open')]).mapped('phase_ids').mapped(lambda p: p.get_pricelist(date,prod_id,is_reseller)):
             try:
                 campaign_price = [p[0] for key, p in pricelist.price_rule_get(prod_id, qty, partner=partner).items()][0]
             except:
@@ -156,9 +156,9 @@ class product_template(models.Model):
     def get_campaign_products(self,for_reseller=False):
         products = self.env['product.template'].browse([])
         if for_reseller:
-            campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')])
+            campaigns = self.env['utm.campaign'].search([('state','=','open')])
         else:
-            campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
+            campaigns = self.env['utm.campaign'].search([('state','=','open'), ('website_published', '=', True)])
         for campaign in campaigns:
             if campaign.is_current(fields.Date.today(),for_reseller):
                 products |= campaign.product_ids.filtered(lambda p: len(self.env.user.partner_id.commercial_partner_id.access_group_ids & p.access_group_ids) > 0)
@@ -168,9 +168,9 @@ class product_template(models.Model):
     def get_campaign_variants(self,for_reseller=False):
         products = self.env['product.product'].browse([])
         if for_reseller:
-            campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')])
+            campaigns = self.env['utm.campaign'].search([('state','=','open')])
         else:
-            campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
+            campaigns = self.env['utm.campaign'].search([('state','=','open'), ('website_published', '=', True)])
         for campaign in campaigns:
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in campaign.object_ids:
@@ -184,9 +184,9 @@ class product_template(models.Model):
     def get_campaign_tmpl(self,for_reseller=False):
         products = self.env['product.template'].browse([])
         if for_reseller:
-            campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')])
+            campaigns = self.env['utm.campaign'].search([('state','=','open')])
         else:
-            campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
+            campaigns = self.env['utm.campaign'].search([('state','=','open'), ('website_published', '=', True)])
         for campaign in campaigns:
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in campaign.object_ids:
@@ -200,9 +200,9 @@ class product_template(models.Model):
     def get_campaign_image(self,for_reseller=False):
         self.ensure_one()
         if for_reseller:
-            campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.id in c.product_ids.mapped('id'))
+            campaigns = self.env['utm.campaign'].search([('state','=','open')]).filtered(lambda c: self.id in c.product_ids.mapped('id'))
         else:
-            campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)]).filtered(lambda c: self.id in c.product_ids.mapped('id'))
+            campaigns = self.env['utm.campaign'].search([('state','=','open'), ('website_published', '=', True)]).filtered(lambda c: self.id in c.product_ids.mapped('id'))
         for campaign in campaigns:
             if len(campaign.get_phase(fields.Date.today(),for_reseller))>0:
                 return campaign.image
@@ -212,11 +212,11 @@ class product_template(models.Model):
         self.ensure_one()
         date = None
         if for_reseller:
-            for phase in self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.id in c.product_ids.mapped('id')).mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)):
+            for phase in self.env['utm.campaign'].search([('state','=','open')]).filtered(lambda c: self.id in c.product_ids.mapped('id')).mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)):
                 if phase.end_date > date:
                     date = phase.end_date
         else:
-            for campaign in self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True), ('date_start','>=',fields.Date.today()), ('date_stop','<=',fields.Date.today())]).filtered(lambda c: self.id in c.product_ids.mapped('id')):
+            for campaign in self.env['utm.campaign'].search([('state','=','open'), ('website_published', '=', True), ('date_start','>=',fields.Date.today()), ('date_stop','<=',fields.Date.today())]).filtered(lambda c: self.id in c.product_ids.mapped('id')):
                 if campaign.date_stop > date:
                     date = campaign.date_stop
         return date
@@ -228,9 +228,9 @@ class product_product(models.Model):
     def get_campaign_products(self,for_reseller=False):
         products = self.env['product.product'].browse([])
         if for_reseller:
-            campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')])
+            campaigns = self.env['utm.campaign'].search([('state','=','open')])
         else:
-            campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
+            campaigns = self.env['utm.campaign'].search([('state','=','open'), ('website_published', '=', True)])
         for campaign in campaigns:
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in self.env['product.product'].search([('product_tmpl_id','in',campaign.product_ids.mapped('id'))]):
@@ -242,9 +242,9 @@ class product_product(models.Model):
     def get_campaign_variants(self,for_reseller=False):
         products = self.env['product.product'].browse([])
         if for_reseller:
-            campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')])
+            campaigns = self.env['utm.campaign'].search([('state','=','open')])
         else:
-            campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
+            campaigns = self.env['utm.campaign'].search([('state','=','open'), ('website_published', '=', True)])
         for campaign in campaigns:
             if campaign.is_current(fields.Date.today(),for_reseller):
                 variant_ids = [int(d['object_id'].split(',')[1]) for d in self.env['crm.campaign.object'].search_read([('campaign_id', '=', campaign.id), ('object_id', '=like', 'product.product,%')], ['object_id'])]
@@ -259,9 +259,9 @@ class product_product(models.Model):
     def get_campaign_image(self,for_reseller=False):
         self.ensure_one()
         if for_reseller:
-            campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id'))
+            campaigns = self.env['utm.campaign'].search([('state','=','open')]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id'))
         else:
-            campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id'))
+            campaigns = self.env['utm.campaign'].search([('state','=','open'), ('website_published', '=', True)]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id'))
         for campaign in campaigns:
             if len(campaign.get_phase(fields.Date.today(),for_reseller))>0:
                 return campaign.image
@@ -271,11 +271,11 @@ class product_product(models.Model):
         self.ensure_one()
         date = None
         if for_reseller:
-            for phase in self.env['crm.tracking.campaign'].search([('state','=','open')]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id')).mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)):
+            for phase in self.env['utm.campaign'].search([('state','=','open')]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id')).mapped(lambda p: p.get_phase(fields.Date.today(),for_reseller)):
                 if phase.end_date > date:
                     date = phase.end_date
         else:
-            for campaign in self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True), ('date_start','>=',fields.Date.today()), ('date_stop','<=',fields.Date.today())]).filtered(lambda c: self.product_tmpl_ids.id in c.product_ids.mapped('id')):
+            for campaign in self.env['utm.campaign'].search([('state','=','open'), ('website_published', '=', True), ('date_start','>=',fields.Date.today()), ('date_stop','<=',fields.Date.today())]).filtered(lambda c: self.product_tmpl_ids.id in c.product_ids.mapped('id')):
                 if campaign.date_stop > date:
                     date = campaign.date_stop
         return date

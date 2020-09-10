@@ -25,8 +25,8 @@
       </field>
     </record>
     <record id="crm_tracking_campaign_form" model="ir.ui.view">
-      <field name="name">crm.tracking.campaign.form.inherited.crm_campaign_product</field>
-      <field name="model">crm.tracking.campaign</field>
+      <field name="name">utm.campaign.form.inherited.crm_campaign_product</field>
+      <field name="model">utm.campaign</field>
       <field name="inherit_id" ref="crm_campaign_addons.crm_tracking_campaign_form" />
       <field name="arch" type="xml">
           <field name="section_id" position="after">

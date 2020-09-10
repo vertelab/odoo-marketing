@@ -24,8 +24,8 @@ import logging
 _logger = logging.getLogger(__name__)
 
 class crm_tracking_campaign(models.Model):
-    _name = 'crm.tracking.campaign'
-    _inherit = ['crm.tracking.campaign','mail.thread']
+    _name = 'utm.campaign'
+    _inherit = ['utm.campaign','mail.thread']
 
     color = fields.Integer('Color Index')
     date_start = fields.Date(string='Start Date',track_visibility='onchange', )
@@ -33,18 +33,20 @@ class crm_tracking_campaign(models.Model):
     image = fields.Binary(string='Image')
 
     object_ids = fields.One2many(comodel_name='crm.campaign.object', inverse_name='campaign_id', string='Objects')
-    @api.one
+
     def _object_names(self):
-        self.object_names = ', '.join(self.object_ids.mapped('name'))
+        for obj in self:
+            obj.object_names = ', '.join(obj.object_ids.mapped('name'))
     object_names = fields.Char(compute='_object_names')
-    @api.one
+ 
     def _object_count(self):
-        self.object_count = len(self.object_ids)
+        for obj in self: 
+            self.object_count = len(self.object_ids)
     object_count = fields.Integer(compute='_object_count')
 
     @api.model
     def get_campaigns(self):
-        return self.env['crm.tracking.campaign'].search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today())])
+        return self.env['utm.campaign'].search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today())])
 
     state = fields.Selection([
             ('draft','Draft'),
@@ -68,14 +70,14 @@ class crm_campaign_object(models.Model):
     image = fields.Binary(string='Image')
     sequence = fields.Integer()
     color = fields.Integer('Color Index')
-    campaign_id = fields.Many2one(comodel_name='crm.tracking.campaign', string='Campaign')
+    campaign_id = fields.Many2one(comodel_name='utm.campaign', string='Campaign')
     object_id = fields.Reference(selection=[], string='Object')
 
     @api.onchange('object_id')
     def get_object_value(self):
         pass
 
-    @api.one
+    @api.model
     def create_campaign_product(self,campaign):
         pass
 
@@ -85,7 +87,7 @@ class CampaignOverview(models.TransientModel):
 
     date = fields.Date(string='Date', required=True)
 
-    @api.multi
+    @api.model
     def overview(self):
         return {
             'type': 'ir.actions.act_url',

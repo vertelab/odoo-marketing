@@ -24,7 +24,7 @@
     'version': '0.2',
     'category': 'crm',
     'description': """
-Base class that bind together crm.tracking.campaign with different object
+Base class that bind together utm.campaign with different object
 
 """,
     'author': 'Vertel AB',

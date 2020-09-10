@@ -1,1 +1,1 @@
-import campaign
+from . import campaign
