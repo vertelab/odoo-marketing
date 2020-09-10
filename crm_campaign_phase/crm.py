@@ -72,7 +72,8 @@ class crm_tracking_phase(models.Model):
     @api.one
     def _start_date(self):
         if self.phase_type.start_days_from_start:
-            self.start_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_start) + timedelta(days = self.phase_type.start_days))
+            if self.campaign_id.date_start:
+                self.start_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_start) + timedelta(days = self.phase_type.start_days))
         else:
             if self.campaign_id.date_stop:
                 self.start_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_stop) + timedelta(days = self.phase_type.start_days))
