@@ -242,8 +242,8 @@ class product_template(models.Model):
 
 class product_product(models.Model):
     _inherit = "product.product"
-    is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', search='_search_is_offer_product_consumer')
-    is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', search='_search_is_offer_product_reseller')
+    is_offer_product_consumer = fields.Boolean(compute='_is_offer_product')
+    is_offer_product_reseller = fields.Boolean(compute='_is_offer_product')
 
 
     @api.model
