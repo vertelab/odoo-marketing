@@ -21,9 +21,9 @@
 from openerp import models, fields, api, _
 from openerp.exceptions import except_orm, Warning, RedirectWarning
 from datetime import datetime, timedelta
+from babel.dates import format_date
 import logging
 _logger = logging.getLogger(__name__)
-
 
 
 class crm_tracking_campaign(models.Model):
@@ -35,7 +35,7 @@ class crm_tracking_campaign(models.Model):
     @api.multi
     def get_phase(self, date, is_reseller):
         self.ensure_one()
-        return filter(None, self.phase_ids.filtered(lambda p: p.start_date <= date and p.end_date >= date and p.reseller_pricelist == is_reseller))
+        return self.phase_ids.filtered(lambda p: p.start_date <= date and p.end_date >= date and p.reseller_pricelist == is_reseller)
 
     @api.multi
     def is_current(self, date, is_reseller):
@@ -58,6 +58,24 @@ class crm_tracking_campaign(models.Model):
     def check_product(self, prod_id):
         self.ensure_one()
         return prod_id in self.env['product.product'].search([('id', 'in', self.env['product.template'].search([('id', 'in', self.campaign_product_ids.mapped('product_id').mapped('id'))]).mapped('product_variant_ids').mapped('id'))]).mapped('id')
+
+    @api.one
+    def get_period(self, is_reseller):
+        def pretty_date(date):
+            return format_date(fields.Date.from_string(date), 'd MMM', locale=self.env.context.get('lang', 'sv_SE')).replace('.', '')
+        phase = self.get_phase(fields.Date.today(), is_reseller)
+        date_start = phase.start_date
+        date_stop = phase.end_date
+        if not date_stop:
+            return _('until further notice')
+        elif date_start:
+            return '%s - %s' % (pretty_date(date_start),pretty_date(date_stop))
+        else:
+            return '- %s' % pretty_date(date_stop)
+
+    @api.model
+    def get_campaigns(self):
+        return super(crm_tracking_campaign, self).get_campaigns().filtered(lambda c: self.env.user.partner_id.commercial_partner_id.country_id in c.country_ids) 
 
 
 class crm_tracking_phase(models.Model):
@@ -111,8 +129,7 @@ class crm_tracking_phase(models.Model):
         self.ensure_one()
         if date >= self.start_date and date <= self.end_date and is_reseller == self.reseller_pricelist:
             return self
-
-
+    
 class crm_tracking_phase_type(models.Model):
     _name = "crm.tracking.phase.type"
 
@@ -127,6 +144,7 @@ class crm_tracking_phase_type(models.Model):
         if self.start_days_from_start and self.end_days_from_start:
             if self.end_days < self.start_days:
                 raise Warning('End days must be greater than or equal to start days')
+
 
 class product_pricelist(models.Model):
     _inherit = "product.pricelist"
@@ -224,6 +242,9 @@ class product_template(models.Model):
 
 class product_product(models.Model):
     _inherit = "product.product"
+    is_offer_product_consumer = fields.Boolean(compute='_is_offer_product', search='_search_is_offer_product_consumer')
+    is_offer_product_reseller = fields.Boolean(compute='_is_offer_product', search='_search_is_offer_product_reseller')
+
 
     @api.model
     def get_campaign_products(self,for_reseller=False):
@@ -232,11 +253,23 @@ class product_product(models.Model):
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open')])
         else:
             campaigns = self.env['crm.tracking.campaign'].search([('state','=','open'), ('website_published', '=', True)])
-        for campaign in campaigns:
+
+        for campaign in campaigns.filtered(lambda c: self.env.user.partner_id.commercial_partner_id.country_id in c.country_ids):
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in self.env['product.product'].search([('product_tmpl_id','in',campaign.product_ids.mapped('id'))]):
                     products |= o.object_id.filtered(lambda p: len(self.env.user.partner_id.commercial_partner_id.access_group_ids & p.access_group_ids) > 0)
         return products
+
+    @api.one
+    def _is_offer_product(self):
+        self.is_offer_product_consumer = self in self.get_campaign_products(for_reseller = False)
+        self.is_offer_product_reseller = self in self.get_campaign_products(for_reseller = True)
+
+    @api.model
+    def _search_is_offer_product_reseller(self, op, value):
+        # only supports op: =; value: True, False
+        
+        return bool(self.get_campaign_products(for_reseller = value))
 
 
     @api.model

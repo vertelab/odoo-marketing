@@ -44,7 +44,10 @@ class crm_tracking_campaign(models.Model):
 
     @api.model
     def get_campaigns(self):
-        return self.env['crm.tracking.campaign'].search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today())])
+        return self.env['crm.tracking.campaign'].search([
+            ('date_start', '<',fields.Date.today()),
+            ('date_stop', '>', fields.Date.today())])
+
 
     state = fields.Selection([
             ('draft','Draft'),
