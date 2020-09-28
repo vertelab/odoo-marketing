@@ -35,7 +35,7 @@ class crm_tracking_campaign(models.Model):
     @api.multi
     def get_phase(self, date, is_reseller):
         self.ensure_one()
-        return self.phase_ids.filtered(lambda p: p.start_date <= date and p.end_date >= date and p.reseller_pricelist == is_reseller)
+        return self.phase_ids.filtered(lambda p: p.start_date <= date and (p.end_date >= date or p.end_date == False) and p.reseller_pricelist == is_reseller)
 
     @api.multi
     def get_current_phase(self, is_reseller):
