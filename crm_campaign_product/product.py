@@ -53,8 +53,6 @@ class crm_tracking_campaign(models.Model):
 
 
 
-
-
 class product_template(models.Model):
     _inherit = 'product.template'
 
