@@ -29,7 +29,7 @@ class crm_campaign_product(models.Model):
 
     sequence = fields.Integer()
     campaign_id = fields.Many2one(comodel_name="crm.tracking.campaign")
-    product_id = fields.Many2one(comodel_name="product.template")
+    product_id = fields.Many2one(comodel_name="product.product")
     name = fields.Char(related='product_id.name')
     default_code = fields.Char(related='product_id.default_code')
     type = fields.Selection(related='product_id.type')
@@ -40,7 +40,7 @@ class crm_campaign_product(models.Model):
 class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
 
-    product_ids = fields.Many2many(comodel_name='product.template', relation="crm_campaign_product", column1='campaign_id',column2='product_id', string='Products')
+    product_ids = fields.Many2many(comodel_name='product.product', relation="crm_campaign_product", column1='campaign_id',column2='product_id', string='Products')
     campaign_product_ids = fields.One2many(comodel_name='crm.campaign.product', inverse_name='campaign_id', string='Products')
 
     @api.one
@@ -51,18 +51,19 @@ class crm_tracking_campaign(models.Model):
             if getattr(o,'create_campaign_product', False):
                 o.create_campaign_product(self)
 
-
-
 class product_template(models.Model):
     _inherit = 'product.template'
-
     campaign_ids = fields.Many2many(comodel_name='crm.tracking.campaign', relation="crm_campaign_product", column1='product_id', column2='campaign_id',string='Campaigns')
 
+class product_product(models.Model):
+    _inherit = 'product.product'
+    campaign_ids = fields.Many2many(comodel_name='crm.tracking.campaign', relation="crm_campaign_product", column1='product_id', column2='campaign_id',string='Campaigns')
 
 class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
 
-    object_id = fields.Reference(selection_add=[('product.template', 'Product Template'), ('product.product', 'Product Variant'),])
+    object_id = fields.Reference(selection_add=[('product.template', 'Product Template'), ('product.product', 'Product Variant'), ('product.public.category', 'Product Category')])
+    
     @api.one
     @api.onchange('object_id')
     def get_object_value(self):
@@ -74,26 +75,25 @@ class crm_campaign_object(models.Model):
                 self.image = self.object_id.image
         return super(crm_campaign_object, self).get_object_value()
 
+    def create_campaign_variant(self, campaign, variant):
+        self.env['crm.campaign.product'].create({
+                'campaign_id': campaign.id,
+                'product_id': variant.id,
+                'sequence': len(campaign.product_ids) + 1,
+            })
+
     @api.one
-    def create_campaign_product(self,campaign):
-        if self.object_id._name == 'product.template':
-            self.env['crm.campaign.product'].create({
-                'campaign_id': campaign.id,
-                'product_id': self.object_id.id,
-                'sequence': len(campaign.product_ids) + 1,
-            })
-        elif self.object_id._name == 'product.product':
-            self.env['crm.campaign.product'].create({
-                'campaign_id': campaign.id,
-                'product_id': self.object_id.product_tmpl_id.id,
-                'sequence': len(campaign.product_ids) + 1,
-            })
+    def create_campaign_product(self, campaign):
+        if self.object_id._name == 'product.product':
+            self.create_campaign_variant(campaign, self.object_id)
+
+        elif self.object_id._name == 'product.template':
+			for product in self.object_id.product_variant_ids:
+				self.create_campaign_variant(campaign, product)
+		    
         elif self.object_id._name == 'product.public.category':
-            for product in self.env['product.template'].search([('public_categ_ids', 'in', self.object_id.id)]):
-                self.env['crm.campaign.product'].create({
-                    'campaign_id': campaign.id,
-                    'product_id': product.id,
-                    'sequence': len(campaign.product_ids) + 1,
-                })
+            for template in self.env['product.template'].search([('public_categ_ids', 'in', self.object_id.id)]):
+				for product in template.product_variant_ids:
+					self.create_campaign_variant(campaign, product)
         else:
             super(crm_campaign_object, self).create_campaign_product(campaign)
