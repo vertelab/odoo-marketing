@@ -29,7 +29,7 @@ class crm_campaign_product(models.Model):
 
     sequence = fields.Integer()
     campaign_id = fields.Many2one(comodel_name="crm.tracking.campaign")
-    product_id = fields.Many2one(comodel_name="product.template")
+    product_id = fields.Many2one(comodel_name="product.product")
     name = fields.Char(related='product_id.name')
     default_code = fields.Char(related='product_id.default_code')
     type = fields.Selection(related='product_id.type')
@@ -40,7 +40,7 @@ class crm_campaign_product(models.Model):
 class crm_tracking_campaign(models.Model):
     _inherit = 'crm.tracking.campaign'
 
-    product_ids = fields.Many2many(comodel_name='product.template', relation="crm_campaign_product", column1='campaign_id',column2='product_id', string='Products')
+    product_ids = fields.Many2many(comodel_name='product.product', relation="crm_campaign_product", column1='campaign_id',column2='product_id', string='Products')
     campaign_product_ids = fields.One2many(comodel_name='crm.campaign.product', inverse_name='campaign_id', string='Products')
 
     @api.one
@@ -64,7 +64,7 @@ class product_template(models.Model):
 class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
 
-    object_id = fields.Reference(selection_add=[('product.template', 'Product Template'), ('product.product', 'Product Variant'),])
+    object_id = fields.Reference(selection_add=[('product.template', 'Product Template'), ('product.product', 'Product Variant')])
     @api.one
     @api.onchange('object_id')
     def get_object_value(self):
@@ -79,23 +79,32 @@ class crm_campaign_object(models.Model):
     @api.one
     def create_campaign_product(self,campaign):
         if self.object_id._name == 'product.template':
-            self.env['crm.campaign.product'].create({
-                'campaign_id': campaign.id,
-                'product_id': self.object_id.id,
-                'sequence': len(campaign.product_ids) + 1,
-            })
+			_logger.warn('Lukas in product.template')
+			for product in self.object_id.product_variant_ids:
+				self.env['crm.campaign.product'].create({
+					'campaign_id': campaign.id,
+					'product_id': product.id,
+					'sequence': len(campaign.product_ids) + 1,
+				})
         elif self.object_id._name == 'product.product':
+            _logger.warn('Lukas in product.product')
             self.env['crm.campaign.product'].create({
                 'campaign_id': campaign.id,
+                #'product_id': self.object_id.id,
                 'product_id': self.object_id.product_tmpl_id.id,
+                # ~ 'product_id' : 7091,
                 'sequence': len(campaign.product_ids) + 1,
             })
+            _logger.warn('Lukas self.object_id.id is %s' % self.object_id.id)
+            
         elif self.object_id._name == 'product.public.category':
-            for product in self.env['product.template'].search([('public_categ_ids', 'in', self.object_id.id)]):
-                self.env['crm.campaign.product'].create({
-                    'campaign_id': campaign.id,
-                    'product_id': product.id,
-                    'sequence': len(campaign.product_ids) + 1,
-                })
+            _logger.warn('Lukas in product.category')
+            for template in self.env['product.template'].search([('public_categ_ids', 'in', self.object_id.id)]):
+				for product in template.product_variant_ids:
+					self.env['crm.campaign.product'].create({	
+						'campaign_id': campaign.id,
+						'product_id': product.id,
+						'sequence': len(campaign.product_ids) + 1,
+					})
         else:
             super(crm_campaign_object, self).create_campaign_product(campaign)
