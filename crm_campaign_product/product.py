@@ -51,10 +51,6 @@ class crm_tracking_campaign(models.Model):
             if getattr(o,'create_campaign_product', False):
                 o.create_campaign_product(self)
 
-
-
-
-
 class product_template(models.Model):
     _inherit = 'product.template'
 
@@ -86,13 +82,13 @@ class crm_campaign_object(models.Model):
 					'product_id': product.id,
 					'sequence': len(campaign.product_ids) + 1,
 				})
+				
         elif self.object_id._name == 'product.product':
             _logger.warn('Lukas in product.product')
             self.env['crm.campaign.product'].create({
                 'campaign_id': campaign.id,
                 #'product_id': self.object_id.id,
                 'product_id': self.object_id.product_tmpl_id.id,
-                # ~ 'product_id' : 7091,
                 'sequence': len(campaign.product_ids) + 1,
             })
             _logger.warn('Lukas self.object_id.id is %s' % self.object_id.id)
