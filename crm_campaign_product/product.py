@@ -56,7 +56,6 @@ class product_template(models.Model):
 
     campaign_ids = fields.Many2many(comodel_name='crm.tracking.campaign', relation="crm_campaign_product", column1='product_id', column2='campaign_id',string='Campaigns')
 
-
 class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
 
@@ -72,35 +71,30 @@ class crm_campaign_object(models.Model):
                 self.image = self.object_id.image
         return super(crm_campaign_object, self).get_object_value()
 
-    @api.one
-    def create_campaign_product(self,campaign):
-        if self.object_id._name == 'product.template':
-			_logger.warn('Lukas in product.template')
-			for product in self.object_id.product_variant_ids:
-				self.env['crm.campaign.product'].create({
-					'campaign_id': campaign.id,
-					'product_id': product.id,
-					'sequence': len(campaign.product_ids) + 1,
-				})
-				
-        elif self.object_id._name == 'product.product':
-            _logger.warn('Lukas in product.product')
-            self.env['crm.campaign.product'].create({
+    def create_campaign_variant(self, variant):
+        self.env['crm.campaign.product'].create({
                 'campaign_id': campaign.id,
-                #'product_id': self.object_id.id,
-                'product_id': self.object_id.product_tmpl_id.id,
+                'product_id': variant.id,
+                #'product_id': variant.product_tmpl_id.id,
                 'sequence': len(campaign.product_ids) + 1,
             })
-            _logger.warn('Lukas self.object_id.id is %s' % self.object_id.id)
-            
+
+    @api.one
+    def create_campaign_product(self, campaign):
+        if self.object_id._name == 'product.product':
+            _logger.warn('Lukas in product.product')
+            create_campaign_variant(self.object_id)
+
+        elif self.object_id._name == 'product.template':
+			_logger.warn('Lukas in product.template')
+			for product in self.object_id.product_variant_ids:
+				create_campaign_variant(product)
+		    
         elif self.object_id._name == 'product.public.category':
             _logger.warn('Lukas in product.category')
             for template in self.env['product.template'].search([('public_categ_ids', 'in', self.object_id.id)]):
 				for product in template.product_variant_ids:
-					self.env['crm.campaign.product'].create({	
-						'campaign_id': campaign.id,
-						'product_id': product.id,
-						'sequence': len(campaign.product_ids) + 1,
-					})
+					create_campaign_variant(product)
+
         else:
             super(crm_campaign_object, self).create_campaign_product(campaign)
