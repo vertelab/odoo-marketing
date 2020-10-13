@@ -59,7 +59,8 @@ class product_template(models.Model):
 class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
 
-    object_id = fields.Reference(selection_add=[('product.template', 'Product Template'), ('product.product', 'Product Variant')])
+    self.object_id = fields.Reference(selection_add=[('product.template', 'Product Template'), ('product.product', 'Product Variant'), ('product.public.category', 'Product Category')])
+    
     @api.one
     @api.onchange('object_id')
     def get_object_value(self):
