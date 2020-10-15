@@ -59,7 +59,7 @@ class product_template(models.Model):
 class crm_campaign_object(models.Model):
     _inherit = 'crm.campaign.object'
 
-    self.object_id = fields.Reference(selection_add=[('product.template', 'Product Template'), ('product.product', 'Product Variant'), ('product.public.category', 'Product Category')])
+    object_id = fields.Reference(selection_add=[('product.template', 'Product Template'), ('product.product', 'Product Variant'), ('product.public.category', 'Product Category')])
     
     @api.one
     @api.onchange('object_id')
@@ -72,7 +72,7 @@ class crm_campaign_object(models.Model):
                 self.image = self.object_id.image
         return super(crm_campaign_object, self).get_object_value()
 
-    def create_campaign_variant(self, variant):
+    def create_campaign_variant(self, campaign, variant):
         self.env['crm.campaign.product'].create({
                 'campaign_id': campaign.id,
                 'product_id': variant.id,
@@ -84,18 +84,18 @@ class crm_campaign_object(models.Model):
     def create_campaign_product(self, campaign):
         if self.object_id._name == 'product.product':
             _logger.warn('Lukas in product.product')
-            create_campaign_variant(self.object_id)
+            self.create_campaign_variant(campaign, self.object_id)
 
         elif self.object_id._name == 'product.template':
 			_logger.warn('Lukas in product.template')
 			for product in self.object_id.product_variant_ids:
-				create_campaign_variant(product)
+				self.create_campaign_variant(campaign, product)
 		    
         elif self.object_id._name == 'product.public.category':
             _logger.warn('Lukas in product.category')
             for template in self.env['product.template'].search([('public_categ_ids', 'in', self.object_id.id)]):
 				for product in template.product_variant_ids:
-					create_campaign_variant(product)
+					self.create_campaign_variant(campaign, product)
 
         else:
             super(crm_campaign_object, self).create_campaign_product(campaign)

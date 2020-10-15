@@ -46,7 +46,7 @@ website_crm_campaign
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['website_sale', 'sale_crm'],
+    'depends': ['website_sale', 'sale_crm', 'crm_campaign_product'],
     'data': [
         'campaign_view.xml',
     ],
