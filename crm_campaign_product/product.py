@@ -76,26 +76,21 @@ class crm_campaign_object(models.Model):
         self.env['crm.campaign.product'].create({
                 'campaign_id': campaign.id,
                 'product_id': variant.id,
-                #'product_id': variant.product_tmpl_id.id,
                 'sequence': len(campaign.product_ids) + 1,
             })
 
     @api.one
     def create_campaign_product(self, campaign):
         if self.object_id._name == 'product.product':
-            _logger.warn('Lukas in product.product')
             self.create_campaign_variant(campaign, self.object_id)
 
         elif self.object_id._name == 'product.template':
-			_logger.warn('Lukas in product.template')
 			for product in self.object_id.product_variant_ids:
 				self.create_campaign_variant(campaign, product)
 		    
         elif self.object_id._name == 'product.public.category':
-            _logger.warn('Lukas in product.category')
             for template in self.env['product.template'].search([('public_categ_ids', 'in', self.object_id.id)]):
 				for product in template.product_variant_ids:
 					self.create_campaign_variant(campaign, product)
-
         else:
             super(crm_campaign_object, self).create_campaign_product(campaign)
