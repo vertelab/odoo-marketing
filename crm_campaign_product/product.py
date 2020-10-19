@@ -53,7 +53,10 @@ class crm_tracking_campaign(models.Model):
 
 class product_template(models.Model):
     _inherit = 'product.template'
+    campaign_ids = fields.Many2many(comodel_name='crm.tracking.campaign', relation="crm_campaign_product", column1='product_id', column2='campaign_id',string='Campaigns')
 
+class product_product(models.Model):
+    _inherit = 'product.product'
     campaign_ids = fields.Many2many(comodel_name='crm.tracking.campaign', relation="crm_campaign_product", column1='product_id', column2='campaign_id',string='Campaigns')
 
 class crm_campaign_object(models.Model):
