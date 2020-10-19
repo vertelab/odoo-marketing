@@ -42,7 +42,7 @@
       </field>
     </record>
 
-     <record id="crm_campaign_object_kanban" model="ir.ui.view">
+<record id="crm_campaign_object_kanban" model="ir.ui.view">
       <field name="name">crm.campaign.object.kanban</field>
       <field name="model">crm.campaign.object</field>
       <field name="type">kanban</field>
@@ -94,8 +94,8 @@
         </kanban> 
       </field>
     </record> 
-
-    <record id="crm_campaign_object_search" model="ir.ui.view">
+ 
+<!--     <record id="crm_campaign_object_search" model="ir.ui.view">
       <field name="name">crm.campaign.object.search</field>
       <field name="model">crm.campaign.object</field>
       <field name="arch" type="xml">
@@ -108,19 +108,18 @@
         </search>  
       </field>
     </record>  
-
+ -->
     <record id="action_crm_campaign_object_view" model="ir.actions.act_window">
       <field name="name">crm.campaign.object.act</field>
       <field name="res_model">crm.campaign.object</field>
-      <field name="view_type">form</field>
       <field name="view_mode">tree,form,kanban</field>
       <field name="context">{"search_default_current": 1}</field>
     </record>
 
     <record id="crm_tracking_campaign_tree" model="ir.ui.view">
-      <field name="name">utm.campaign.tree.inherited.crm_campaign_object</field>
+      <field name="name">utm.campaign.view.form</field>
       <field name="model">utm.campaign</field>
-      <field name="inherit_id" ref="crm.crm_tracking_campaign_tree" />
+      <field name="inherit_id" ref="utm.utm_campaign_view_form" />
       <field name="arch" type="xml">
          <tree position="attributes">
           <attribute name="colors">blue:state == 'draft';red:state in ('open');gray:state in ('cancel','close')</attribute>
@@ -130,10 +129,15 @@
           <field name="date_stop" />
           <field name="state" />
         </field>
+  <!--          <notebook>
+              <page string="Information">
+                <field name="description" />
+              </page>
+          </notebook> -->
       </field>
     </record>
- 
-      <record id="crm_tracking_campaign_form" model="ir.ui.view">
+<!--  
+    <record id="crm_tracking_campaign_form" model="ir.ui.view">
       <field name="name">utm.campaign.form</field>
       <field name="model">utm.campaign</field>
       <field name="priority"/>
@@ -179,8 +183,8 @@
           </div> 
         </form> 
       </field>
-    </record> 
-
+    </record>  
+     -->
     <record id="crm_tracking_campaign_calendar" model="ir.ui.view">
       <field name="name">utm.campaign.calendar</field>
       <field name="model">utm.campaign</field>
@@ -194,16 +198,17 @@
 
     <record id="crm_tracking_campaign_gantt" model="ir.ui.view">
       <field name="name">utm.campaign.gantt</field>
-      <field name="model">utm.campaign.campaign</field>
+      <field name="model">utm.campaign</field>
       <field name="type">gantt</field>
       <field name="arch" type="xml">
          <field date_start="date_start" date_stop="date_stop" string="Campaigns" /> 
       </field>
     </record> 
-
+<!-- 
     <record id="crm_tracking_campaign_search" model="ir.ui.view">
-      <field name="name">utm.campaign.search</field>
+      <field name="name">utm.campaign.view.search</field>
       <field name="model">utm.campaign</field>
+       <field name="inherit_id" ref="utm.campaign.view.search" />
       <field name="arch" type="xml">
          <search string="CRM Tracking Campaign">
           <field name="name" string="Name" filter_domain="[('display_name','ilike',self)]" />
@@ -212,11 +217,11 @@
           </group>
         </search> 
       </field>
-    </record>
+    </record>  -->
 
-   <record id="crm.crm_tracking_campaign_act" model="ir.actions.act_window">
+<!--    <record id="crm.crm_tracking_campaign_act" model="ir.actions.act_window">
       <field name="view_mode">tree,form,calendar,gantt</field>
-    </record> 
+    </record>  -->
  <!--
          <act_window id="act_campaign_overview"
             key2="client_action_multi"
@@ -224,8 +229,7 @@
             res_model="campaign.overview"
             src_model="utm.campaign"
             groups=""
-            view_mode="form" target="new" view_type="form" />  -->
-<!-- 
+
          <record id="campaign_overview_form" model="ir.ui.view">
             <field name="name">campaign.overview.form</field>
             <field name="model">campaign.overview</field>
