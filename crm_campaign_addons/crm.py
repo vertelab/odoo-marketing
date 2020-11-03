@@ -31,6 +31,12 @@ class crm_tracking_campaign(models.Model):
     date_start = fields.Date(string='Start Date',track_visibility='onchange', )
     date_stop = fields.Date(string='Start Stop',track_visibility='onchange', )
     image = fields.Binary(string='Image')
+    description = fields.Text(string='Description', translate=True)
+    campaign_id = fields.Many2one(comodel_name='utm.campaign', string='Campaign')
+
+    name = fields.Char(string='Name')
+    sequence = fields.Integer()
+    object_id = fields.Reference(selection=[], string='Object')
 
     object_ids = fields.One2many(comodel_name='crm.campaign.object', inverse_name='campaign_id', string='Objects')
 

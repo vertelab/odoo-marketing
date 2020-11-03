@@ -117,9 +117,9 @@
     </record>
 
     <record id="crm_tracking_campaign_tree" model="ir.ui.view">
-      <field name="name">utm.campaign.view.form</field>
+      <field name="name">utm.campaign.view.tree</field>
       <field name="model">utm.campaign</field>
-      <field name="inherit_id" ref="utm.utm_campaign_view_form" />
+     <field name="inherit_id" ref="utm.utm_campaign_view_form" /> 
       <field name="arch" type="xml">
          <tree position="attributes">
           <attribute name="colors">blue:state == 'draft';red:state in ('open');gray:state in ('cancel','close')</attribute>
@@ -129,23 +129,35 @@
           <field name="date_stop" />
           <field name="state" />
         </field>
-  <!--          <notebook>
+          <notebook>
               <page string="Information">
                 <field name="description" />
+                <field name="sequence" invisible="1" />
+                <field name="object_id" />
+                <field name="name" />
+                <field name="campaign_id" invisible="1" />
+                <field name="color" invisible="1" />
+                      <field name="image" widget="image" class="oe_avatar oe_right" />
               </page>
-          </notebook> -->
+          </notebook>
+
       </field>
     </record>
-<!--  
+ 
     <record id="crm_tracking_campaign_form" model="ir.ui.view">
-      <field name="name">utm.campaign.form</field>
+      <field name="name">utm.campaign.view.form</field>
       <field name="model">utm.campaign</field>
-      <field name="priority"/>
+       <field name="type">form</field>
+<!--    <field name="inherit_id" ref="utm.utm_campaign_view_form" />  -->
       <field name="arch" type="xml">
+        <!-- <field position="after"> -->
+        
+
+
          <form string="Campaign">
           <header>
                <button name="invoice_open" states="draft,proforma2" string="Validate" class="oe_highlight" groups="account.group_account_invoice"/> 
-     <field name="state" widget="statusbar"  clickable="True" statusbar_colors='{"draft":"blue","open":"red"}' /> 
+                <field name="state" widget="statusbar"  clickable="True" statusbar_colors='{"draft":"blue","open":"red"}' /> 
           </header>
         <sheet>
             <h1>
@@ -163,7 +175,7 @@
               <field name="date_stop" class="oe_inline"/>
 
                 </div>
-              <field name="section_id" groups="base.group_multi_salesteams" />
+               <!-- <field name="section_id" groups="base.group_multi_salesteams" /> -->
             </group>
             <notebook>
               <page string="Objects">
@@ -183,8 +195,11 @@
           </div> 
         </form> 
       </field>
+
+
+
     </record>  
-     -->
+
     <record id="crm_tracking_campaign_calendar" model="ir.ui.view">
       <field name="name">utm.campaign.calendar</field>
       <field name="model">utm.campaign</field>

@@ -44,7 +44,7 @@ class crm_tracking_campaign(models.Model):
     campaign_product_ids = fields.One2many(comodel_name='crm.campaign.product', inverse_name='campaign_id', string='Products')
 
     def update_campaign_product_ids(self):
-        self.env['crm.campaign.product'].search([('campaign_id', '=', self.id)]).unlink()
+        self.env['crm.campaign.product'].search([('campaign_id', '=', self.id)]).sudo().unlink()
         for o in self.object_ids.sorted(lambda o: o.sequence):
             _logger.error(getattr(o,'create_campaign_product', False))  
             if getattr(o,'create_campaign_product', False):
