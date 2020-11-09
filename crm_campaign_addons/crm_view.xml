@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data>
-     <record id="crm_campaign_object_tree" model="ir.ui.view">
+<!--      <record id="crm_campaign_object_tree" model="ir.ui.view">
       <field name="name">crm.campaign.object.tree</field>
       <field name="model">crm.campaign.object</field>
       <field name="type">tree</field>
@@ -14,7 +14,7 @@
         </tree> 
       </field>
     </record>  
- 
+  -->
     <record id="crm_campaign_object_view" model="ir.ui.view">
       <field name="name">crm.campaign.object.form</field>
       <field name="model">crm.campaign.object</field>
