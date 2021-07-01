@@ -4,7 +4,7 @@
          <record id="crm_tracking_campaign_form" model="ir.ui.view">
             <field name="name">utm.campaign.form.inherited.sale_campaign</field>
             <field name="model">utm.campaign</field>
-            <field name="inherit_id" ref="crm_campaign_addons.crm_tracking_campaign_tree" />
+            <field name="inherit_id" ref="crm_campaign_addons.extend_crm_tracking_campaign_form" />
             <field name="arch" type="xml">
 <!--               <h1 position="before">
                     <field name="website_published" class="pull-right" widget="website_button"/>

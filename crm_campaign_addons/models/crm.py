@@ -18,18 +18,19 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, fields, api, _
-from openerp.http import request
+from odoo import models, fields, api, _
+from odoo.http import request
 import logging
 _logger = logging.getLogger(__name__)
 
+
 class crm_tracking_campaign(models.Model):
     _name = 'utm.campaign'
-    _inherit = ['utm.campaign','mail.thread']
+    _inherit = ['utm.campaign', 'mail.thread']
 
     color = fields.Integer('Color Index')
-    date_start = fields.Date(string='Start Date',track_visibility='onchange', )
-    date_stop = fields.Date(string='Start Stop',track_visibility='onchange', )
+    date_start = fields.Date(string='Start Date', )
+    date_stop = fields.Date(string='Start Stop', )
     image = fields.Binary(string='Image')
     description = fields.Text(string='Description', translate=True)
     campaign_id = fields.Many2one(comodel_name='utm.campaign', string='Campaign')
@@ -55,16 +56,17 @@ class crm_tracking_campaign(models.Model):
         return self.env['utm.campaign'].search([('date_start', '<=', fields.Date.today()), ('date_stop', '>=', fields.Date.today())])
 
     state = fields.Selection([
-            ('draft','Draft'),
-            ('open','Open'),
-            ('closed','Closed'),
-            ('cancel','Cancelled'),
+            ('draft', 'Draft'),
+            ('open', 'Open'),
+            ('closed', 'Closed'),
+            ('cancel', 'Cancelled'),
         ], string='Status', index=True, readonly=False, default='draft',
-        track_visibility='onchange', copy=False,
+         copy=False,
         help=" * The 'Draft' status is used during planning.\n"
-             " * The 'Open' status is used when the campaing are running.\n"
-             " * The 'Closed' status is when the campaing is over.\n"
+             " * The 'Open' status is used when the campaign are running.\n"
+             " * The 'Closed' status is when the campaign is over.\n"
              " * The 'Cancelled' status is used when the campaign is stopped.")
+
 
 class crm_campaign_object(models.Model):
     _name = 'crm.campaign.object'
@@ -97,7 +99,7 @@ class CampaignOverview(models.TransientModel):
     def overview(self):
         return {
             'type': 'ir.actions.act_url',
-            'url': '/?campaign_date=%s' %self.date,
+            'url': '/?campaign_date=%s' % self.date,
             'target': 'new',
             'res_id': self.id,
         }

@@ -20,22 +20,35 @@
 ##############################################################################
 
 {
-    'name': 'CRM Campaign Phase',
-    'version': '0.1',
+    'name': 'Sale Campaign',
+    'version': '0.2',
     'category': 'crm',
     'description': """
-        Extends Crm Campaign with phases
+Different pricelists on campaign
+================================
+* Hook product.template with utm.campaign
+* Start and stop date on a campaign
+* Show current campaign as first page on website
+
+crm_campaign
+cutm.campaign
+utm.campaign.object  (title,description,image)
+start/stop-date
+pricelists
+campaign_objects
+get_campaign_objs
+crm_campaign_product
+get_campaign_products
+crm_campaign_blog
+website_crm_campaign
 
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['website_crm_campaign','product_private'],
-    'sequence': 50,
+    'depends': ['website_sale', 'sale_crm', 'crm_campaign_product'],
     'data': [
-        'crm_view.xml',
-        'security/ir.model.access.csv',
-
+        'views/campaign_view.xml',
     ],
     'installable': True,
 }

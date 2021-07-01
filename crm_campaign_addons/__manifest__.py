@@ -20,21 +20,20 @@
 ##############################################################################
 
 {
-    'name': 'CRM Campaign Product',
-    'version': '0.2',
+    'name': 'CRM Campaign',
+    'version': '0.3',
     'category': 'crm',
     'description': """
-        Extends Crm Campaign with products
+Base class that bind together utm.campaign with different object
 
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['crm_campaign_addons','stock'],
+    'depends': ['crm'],
     'data': [
-        'product_view.xml',
+        'views/crm_view.xml',
         'security/ir.model.access.csv',
-
     ],
     'installable': True,
 }

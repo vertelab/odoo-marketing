@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
   <data>
     <record id="phase_type_form_view" model="ir.ui.view">
       <field name="name">phase_type_form</field>
@@ -29,9 +29,9 @@
       <field name="model">utm.campaign</field>
       <field name="inherit_id" ref="crm_campaign_addons.crm_tracking_campaign_form" />
       <field name="arch" type="xml">
-          <field name="section_id" position="after">
-            <field name="country_ids" widget="many2many_tags"/>
-          </field>
+<!--          <field name="section_id" position="after">-->
+<!--            <field name="country_ids" widget="many2many_tags"/>-->
+<!--          </field>-->
         <notebook position="inside">
           <page string="Phases">
             <field name="phase_ids">
@@ -49,4 +49,4 @@
       </field>
     </record>
   </data>
-</openerp>
+</odoo>

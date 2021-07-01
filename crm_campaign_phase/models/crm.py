@@ -18,12 +18,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, fields, api, _
-from openerp.exceptions import except_orm, Warning, RedirectWarning
+from odoo import models, fields, api, _
+from odoo.exceptions import except_orm, Warning, RedirectWarning
 from datetime import datetime, timedelta
 import logging
 _logger = logging.getLogger(__name__)
-
 
 
 class crm_tracking_campaign(models.Model):
@@ -32,12 +31,10 @@ class crm_tracking_campaign(models.Model):
     phase_ids = fields.One2many(comodel_name='utm.campaign', inverse_name='campaign_id', string='Phases')
     country_ids = fields.Many2many(comodel_name='res.country', string='Country')
 
-    @api.multi
     def get_phase(self, date, is_reseller):
         self.ensure_one()
         return filter(None, self.phase_ids.filtered(lambda p: p.start_date <= date and p.end_date >= date and p.reseller_pricelist == is_reseller))
 
-    @api.multi
     def is_current(self, date, is_reseller):
         self.ensure_one()
         if is_reseller:
@@ -54,59 +51,60 @@ class crm_tracking_campaign(models.Model):
             else:
                 return self.date_start <= date
 
-    @api.multi
     def check_product(self, prod_id):
         self.ensure_one()
         return prod_id in self.env['product.product'].search([('id', 'in', self.env['product.template'].search([('id', 'in', self.campaign_product_ids.mapped('product_id').mapped('id'))]).mapped('product_variant_ids').mapped('id'))]).mapped('id')
 
 
-class crm_tracking_phase(models.Model):
-    _name = "utm.campaign"
-    _order = 'campaign_id, sequence, name'
+# class crm_tracking_phase(models.Model):
+#     _name = "utm.campaign"
+#     _order = 'campaign_id, sequence, name'
 
     campaign_id = fields.Many2one(comodel_name='utm.campaign', string='Campaign')
     name = fields.Char(string='Name')
-    phase_type = fields.Many2one(comodel_name="crm.tracking.phase.type",string="Type")
+    phase_type = fields.Many2one(comodel_name="crm.tracking.phase.type", string="Type")
     sequence = fields.Integer()
 
-    @api.one
     def _start_date(self):
         if self.phase_type.start_days_from_start:
-            self.start_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_start) + timedelta(days = self.phase_type.start_days))
+            self.start_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_start) + timedelta(
+                days = self.phase_type.start_days))
         else:
             if self.campaign_id.date_stop:
-                self.start_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_stop) + timedelta(days = self.phase_type.start_days))
+                self.start_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_stop) + timedelta(
+                    days = self.phase_type.start_days))
     start_date = fields.Date(compute='_start_date')
 
-    @api.one
     def _end_date(self):
         if self.phase_type.end_days_from_start:
-            self.end_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_start) + timedelta(days = self.phase_type.end_days))
+            self.end_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_start) + timedelta(
+                days = self.phase_type.end_days))
         else:
             if self.campaign_id.date_stop:
-                self.end_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_stop) + timedelta(days = self.phase_type.end_days))
+                self.end_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_stop) + timedelta(
+                    days = self.phase_type.end_days))
             else:
                 if self.phase_type.start_days_from_start and self.phase_type.end_days_from_start:
                     if self.phase_type.end_days >= self.phase_type.start_days:
-                        self.end_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_start) + timedelta(days = self.phase_type.end_days))
+                        self.end_date = fields.Date.to_string(fields.Date.from_string(self.campaign_id.date_start) +
+                                                              timedelta(days = self.phase_type.end_days))
                     else:
                         self.phase_type.end_days = self.phase_type.start_days
                         raise Warning('End days must be greater than or equal to start days')
 
     end_date = fields.Date(compute='_end_date')
-    reseller_pricelist = fields.Boolean(string="Reseller",help="Use this pricelist for resellers, otherwise instead of default pricelist")
+    reseller_pricelist = fields.Boolean(string="Reseller",
+                                        help="Use this pricelist for resellers, otherwise instead of default pricelist")
     pricelist_id = fields.Many2one(comodel_name="product.pricelist",string="Pricelist")
 
-    @api.multi
-    def get_pricelist(self,date,prod_id,is_reseller):
+    def get_pricelist(self, date, prod_id, is_reseller):
         for phase in self:
             if date >= phase.start_date and date <= phase.end_date and phase.campaign_id.check_product(prod_id) and \
                     phase.pricelist_id and (phase.reseller_pricelist and is_reseller or not phase.reseller_pricelist):
                         return phase.pricelist_id
         return self.env['product.pricelist'].browse()
 
-    @api.multi
-    def get_phase(self,date,is_reseller):
+    def get_phase(self, date, is_reseller):
         self.ensure_one()
         if date >= self.start_date and date <= self.end_date and is_reseller == self.reseller_pricelist:
             return self
@@ -115,7 +113,7 @@ class crm_tracking_phase(models.Model):
 class crm_tracking_phase_type(models.Model):
     _name = "crm.tracking.phase.type"
 
-    name = fields.Char(string='Name',required=True)
+    name = fields.Char(string='Name', required=True)
     start_days = fields.Integer()
     start_days_from_start = fields.Boolean(help="Checked: days are counted from start date otherwise from end date")
     end_days = fields.Integer()
@@ -127,11 +125,11 @@ class crm_tracking_phase_type(models.Model):
             if self.end_days < self.start_days:
                 raise Warning('End days must be greater than or equal to start days')
 
+
 class product_pricelist(models.Model):
     _inherit = "product.pricelist"
 
-    @api.multi
-    def price_get(self,prod_id, qty, partner=None):
+    def price_get(self, prod_id, qty, partner=None):
         self.ensure_one()
         # A bug in sale_stock means partner can sometimes be a partner record instead of the expected integer.
         if type(partner) == type(self.env['res.partner']):
@@ -142,12 +140,13 @@ class product_pricelist(models.Model):
         price = [p[0] for key, p in self.sudo().price_rule_get(prod_id, qty, partner=partner).items()][0]
         campaign_price = 999999999999999999999999999999.0
         date = self.env.context['date'] if self.env.context.get('date') else fields.Date.today()
-        for pricelist in self.env['utm.campaign'].search([('state','=','open')]).mapped('phase_ids').mapped(lambda p: p.get_pricelist(date,prod_id,is_reseller)):
+        for pricelist in self.env['utm.campaign'].search([('state', '=', 'open')]).mapped('phase_ids').mapped(lambda p: p.get_pricelist(date, prod_id, is_reseller)):
             try:
                 campaign_price = [p[0] for key, p in pricelist.price_rule_get(prod_id, qty, partner=partner).items()][0]
             except:
                 pass
-        return {self.id:campaign_price if campaign_price < price else price}
+        return {self.id: campaign_price if campaign_price < price else price}
+
 
 class product_template(models.Model):
     _inherit = "product.template"
@@ -156,11 +155,11 @@ class product_template(models.Model):
     def get_campaign_products(self,for_reseller=False):
         products = self.env['product.template'].browse([])
         if for_reseller:
-            campaigns = self.env['utm.campaign'].search([('state','=','open')])
+            campaigns = self.env['utm.campaign'].search([('state', '=', 'open')])
         else:
-            campaigns = self.env['utm.campaign'].search([('state','=','open'), ('website_published', '=', True)])
+            campaigns = self.env['utm.campaign'].search([('state', '=', 'open'), ('website_published', '=', True)])
         for campaign in campaigns:
-            if campaign.is_current(fields.Date.today(),for_reseller):
+            if campaign.is_current(fields.Date.today(), for_reseller):
                 products |= campaign.product_ids.filtered(lambda p: len(self.env.user.partner_id.commercial_partner_id.access_group_ids & p.access_group_ids) > 0)
         return products
 
@@ -168,9 +167,9 @@ class product_template(models.Model):
     def get_campaign_variants(self,for_reseller=False):
         products = self.env['product.product'].browse([])
         if for_reseller:
-            campaigns = self.env['utm.campaign'].search([('state','=','open')])
+            campaigns = self.env['utm.campaign'].search([('state', '=', 'open')])
         else:
-            campaigns = self.env['utm.campaign'].search([('state','=','open'), ('website_published', '=', True)])
+            campaigns = self.env['utm.campaign'].search([('state', '=', 'open'), ('website_published', '=', True)])
         for campaign in campaigns:
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in campaign.object_ids:
@@ -186,7 +185,7 @@ class product_template(models.Model):
         if for_reseller:
             campaigns = self.env['utm.campaign'].search([('state','=','open')])
         else:
-            campaigns = self.env['utm.campaign'].search([('state','=','open'), ('website_published', '=', True)])
+            campaigns = self.env['utm.campaign'].search([('state', '=', 'open'), ('website_published', '=', True)])
         for campaign in campaigns:
             if campaign.is_current(fields.Date.today(),for_reseller):
                 for o in campaign.object_ids:
@@ -196,8 +195,7 @@ class product_template(models.Model):
                             products |= o.object_id
         return products
 
-    @api.multi
-    def get_campaign_image(self,for_reseller=False):
+    def get_campaign_image(self, for_reseller=False):
         self.ensure_one()
         if for_reseller:
             campaigns = self.env['utm.campaign'].search([('state','=','open')]).filtered(lambda c: self.id in c.product_ids.mapped('id'))
@@ -208,7 +206,7 @@ class product_template(models.Model):
                 return campaign.image
 
     @api.model
-    def get_campaign_date(self,for_reseller=False):
+    def get_campaign_date(self, for_reseller=False):
         self.ensure_one()
         date = None
         if for_reseller:
@@ -255,19 +253,18 @@ class product_product(models.Model):
                             #~ products |= o.object_id
         return products
 
-    @api.multi
-    def get_campaign_image(self,for_reseller=False):
+    def get_campaign_image(self, for_reseller=False):
         self.ensure_one()
         if for_reseller:
             campaigns = self.env['utm.campaign'].search([('state','=','open')]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id'))
         else:
             campaigns = self.env['utm.campaign'].search([('state','=','open'), ('website_published', '=', True)]).filtered(lambda c: self.product_tmpl_id.id in c.product_ids.mapped('id'))
         for campaign in campaigns:
-            if len(campaign.get_phase(fields.Date.today(),for_reseller))>0:
+            if len(campaign.get_phase(fields.Date.today(), for_reseller)) > 0:
                 return campaign.image
 
     @api.model
-    def get_campaign_date(self,for_reseller=False):
+    def get_campaign_date(self, for_reseller=False):
         self.ensure_one()
         date = None
         if for_reseller:

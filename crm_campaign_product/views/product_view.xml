@@ -15,28 +15,26 @@
             </field>
         </record>
 
-     <record id="crm_tracking_campaign_form2" model="ir.ui.view">
+        <record id="crm_tracking_campaign_form2" model="ir.ui.view">
             <field name="name">utm.campaign.form.inherited.crm_campaign_product</field>
             <field name="model">utm.campaign</field>
-            <field name="inherit_id" ref="crm_campaign_addons.crm_tracking_campaign_tree"/>
+            <field name="inherit_id" ref="crm_campaign_addons.extend_crm_tracking_campaign_form"/>
 
             <field name="arch" type="xml">
                 <notebook position="inside">
-                    
-               <page string="Objects">
-                <field name="object_ids">
-                <tree>
-                    <field name="sequence" widget="handle" />
-                    <field name="name" />
-                    <field name="object_id" />
-                  </tree> 
-                </field>
-              </page>
+                    <page string="Objects">
+                        <field name="object_ids">
+                            <tree>
+                                <field name="sequence" widget="handle" />
+                                <field name="name" />
+                                <field name="object_id" />
+                            </tree>
+                        </field>
+                    </page>
 
                     <page string="Products">
                         <button name="update_campaign_product_ids" type="object" class="oe_highlight" style="margin-top: 15px;" string="Get Products" help="Create campaign products from the list of objects"/>
-                        
-                      <field name="campaign_product_ids">
+                        <field name="campaign_product_ids">
                             <tree default_order="sequence" editable='bottom'>
                                 <field name="sequence" widget="handle"/>
                                 <field name="product_id"/>
@@ -47,14 +45,13 @@
                                 <field name="qty_available" readonly="1"/>
                                 <field name="virtual_available" readonly="1"/>
                             </tree>
-                        </field> 
+                        </field>
                     </page>
 
                     <page string="Products Real">
                         <field name="product_ids"/>
                     </page>
-            </notebook>
-
+                </notebook>
             </field>
         </record>
     </data>

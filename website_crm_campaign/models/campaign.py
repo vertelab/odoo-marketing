@@ -18,14 +18,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, fields, api, _
-from openerp import http
-from openerp.http import request
+from odoo import models, fields, api, _
 import werkzeug
-from openerp.addons.website.controllers.main import Website
 import datetime
 import logging
 _logger = logging.getLogger(__name__)
+
 
 class crm_tracking_campaign(models.Model):
     _inherit = 'utm.campaign'
@@ -35,7 +33,7 @@ class crm_tracking_campaign(models.Model):
     website_url = fields.Char(string='Website url', compute='_website_url')
 
     def _website_url(self):
-        self.website_url = '/campaign/%s' %self.id
+        self.website_url = '/campaign/%s' % self.id
 
     def get_campaigns(self):
             return super(crm_tracking_campaign, self).get_campaigns().filtered(lambda c: c.website_published)
@@ -56,11 +54,13 @@ class crm_campaign_object(models.Model):
                     self.image = objects.image
         return super(crm_campaign_object, self).get_object_value()
 
+
 class product_public_category(models.Model):
     _inherit = 'product.public.category'
 
     description = fields.Text(string='Description')
     mobile_icon = fields.Char(string='Mobile Icon', help='This icon will display on smaller devices')
+
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
