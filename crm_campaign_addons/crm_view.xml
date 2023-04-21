@@ -121,9 +121,9 @@
       <field name="model">utm.campaign</field>
      <field name="inherit_id" ref="utm.utm_campaign_view_form" /> 
       <field name="arch" type="xml">
-         <tree position="attributes">
-          <attribute name="colors">blue:state == 'draft';red:state in ('open');gray:state in ('cancel','close')</attribute>
-        </tree> 
+<!--         <tree position="attributes">-->
+<!--          <attribute name="colors">blue:state == 'draft';red:state in ('open');gray:state in ('cancel','close')</attribute>-->
+<!--        </tree> -->
         <field name="name" position="after">
           <field name="date_start" />
           <field name="date_stop" />
