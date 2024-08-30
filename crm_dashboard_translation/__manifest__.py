@@ -22,14 +22,24 @@
 # https://www.odoo.com/documentation/16.0/reference/module.html
 #
 {
-    'name': 'CRM Dashboard Translation',
-    'version': '16.0.0.0',
+    'name': 'Marketing: CRM Dashboard Translation',
+    'version': '0.0',
+    # Version ledger: XX.0 = Odoo version. 1 = Major. Non regressionable code. 2 = Minor. New features that are regressionable. 3 = Bug fixes
     'summary': 'Swedish translations for CRM Dashboard',
     'category': 'Marketing',
-    'description': """ """,
+    'description': """
+    
+    """,
+    #'sequence': '1'
     'author': 'Vertel AB',
-    'website': 'https://vertel.se/apps/',
     'license': 'AGPL-3',
+    'contributor': '',
+    'maintainer': 'Vertel AB',
+    'website': 'https://vertel.se/apps/odoo-marketing/crm_dashboard_translation',
+    'repository': 'https://github.com/vertelab/odoo-marketing',
+    'images': ['static/description/banner.png'], # 560x280 px.
+    # * * * * 
+    
     'depends': ['crm_dashboard'],
     'data': [],
     'demo': [],
