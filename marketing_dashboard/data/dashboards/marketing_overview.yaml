@@ -1,0 +1,85 @@
+dashboard:
+  key: marketing_dashboard_overview
+  name: "Marketing Overview"
+  name_sv: "Marknadsöversikt"
+  description: "AARRR funnel: Acquisition, Activation, Retention, Referral, Revenue"
+  icon: fa-bullhorn
+  category: Marketing
+  auto_refresh: 900000
+  cache_ttl: 900
+
+filters:
+  - key: customer
+    type: model_select
+    label: "Customer"
+    label_sv: "Kund"
+    optional: true
+    model: res.partner
+    domain:
+      - [customer_rank, ">", 0]
+
+  - key: plans
+    type: model_select
+    label: "Marketing Plan"
+    label_sv: "Marknadsplan"
+    optional: true
+    model: marketing.plan
+    domain:
+      - [state, "=", active]
+
+metrics:
+  - key: marketing.aarrr_funnel
+    label: "AARRR Funnel"
+    label_sv: "AARRR-tratt"
+    source_type: service
+    service_model: dashboard.source.marketing.aarrr
+    service_method: get_funnel
+    unit: count
+
+  - key: marketing.active_plans
+    label: "Active Plans"
+    label_sv: "Aktiva planer"
+    source_type: model
+    model: marketing.plan
+    method: search_read
+    domain:
+      - [state, "=", active]
+    fields:
+      - name
+      - customer_id
+      - start_date
+      - end_date
+
+  - key: marketing.lead_trend
+    label: "Lead Trend"
+    label_sv: "Lead-trend"
+    source_type: model
+    model: crm.lead
+    method: search_read
+    domain:
+      - [type, "=", opportunity]
+    fields:
+      - create_date
+      - expected_revenue
+      - stage_id
+
+  - key: marketing.revenue_by_stage
+    label: "Revenue by AARRR Stage"
+    label_sv: "Intäkter per steg"
+    source_type: service
+    service_model: dashboard.source.marketing.revenue
+    service_method: get_by_stage
+    unit: monetary
+
+  - key: marketing.skills_active
+    label: "Active Skills"
+    label_sv: "Aktiva skills"
+    source_type: model
+    model: marketing.skill
+    method: search_read
+    domain:
+      - [is_active, "=", true]
+    fields:
+      - name
+      - category
+      - version

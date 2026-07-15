@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_marketing_quest_manager,marketing.quest manager,model_ai_quest,marketing_core.group_marketing_manager,1,1,1,1
