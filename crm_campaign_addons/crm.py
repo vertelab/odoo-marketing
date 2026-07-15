@@ -1,69 +1,61 @@
-# -*- coding: utf-8 -*-
-##############################################################################
-#
-# OpenERP, Open Source Management Solution, third party addon
-# Copyright (C) 2017- Vertel AB (<http://vertel.se>).
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU Affero General Public License for more details.
-#
-# You should have received a copy of the GNU Affero General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
-from openerp import models, fields, api, _
-from openerp.http import request
+# Copyright (C) 2017-2025 Vertel Sverige AB (<https://vertel.se>).
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+
+from odoo import models, fields, api, _
 import logging
 _logger = logging.getLogger(__name__)
 
-class crm_tracking_campaign(models.Model):
+
+class CrmTrackingCampaign(models.Model):
     _name = 'crm.tracking.campaign'
-    _inherit = ['crm.tracking.campaign','mail.thread']
+    _inherit = ['crm.tracking.campaign', 'mail.thread']
 
     color = fields.Integer('Color Index')
-    date_start = fields.Date(string='Start Date',track_visibility='onchange', )
-    date_stop = fields.Date(string='Start Stop',track_visibility='onchange', )
+    date_start = fields.Date(string='Start Date', tracking=True)
+    date_stop = fields.Date(string='End Date', tracking=True)
     image = fields.Binary(string='Image')
 
-    object_ids = fields.One2many(comodel_name='crm.campaign.object', inverse_name='campaign_id', string='Objects')
-    @api.one
-    def _object_names(self):
-        self.object_names = ', '.join(self.object_ids.mapped('name'))
-    object_names = fields.Char(compute='_object_names')
-    @api.one
-    def _object_count(self):
-        self.object_count = len(self.object_ids)
-    object_count = fields.Integer(compute='_object_count')
+    object_ids = fields.One2many(
+        comodel_name='crm.campaign.object',
+        inverse_name='campaign_id',
+        string='Objects',
+    )
+    object_names = fields.Char(compute='_compute_object_names')
+    object_count = fields.Integer(compute='_compute_object_count')
+
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('open', 'Open'),
+        ('closed', 'Closed'),
+        ('cancel', 'Cancelled'),
+    ], string='Status', index=True, default='draft',
+       tracking=True, copy=False,
+       help=" * The 'Draft' status is used during planning.\n"
+            " * The 'Open' status is used when the campaign is running.\n"
+            " * The 'Closed' status is when the campaign is over.\n"
+            " * The 'Cancelled' status is used when the campaign is stopped.")
+
+    @api.depends('object_ids.name')
+    def _compute_object_names(self):
+        for rec in self:
+            rec.object_names = ', '.join(rec.object_ids.mapped('name'))
+
+    @api.depends('object_ids')
+    def _compute_object_count(self):
+        for rec in self:
+            rec.object_count = len(rec.object_ids)
 
     @api.model
     def get_campaigns(self):
-        return self.env['crm.tracking.campaign'].search([
-            ('date_start', '<',fields.Date.today()),
-            ('date_stop', '>', fields.Date.today())])
+        return self.search([
+            ('date_start', '<', fields.Date.today()),
+            ('date_stop', '>', fields.Date.today()),
+        ])
 
 
-    state = fields.Selection([
-            ('draft','Draft'),
-            ('open','Open'),
-            ('closed','Closed'),
-            ('cancel','Cancelled'),
-        ], string='Status', index=True, readonly=False, default='draft',
-        track_visibility='onchange', copy=False,
-        help=" * The 'Draft' status is used during planning.\n"
-             " * The 'Open' status is used when the campaing are running.\n"
-             " * The 'Closed' status is when the campaing is over.\n"
-             " * The 'Cancelled' status is used when the campaign is stopped.")
-
-class crm_campaign_object(models.Model):
+class CrmCampaignObject(models.Model):
     _name = 'crm.campaign.object'
-
+    _description = 'CRM Campaign Object'
     _order = 'campaign_id, sequence, name'
 
     name = fields.Char(string='Name')
@@ -71,30 +63,32 @@ class crm_campaign_object(models.Model):
     image = fields.Binary(string='Image')
     sequence = fields.Integer()
     color = fields.Integer('Color Index')
-    campaign_id = fields.Many2one(comodel_name='crm.tracking.campaign', string='Campaign')
-    object_id = fields.Reference(selection=[], string='Object')
+    campaign_id = fields.Many2one(
+        comodel_name='crm.tracking.campaign', string='Campaign')
+    object_id = fields.Reference(
+        selection='_selection_object_id', string='Object')
+
+    @api.model
+    def _selection_object_id(self):
+        return []
 
     @api.onchange('object_id')
-    def get_object_value(self):
+    def _onchange_object_id(self):
         pass
 
-    @api.one
-    def create_campaign_product(self,campaign):
+    def create_campaign_product(self, campaign):
         pass
 
 
 class CampaignOverview(models.TransientModel):
     _name = 'campaign.overview'
+    _description = 'Campaign Overview'
 
     date = fields.Date(string='Date', required=True)
 
-    @api.multi
     def overview(self):
         return {
             'type': 'ir.actions.act_url',
-            'url': '/?campaign_date=%s' %self.date,
+            'url': '/?campaign_date=%s' % self.date,
             'target': 'new',
-            'res_id': self.id,
         }
-
-
