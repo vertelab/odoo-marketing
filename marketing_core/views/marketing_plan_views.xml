@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_plan_tree" model="ir.ui.view">
+        <field name="name">marketing.plan.tree</field>
+        <field name="model">marketing.plan</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="bmc_id"/>
+                <field name="state"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_plan_form" model="ir.ui.view">
+        <field name="name">marketing.plan.form</field>
+        <field name="model">marketing.plan</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object" string="Activate"
+                            class="btn-primary" states="draft"/>
+                    <button name="action_complete" type="object" string="Complete"
+                            states="active"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="customer_id"/>
+                        <field name="bmc_id"/>
+                    </group>
+                    <group>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                    <notebook>
+                        <page string="Executive Summary" name="exec">
+                            <field name="executive_summary" widget="html"/>
+                        </page>
+                        <page string="Acquisition" name="acq">
+                            <field name="acquisition_strategy" widget="html"/>
+                        </page>
+                        <page string="Activation" name="act">
+                            <field name="activation_strategy" widget="html"/>
+                        </page>
+                        <page string="Retention" name="ret">
+                            <field name="retention_strategy" widget="html"/>
+                        </page>
+                        <page string="Referral" name="ref">
+                            <field name="referral_strategy" widget="html"/>
+                        </page>
+                        <page string="Revenue" name="rev">
+                            <field name="revenue_strategy" widget="html"/>
+                        </page>
+                        <page string="Ideas &amp; KPIs" name="refs">
+                            <field name="idea_ids"/>
+                            <field name="kpi_ids"/>
+                        </page>
+                        <page string="Raw Markdown" name="raw">
+                            <field name="plan_markdown"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_marketing_plan" model="ir.actions.act_window">
+        <field name="name">Marketing Plans</field>
+        <field name="res_model">marketing.plan</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_skill_import_wizard" model="ir.ui.view">
+        <field name="name">marketing.skill.import.wizard</field>
+        <field name="model">marketing.skill.import</field>
+        <field name="arch" type="xml">
+            <form string="Import Marketing Skills">
+                <sheet>
+                    <h3>Import Marketing Skills from SKILL.md files</h3>
+                    <p class="text-muted">
+                        Scans the <code>skills/</code> directory and imports all
+                        SKILL.md files into <code>marketing.skill</code> records.
+                    </p>
+                    <footer>
+                        <button name="action_import" type="object"
+                                string="Import Skills" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_skill_import" model="ir.actions.act_window">
+        <field name="name">Import Marketing Skills</field>
+        <field name="res_model">marketing.skill.import</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

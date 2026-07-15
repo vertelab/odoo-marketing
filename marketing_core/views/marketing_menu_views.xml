@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_marketing_root" name="Marketing" sequence="55"/>
+
+    <menuitem id="menu_marketing_plans" name="Marketing Plans"
+              parent="menu_marketing_root" sequence="10"
+              action="action_marketing_plan"/>
+
+    <menuitem id="menu_marketing_context" name="Marketing Context"
+              parent="menu_marketing_root" sequence="20"
+              action="action_marketing_context"/>
+
+    <menuitem id="menu_marketing_ideas" name="Idea Bank"
+              parent="menu_marketing_root" sequence="30"
+              action="action_marketing_idea"/>
+
+    <menuitem id="menu_marketing_kpis" name="KPIs"
+              parent="menu_marketing_root" sequence="40"
+              action="action_marketing_kpi"/>
+
+    <menuitem id="menu_marketing_skills" name="Skills"
+              parent="menu_marketing_root" sequence="80"
+              action="action_marketing_skill"/>
+
+    <menuitem id="menu_marketing_config" name="Configuration"
+              parent="menu_marketing_root" sequence="90"
+              groups="group_marketing_manager"/>
+
+    <menuitem id="menu_marketing_skill_import" name="Import Skills"
+              parent="menu_marketing_config" sequence="10"
+              action="action_skill_import"/>
+</odoo>
