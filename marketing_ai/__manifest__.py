@@ -3,17 +3,17 @@
 
 {
     'name': 'Marketing AI',
-    'version': '18.0.1.0.0',
+    'version': '18.0.1.1.0',
     'category': 'Marketing',
-    'summary': 'AI agent definitions and quest wrappers for marketing skills',
+    'summary': 'AI coworkers and skills for marketing — bridge into ai_agent_core',
     'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-marketing',
     'license': 'AGPL-3',
-    'depends': ['marketing_core', 'ai_agent'],
+    'depends': ['marketing_core', 'ai_agent_core'],
     'data': [
         'security/ir.model.access.csv',
-        'data/marketing_agent_data.xml',
-        'data/marketing_tool_data.xml',
+        'data/marketing_skills.xml',
+        'data/marketing_coworkers.xml',
     ],
     'installable': True,
     'application': False,

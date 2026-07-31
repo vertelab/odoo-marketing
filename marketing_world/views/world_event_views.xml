@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree view -->
+    <record id="view_world_event_tree" model="ir.ui.view">
+        <field name="name">marketing.world.event.tree</field>
+        <field name="model">marketing.world.event</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'relevant'"
+                  decoration-warning="state == 'escalated'"
+                  decoration-danger="state == 'escalated' and severity in ('high', 'critical')"
+                  decoration-muted="state in ('irrelevant', 'archived')">
+                <field name="name"/>
+                <field name="category" widget="badge"/>
+                <field name="severity" widget="badge" decoration-danger="severity in ('high', 'critical')"
+                       decoration-warning="severity == 'medium'"/>
+                <field name="country_id" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'relevant'"
+                       decoration-danger="state == 'escalated'"
+                       decoration-muted="state in ('irrelevant', 'archived')"/>
+                <field name="date"/>
+                <field name="ai_relevance" optional="hide"/>
+                <field name="risk_count" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_world_event_form" model="ir.ui.view">
+        <field name="name">marketing.world.event.form</field>
+        <field name="model">marketing.world.event</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="new,triaged,relevant,escalated,archived"/>
+
+                    <!-- State-specific buttons -->
+                    <button name="action_triage" string="Triage" type="object"
+                            invisible="state not in ['new']" class="btn-primary"
+                            groups="marketing_core.group_marketing_manager"/>
+                    <button name="action_mark_relevant" string="Mark Relevant" type="object"
+                            invisible="state not in ['triaged']" class="btn-success"/>
+                    <button name="action_mark_irrelevant" string="Mark Irrelevant" type="object"
+                            invisible="state not in ['triaged']" class="btn-secondary"/>
+                    <button name="action_escalate" string="Escalate to Risk" type="object"
+                            invisible="state not in ['relevant', 'triaged']" class="btn-danger"
+                            groups="marketing_core.group_marketing_manager"/>
+                    <button name="action_archive" string="Archive" type="object"
+                            invisible="state not in ['relevant', 'irrelevant', 'escalated']" class="btn-outline-secondary"/>
+                    <button name="action_reset_to_new" string="Reset to New" type="object"
+                            invisible="state not in ['triaged', 'relevant', 'irrelevant', 'escalated', 'archived']"
+                            class="btn-outline-warning"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Event title..."/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="category" widget="badge"/>
+                            <field name="severity" widget="badge"/>
+                            <field name="country_id"/>
+                            <field name="date"/>
+                            <field name="source"/>
+                        </group>
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="plan_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="event_age_days" string="Age"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Summary">
+                            <field name="summary" nolabel="1" placeholder="Event summary..."/>
+                        </page>
+                        <page string="Full Text">
+                            <field name="full_text" nolabel="1"/>
+                        </page>
+                        <page string="AI Analysis" name="ai_analysis_tab">
+                            <group>
+                                <field name="ai_relevance"/>
+                                <field name="ai_model"/>
+                                <field name="ai_triaged_at"/>
+                                <field name="ai_prompt_tokens"/>
+                                <field name="ai_completion_tokens"/>
+                            </group>
+                            <field name="ai_analysis" nolabel="1"/>
+                        </page>
+                        <page string="Risks" name="risks">
+                            <field name="risk_ids" nolabel="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="category"/>
+                                    <field name="probability"/>
+                                    <field name="impact_amount" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Raw Data" groups="marketing_core.group_marketing_manager">
+                            <field name="wm_raw" nolabel="1"/>
+                        </page>
+                    </notebook>
+
+                    <div class="oe_edit_only">
+                        <field name="url" placeholder="https://..." widget="url"/>
+                    </div>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban view -->
+    <record id="view_world_event_kanban" model="ir.ui.view">
+        <field name="name">marketing.world.event.kanban</field>
+        <field name="model">marketing.world.event</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="category"/>
+                <field name="severity"/>
+                <field name="state"/>
+                <field name="date"/>
+                <field name="summary"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click" t-att-class="'oe_kanban_color_' + (kanban_getcolor(record.severity.raw_value))">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <h4 class="o_kanban_card_title">
+                                        <field name="name"/>
+                                    </h4>
+                                </div>
+                                <div class="o_kanban_card_header_subtitle">
+                                    <span t-if="record.severity.raw_value === 'critical'" class="badge badge-danger">
+                                        <t t-esc="record.severity.value"/>
+                                    </span>
+                                    <span t-if="record.severity.raw_value === 'high'" class="badge badge-warning">
+                                        <t t-esc="record.severity.value"/>
+                                    </span>
+                                    <span t-if="record.severity.raw_value === 'medium'" class="badge badge-info">
+                                        <t t-esc="record.severity.value"/>
+                                    </span>
+                                    <span t-if="record.severity.raw_value === 'low' || record.severity.raw_value === 'info'"
+                                          class="badge badge-secondary">
+                                        <t t-esc="record.severity.value"/>
+                                    </span>
+                                    <field name="category" widget="badge"/>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_content">
+                                <field name="summary"/>
+                            </div>
+                            <div class="o_kanban_card_footer">
+                                <div class="o_kanban_card_footer_left">
+                                    <field name="date"/>
+                                </div>
+                                <div class="o_kanban_card_footer_right">
+                                    <field name="state" widget="badge"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_world_event_search" model="ir.ui.view">
+        <field name="name">marketing.world.event.search</field>
+        <field name="model">marketing.world.event</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="summary"/>
+                <filter name="filter_new" string="New" domain="[('state', '=', 'new')]"/>
+                <filter name="filter_active" string="Active"
+                        domain="[('state', 'in', ('new', 'triaged', 'relevant', 'escalated'))]"/>
+                <filter name="filter_high_severity" string="Critical/High"
+                        domain="[('severity', 'in', ('high', 'critical'))]"/>
+                <filter name="filter_escalated" string="Escalated" domain="[('state', '=', 'escalated')]"/>
+                <separator/>
+                <filter name="group_category" string="Category" context="{'group_by': 'category'}"/>
+                <filter name="group_severity" string="Severity" context="{'group_by': 'severity'}"/>
+                <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_world_event" model="ir.actions.act_window">
+        <field name="name">Omvärldshändelser</field>
+        <field name="res_model">marketing.world.event</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="search_view_id" ref="view_world_event_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Inga omvärldshändelser ännu. Händelser importeras automatiskt från World Monitor.
+            </p>
+            <p>
+                Omvärldshändelser är händelser från World Monitor som påverkar din verksamhet.
+                AI triage klassificerar relevans och eskalering skapar strategiska risker.
+            </p>
+        </field>
+    </record>
+</odoo>

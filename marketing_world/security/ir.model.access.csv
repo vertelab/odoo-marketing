@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_world_event_user,world.event user,model_marketing_world_event,marketing_core.group_marketing_user,1,0,0,0
+access_world_event_manager,world.event manager,model_marketing_world_event,marketing_core.group_marketing_manager,1,1,1,1
+access_world_brief_user,world.brief user,model_marketing_world_brief,marketing_core.group_marketing_user,1,0,0,0
+access_world_brief_manager,world.brief manager,model_marketing_world_brief,marketing_core.group_marketing_manager,1,1,1,1
+access_world_report_manager,world.report manager,model_marketing_world_report,marketing_core.group_marketing_manager,1,1,1,1
+access_world_report_template_manager,world.report.template manager,model_marketing_world_report_template,marketing_core.group_marketing_manager,1,1,1,1
+access_world_report_section_manager,world.report.section manager,model_marketing_world_report_section,marketing_core.group_marketing_manager,1,1,1,1
+access_world_competitor_manager,world.competitor manager,model_marketing_world_competitor,marketing_core.group_marketing_manager,1,1,1,1

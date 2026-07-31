@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree view -->
+    <record id="view_world_brief_tree" model="ir.ui.view">
+        <field name="name">marketing.world.brief.tree</field>
+        <field name="model">marketing.world.brief</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="event_count"/>
+                <field name="ai_model" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_world_brief_form" model="ir.ui.view">
+        <field name="name">marketing.world.brief.form</field>
+        <field name="model">marketing.world.brief</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_regenerate" string="Regenerate Markdown" type="object"
+                            class="btn-secondary"/>
+                    <button name="action_export_markdown" string="Export Markdown" type="object"
+                            class="btn-secondary"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                        </group>
+                        <group>
+                            <field name="event_count"/>
+                            <field name="ai_model"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Summary">
+                            <field name="summary" nolabel="1"/>
+                        </page>
+                        <page string="Risk Changes">
+                            <field name="risk_changes" nolabel="1"/>
+                        </page>
+                        <page string="Events">
+                            <field name="event_ids" nolabel="1"/>
+                        </page>
+                        <page string="Markdown">
+                            <field name="body_markdown" nolabel="1"/>
+                        </page>
+                        <page string="Linked Plans">
+                            <field name="plan_ids" nolabel="1"/>
+                        </page>
+                    </notebook>
+
+                    <group string="AI Token Usage" groups="marketing_core.group_marketing_manager">
+                        <group>
+                            <field name="ai_prompt_tokens"/>
+                            <field name="ai_completion_tokens"/>
+                        </group>
+                    </group>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_world_brief_search" model="ir.ui.view">
+        <field name="name">marketing.world.brief.search</field>
+        <field name="model">marketing.world.brief</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="customer_id"/>
+                <separator/>
+                <filter name="group_customer" string="Customer" context="{'group_by': 'customer_id'}"/>
+                <filter name="group_period" string="Period" context="{'group_by': 'period_start'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_world_brief" model="ir.actions.act_window">
+        <field name="name">Omvärldsanalyser</field>
+        <field name="res_model">marketing.world.brief</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_world_brief_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Inga omvärldsanalyser ännu. Briefs genereras automatiskt varje måndag.
+            </p>
+            <p>
+                Omvärldsanalyser är AI-genererade veckobrev med sammanfattningar av
+                relevanta omvärldshändelser per kund.
+            </p>
+        </field>
+    </record>
+</odoo>

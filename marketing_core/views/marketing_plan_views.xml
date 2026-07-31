@@ -22,9 +22,9 @@
             <form>
                 <header>
                     <button name="action_activate" type="object" string="Activate"
-                            class="btn-primary" states="draft"/>
+                            class="btn-primary" invisible="state != 'draft'"/>
                     <button name="action_complete" type="object" string="Complete"
-                            states="active"/>
+                            invisible="state != 'active'"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>

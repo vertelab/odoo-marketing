@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Default template: Omvärldsanalys -->
+    <record id="world_report_template_omvarldsanalys" model="marketing.world.report.template">
+        <field name="name">Omvärldsanalys</field>
+        <field name="description">Standardmall för formell omvärldsanalys med AI-bedömningar per sektion</field>
+        <field name="periodicity">monthly</field>
+        <field name="period_day">1</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Section 1: Sammanfattning -->
+    <record id="world_report_template_omvarldsanalys_s1" model="marketing.world.report.section">
+        <field name="name">Sammanfattning</field>
+        <field name="sequence">10</field>
+        <field name="template_id" ref="world_report_template_omvarldsanalys"/>
+        <field name="ai_prompt"><![CDATA[
+Skriv en koncis executive summary (2-3 stycken) som:
+
+1. Sammanfattar periodens viktigaste omvärldshändelser
+2. Anger den övergripande risknivån (stabil/ökad/minskad)
+3. Lyfter fram vad som kräver omedelbar uppmärksamhet
+
+Fokusera på händelser som direkt påverkar kundens verksamhet och strategi.
+]]></field>
+    </record>
+
+    <!-- Section 2: Väsentliga händelser -->
+    <record id="world_report_template_omvarldsanalys_s2" model="marketing.world.report.section">
+        <field name="name">Väsentliga händelser</field>
+        <field name="sequence">20</field>
+        <field name="template_id" ref="world_report_template_omvarldsanalys"/>
+        <field name="ai_prompt"><![CDATA[
+Analysera periodens omvärldshändelser inom alla kategorier (geopolitical, economic, tech, regulatory, etc.).
+
+För varje kategori:
+- Lista de viktigaste händelserna
+- Bedöm påverkan på kundens bransch och strategi
+- Motivera bedömningen med specifika observationer
+
+Inkludera både positiva möjligheter och negativa hot.
+
+Sortera efter relevans för kunden (högst prioritet först).
+]]></field>
+    </record>
+
+    <!-- Section 3: Riskförändringar -->
+    <record id="world_report_template_omvarldsanalys_s3" model="marketing.world.report.section">
+        <field name="name">Riskförändringar</field>
+        <field name="sequence">30</field>
+        <field name="template_id" ref="world_report_template_omvarldsanalys"/>
+        <field name="ai_prompt"><![CDATA[
+Jämför med föregående periods riskbild. Vad har förändrats och varför?
+
+Kategorisera förändringar som:
+- **Nya risker**: Risker som har uppstått under perioden
+- **Eskalerade risker**: Risker som har ökat i sannolikhet/påverkan
+- **Minskade risker**: Risker som har minskat eller eliminerats
+
+För varje riskförändring, förklara:
+1. Vad har hänt?
+2. Varför är detta relevant?
+3. Vilken påverkan bedömer vi?
+
+Referera till kopplade strategy.risk-poster där tillämpligt.
+]]></field>
+    </record>
+
+    <!-- Section 4: Konkurrentrörelser -->
+    <record id="world_report_template_omvarldsanalys_s4" model="marketing.world.report.section">
+        <field name="name">Konkurrentrörelser</field>
+        <field name="sequence">40</field>
+        <field name="template_id" ref="world_report_template_omvarldsanalys"/>
+        <field name="ai_prompt"><![CDATA[
+Analysera konkurrentrörelser under perioden baserat på spårade konkurrenter och WM-data.
+
+Inkludera:
+- Nya produktlanseringar
+- Förändringar i positionering/pris
+- Partnerskap och förvärv
+- Nya marknadssatsningar
+- Förändringar i marknadsföringsstrategi
+
+Bedöm hur varje rörelse påverkar kundens konkurrensposition och föreslå motåtgärder vid behov.
+]]></field>
+    </record>
+
+    <!-- Section 5: Rekommendationer -->
+    <record id="world_report_template_omvarldsanalys_s5" model="marketing.world.report.section">
+        <field name="name">Rekommendationer</field>
+        <field name="sequence">50</field>
+        <field name="template_id" ref="world_report_template_omvarldsanalys"/>
+        <field name="ai_prompt"><![CDATA[
+Baserat på periodens analys, ge konkreta rekommendationer.
+
+För varje rekommendation:
+1. **Åtgärd**: Vad ska göras?
+2. **Prioritet**: Hög/Medel/Låg
+3. **Tidsram**: Omgående/Inom 30 dagar/Inom 90 dagar
+4. **Förväntad effekt**: Vad uppnår vi?
+5. **Risk vid utebliven åtgärd**: Vad händer om vi inte agerar?
+
+Rekommendationerna ska vara operativt användbara, inte generella råd.
+]]></field>
+    </record>
+
+    <!-- Section 6: Källförteckning -->
+    <record id="world_report_template_omvarldsanalys_s6" model="marketing.world.report.section">
+        <field name="name">Källförteckning</field>
+        <field name="sequence">60</field>
+        <field name="template_id" ref="world_report_template_omvarldsanalys"/>
+        <field name="ai_prompt"><![CDATA[
+Lista alla källor som använts i analysen:
+
+För varje källa:
+- Titel
+- Källa (publiceringskälla)
+- URL (om tillgänglig)
+- Datum
+- Relevans för analysen (hög/medel/låg)
+]]></field>
+    </record>
+</odoo>

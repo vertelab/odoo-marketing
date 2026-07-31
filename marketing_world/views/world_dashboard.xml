@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Dashboard action -->
+    <record id="action_world_monitor_dashboard" model="ir.actions.client">
+        <field name="name">World Monitor Dashboard</field>
+        <field name="tag">marketing.world.dashboard</field>
+        <field name="target">main</field>
+        <field name="res_model">marketing.world.event</field>
+        <field name="context">{'search_default_filter_active': 1}</field>
+    </record>
+
+    <!-- Fallback: use event kanban as dashboard -->
+    <record id="action_world_monitor_dashboard_kanban" model="ir.actions.act_window">
+        <field name="name">World Monitor Dashboard</field>
+        <field name="res_model">marketing.world.event</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_id" ref="view_world_event_kanban"/>
+        <field name="search_view_id" ref="view_world_event_search"/>
+        <field name="domain">[('state', 'in', ('new', 'triaged', 'relevant', 'escalated'))]</field>
+        <field name="context">{
+            'search_default_filter_active': 1,
+            'default_state': 'new',
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Inga aktiva omvärldshändelser.
+            </p>
+            <p>
+                Dashboard visar alla aktiva omvärldshändelser från World Monitor.
+                Använd Kanban-vyn för severity-färgkodning.
+            </p>
+        </field>
+    </record>
+</odoo>

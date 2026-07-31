@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ─── Report Template Views ─── -->
+
+    <record id="view_world_report_template_tree" model="ir.ui.view">
+        <field name="name">marketing.world.report.template.tree</field>
+        <field name="model">marketing.world.report.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="periodicity"/>
+                <field name="customer_id" optional="show"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="last_report_date"/>
+                <field name="next_run_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_world_report_template_form" model="ir.ui.view">
+        <field name="name">marketing.world.report.template.form</field>
+        <field name="model">marketing.world.report.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Template name..."/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="periodicity"/>
+                            <field name="period_day"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="dms_directory_id"
+                                   groups="marketing_core.group_marketing_manager"/>
+                        </group>
+                    </group>
+
+                    <field name="description" nolabel="1" placeholder="Template description..."/>
+
+                    <notebook>
+                        <page string="Sections">
+                            <field name="section_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="ai_prompt"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_world_report_template" model="ir.actions.act_window">
+        <field name="name">Rapportmallar</field>
+        <field name="res_model">marketing.world.report.template</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- ─── Report Views ─── -->
+
+    <record id="view_world_report_tree" model="ir.ui.view">
+        <field name="name">marketing.world.report.tree</field>
+        <field name="model">marketing.world.report</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="state == 'review'"
+                  decoration-success="state in ('approved', 'signed')"
+                  decoration-muted="state == 'archived'">
+                <field name="name"/>
+                <field name="template_id"/>
+                <field name="customer_id" optional="show"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="state" widget="badge"
+                       decoration-success="state in ('approved', 'signed')"
+                       decoration-warning="state == 'review'"/>
+                <field name="version"/>
+                <field name="generated_at"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_world_report_form" model="ir.ui.view">
+        <field name="name">marketing.world.report.form</field>
+        <field name="model">marketing.world.report</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,review,approved,signed,archived"/>
+                    <button name="action_generate_sections_from_template"
+                            string="Generate Placeholders" type="object"
+                            invisible="state not in ['draft']" class="btn-secondary"/>
+                    <button name="action_request_review" string="Request Review" type="object"
+                            invisible="state not in ['draft']" class="btn-primary"/>
+                    <button name="action_approve" string="Approve" type="object"
+                            invisible="state not in ['review']" class="btn-success"
+                            groups="marketing_core.group_marketing_manager"/>
+                    <button name="action_request_changes" string="Request Changes" type="object"
+                            invisible="state not in ['review']" class="btn-warning"/>
+                    <button name="action_archive" string="Archive" type="object"
+                            invisible="state not in ['draft', 'review', 'approved', 'signed']" class="btn-secondary"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="template_id"/>
+                            <field name="customer_id"/>
+                        </group>
+                        <group>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                            <field name="version"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Section Data">
+                            <field name="section_data" nolabel="1"/>
+                        </page>
+                        <page string="Documents">
+                            <group>
+                                <field name="dms_file_id"/>
+                                <field name="ir_attachment_id"/>
+                                <field name="sign_request_id" optional="show"/>
+                            </group>
+                        </page>
+                        <page string="Events" name="events">
+                            <field name="event_ids" nolabel="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="category" widget="badge"/>
+                                    <field name="severity" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_world_report" model="ir.actions.act_window">
+        <field name="name">Rapporter</field>
+        <field name="res_model">marketing.world.report</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', '!=', 'archived')]</field>
+    </record>
+</odoo>

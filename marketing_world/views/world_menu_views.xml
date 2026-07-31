@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu: Marketing → World Monitor -->
+    <menuitem id="menu_world_monitor_root"
+              name="World Monitor"
+              parent="marketing_core.menu_marketing_root"
+              sequence="50"
+              groups="marketing_core.group_marketing_user"/>
+
+    <!-- Sub-menus -->
+    <menuitem id="menu_world_monitor_dashboard"
+              name="Dashboard"
+              parent="menu_world_monitor_root"
+              action="action_world_monitor_dashboard"
+              sequence="10"
+              groups="marketing_core.group_marketing_user"/>
+
+    <menuitem id="menu_world_monitor_events"
+              name="Omvärldshändelser"
+              parent="menu_world_monitor_root"
+              action="action_world_event"
+              sequence="20"
+              groups="marketing_core.group_marketing_user"/>
+
+    <menuitem id="menu_world_monitor_briefs"
+              name="Omvärldsanalyser"
+              parent="menu_world_monitor_root"
+              action="action_world_brief"
+              sequence="30"
+              groups="marketing_core.group_marketing_user"/>
+
+    <menuitem id="menu_world_monitor_reports"
+              name="Rapporter"
+              parent="menu_world_monitor_root"
+              action="action_world_report"
+              sequence="40"
+              groups="marketing_core.group_marketing_manager"/>
+
+    <menuitem id="menu_world_monitor_competitors"
+              name="Konkurrenter"
+              parent="menu_world_monitor_root"
+              action="action_world_competitor"
+              sequence="50"
+              groups="marketing_core.group_marketing_manager"/>
+
+    <menuitem id="menu_world_monitor_templates"
+              name="Rapportmallar"
+              parent="menu_world_monitor_root"
+              action="action_world_report_template"
+              sequence="60"
+              groups="marketing_core.group_marketing_manager"/>
+</odoo>

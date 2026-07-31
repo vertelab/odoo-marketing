@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- World Monitor-inställningar (Odoo 18 <block>-struktur). -->
+    <record id="view_world_monitor_settings" model="ir.ui.view">
+        <field name="name">world.monitor.settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="marketing_core.res_config_settings_view_form_marketing"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='marketing']" position="inside">
+                <block title="World Monitor" id="world_monitor_settings"
+                       groups="marketing_core.group_marketing_manager">
+                    <setting string="Aktivera World Monitor"
+                             help="Anslut omvärldsbevakning till din Odoo-instans">
+                        <div class="content-group">
+                            <div class="alert alert-info" role="alert">
+                                <i class="fa fa-globe"/> World Monitor är en molntjänst för
+                                omvärldsbevakning. Anslut via API-nyckel för att hämta
+                                strukturerade omvärldshändelser.
+                            </div>
+                            <field name="world_monitor_enabled"/>
+                            <div class="mt16" invisible="world_monitor_enabled == False">
+                                <label string="Base URL" for="world_monitor_base_url"/>
+                                <field name="world_monitor_base_url" class="o_input"/>
+                                <label string="API-nyckel" for="world_monitor_api_key"/>
+                                <field name="world_monitor_api_key" password="True"
+                                       placeholder="Ange World Monitor API-nyckel"/>
+                                <label string="Tier" for="world_monitor_tier"/>
+                                <field name="world_monitor_tier"/>
+                                <label string="Verifiera SSL" for="world_monitor_verify_ssl"/>
+                                <field name="world_monitor_verify_ssl"/>
+                                <field name="world_monitor_connection_status" widget="label_static"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Dölj fält på modellen (behövs inte i formen direkt) -->
+    <record id="view_world_monitor_settings_inherit" model="ir.ui.view">
+        <field name="name">world.monitor.settings.inherit</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="marketing_core.res_config_settings_view_form_marketing"/>
+        <field name="priority">999</field>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='marketing']" position="inside">
+                <field name="world_monitor_enabled" invisible="1"/>
+                <field name="world_monitor_api_key" invisible="1"/>
+                <field name="world_monitor_base_url" invisible="1"/>
+                <field name="world_monitor_tier" invisible="1"/>
+                <field name="world_monitor_verify_ssl" invisible="1"/>
+                <field name="world_monitor_connection_status" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

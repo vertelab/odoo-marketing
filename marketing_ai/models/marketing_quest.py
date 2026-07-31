@@ -5,21 +5,21 @@ from odoo import models, fields
 
 
 class MarketingQuest(models.Model):
-    """ai.quest wrapper — enables marketing skill execution from Odoo UI."""
+    """ai.coworker wrapper — enables marketing skill execution from Odoo UI."""
 
-    _inherit = 'ai.quest'
+    _inherit = 'ai.coworker'
 
     marketing_skill_id = fields.Many2one(
         'marketing.skill', 'Marketing Skill',
-        help="The marketing skill to execute for this quest"
+        help="The marketing skill to execute for this coworker"
     )
     marketing_plan_id = fields.Many2one(
         'marketing.plan', 'Marketing Plan',
-        help="The plan this quest relates to"
+        help="The plan this coworker relates to"
     )
 
     def execute_marketing_skill(self, skill_name):
-        """Load and execute a marketing skill via ai.quest."""
+        """Load and execute a marketing skill via ai.coworker."""
         skill = self.env['marketing.skill'].search([
             ('name', '=', skill_name), ('is_active', '=', True)
         ], limit=1)
@@ -33,12 +33,10 @@ class MarketingQuest(models.Model):
         system_prompt = skill.skill_content
         user_prompt = context
 
-        agent = self._get_marketing_agent()
-        if agent:
-            return agent.trigger_prompt(
-                message=f"{system_prompt}\n\n---\n\nContext:\n{user_prompt}"
-            )
-        return False
+        return self.run(
+            prompt=user_prompt,
+            system_prompt=system_prompt,
+        )
 
     def _build_marketing_context(self):
         """Build context from Odoo data for the skill."""
@@ -60,8 +58,8 @@ class MarketingQuest(models.Model):
         return '\n'.join(parts)
 
     def _get_marketing_agent(self):
-        """Find or create a marketing AI agent."""
-        return self.env['ai.agent'].search([
-            ('ai_type', '=', 'marketing'),
+        """Find or create a marketing AI coworker."""
+        return self.search([
+            ('name', 'ilike', 'Marketing'),
             ('status', '=', 'active'),
         ], limit=1)

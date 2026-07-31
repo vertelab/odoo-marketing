@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree view -->
+    <record id="view_world_competitor_tree" model="ir.ui.view">
+        <field name="name">marketing.world.competitor.tree</field>
+        <field name="model">marketing.world.competitor</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="website" optional="show"/>
+                <field name="website_pages_count"
+                       string="Scraped Pages"/>
+                <field name="last_mention_date"/>
+                <field name="mention_count"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_world_competitor_form" model="ir.ui.view">
+        <field name="name">marketing.world.competitor.form</field>
+        <field name="model">marketing.world.competitor</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_check_wm" string="📡 Check World Monitor" type="object"
+                            class="btn-secondary"
+                            groups="marketing_core.group_marketing_manager"/>
+                    <button name="action_scrape_website" string="🕸️ Scrape Website" type="object"
+                            class="btn-secondary"
+                            groups="marketing_core.group_marketing_manager"/>
+                    <button name="action_scrape_and_generate" string="⚡ Scrape &amp; Generate" type="object"
+                            class="btn-warning"
+                            groups="marketing_core.group_marketing_manager"/>
+                    <button name="action_generate_battle_card" string="🔄 Generate Battle Card" type="object"
+                            class="btn-primary"
+                            groups="marketing_core.group_marketing_manager"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Competitor name..."/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="website" widget="url"/>
+                        </group>
+                        <group>
+                            <field name="website_scraped_at"/>
+                            <field name="website_pages_count"/>
+                            <field name="last_mention_date"/>
+                            <field name="mention_count"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+
+                    <group string="World Monitor Settings">
+                        <field name="wm_search_query" placeholder="Search query for WM..."/>
+                        <field name="latest_mention_summary" nolabel="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Battle Card">
+                            <field name="battle_card" nolabel="1"/>
+                            <div class="oe_edit_only">
+                                <field name="battle_card_updated"/>
+                            </div>
+                        </page>
+                        <page string="Website RAG Data"
+                              groups="marketing_core.group_marketing_manager">
+                            <group string="Scraped Content">
+                                <field name="website_homepage" nolabel="1"
+                                       placeholder="Homepage text extracted via scrape..."/>
+                            </group>
+                            <group string="About">
+                                <field name="website_about" nolabel="1"/>
+                            </group>
+                            <group string="Pricing">
+                                <field name="website_pricing" nolabel="1"/>
+                            </group>
+                            <group string="Features">
+                                <field name="website_features" nolabel="1"/>
+                            </group>
+                        </page>
+                        <page string="Alerts">
+                            <group>
+                                <field name="alert_new_product"/>
+                                <field name="alert_funding"/>
+                                <field name="alert_partnership"/>
+                            </group>
+                        </page>
+                        <page string="Related Events">
+                            <field name="related_event_ids" nolabel="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="category" widget="badge"/>
+                                    <field name="severity" widget="badge"/>
+                                    <field name="date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_world_competitor" model="ir.actions.act_window">
+        <field name="name">Konkurrenter</field>
+        <field name="res_model">marketing.world.competitor</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Inga spårade konkurrenter ännu.
+            </p>
+            <p>
+                Spåra konkurrenter och få automatiska battle cards med RAG från deras
+                webbplats + World Monitor-nyheter.
+            </p>
+        </field>
+    </record>
+</odoo>
