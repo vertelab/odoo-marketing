@@ -13,7 +13,7 @@
     <record id="action_world_monitor_dashboard_kanban" model="ir.actions.act_window">
         <field name="name">World Monitor Dashboard</field>
         <field name="res_model">marketing.world.event</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="view_id" ref="view_world_event_kanban"/>
         <field name="search_view_id" ref="view_world_event_search"/>
         <field name="domain">[('state', 'in', ('new', 'triaged', 'relevant', 'escalated'))]</field>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_social_signal_company" model="ir.rule">
+        <field name="name">competitor.social.signal: multi-company</field>
+        <field name="model_id" ref="model_competitor_social_signal"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

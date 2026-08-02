@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree view -->
+    <record id="view_competitor_social_signal_tree" model="ir.ui.view">
+        <field name="name">competitor.social.signal.tree</field>
+        <field name="model">competitor.social.signal</field>
+        <field name="arch" type="xml">
+            <tree decoration-warning="state == 'new'"
+                  decoration-success="state == 'reviewed'"
+                  decoration-muted="state == 'archived'">
+                <field name="display_name"/>
+                <field name="competitor_id" optional="show"/>
+                <field name="platform" widget="badge"
+                       decoration-info="platform == 'linkedin'"
+                       decoration-danger="platform == 'youtube'"/>
+                <field name="signal_type" widget="badge" optional="show"/>
+                <field name="ai_relevance" widget="badge"
+                       decoration-danger="ai_relevance == 'high'"
+                       decoration-warning="ai_relevance == 'medium'"
+                       decoration-success="ai_relevance == 'low'"
+                       decoration-muted="ai_relevance == 'noise'"/>
+                <field name="sentiment" widget="badge" optional="hide"/>
+                <field name="engagement_total" widget="statinfo" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-primary="state == 'new'"
+                       decoration-success="state in ('triaged', 'reviewed')"
+                       decoration-muted="state == 'archived'"/>
+                <field name="published_at"/>
+                <field name="author_name" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_competitor_social_signal_form" model="ir.ui.view">
+        <field name="name">competitor.social.signal.form</field>
+        <field name="model">competitor.social.signal</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="new,triaged,reviewed,archived"/>
+                    <button name="action_triage" string="Triage" type="object"
+                            states="new" class="btn-primary"/>
+                    <button name="action_review" string="Mark Reviewed" type="object"
+                            states="new,triaged" class="btn-success"/>
+                    <button name="action_open_original" string="Open Original" type="object"
+                            class="btn-secondary"/>
+                    <button name="action_archive" string="Archive" type="object"
+                            states="new,triaged,reviewed" class="btn-secondary"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="competitor_id"/>
+                            <field name="platform" widget="badge"/>
+                            <field name="published_at"/>
+                            <field name="url" widget="url" placeholder="URL"/>
+                        </group>
+                        <group>
+                            <field name="author_name"/>
+                            <field name="author_url" widget="url"/>
+                            <field name="state" widget="badge"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <!-- Content -->
+                    <group string="Content">
+                        <field name="content" nolabel="1"/>
+                    </group>
+
+                    <!-- Engagement -->
+                    <group string="Engagement">
+                        <group>
+                            <field name="engagement_likes"/>
+                            <field name="engagement_comments"/>
+                            <field name="engagement_shares"/>
+                        </group>
+                        <group>
+                            <field name="engagement_total" widget="statinfo"/>
+                            <field name="youtube_view_count"/>
+                            <field name="youtube_duration"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="AI Classification">
+                            <group>
+                                <group>
+                                    <field name="signal_type"/>
+                                    <field name="ai_relevance"/>
+                                    <field name="ai_score" widget="progressbar"/>
+                                </group>
+                                <group>
+                                    <field name="sentiment" widget="badge"/>
+                                    <field name="ai_classified_at"/>
+                                    <field name="overridden_fields"/>
+                                </group>
+                            </group>
+                            <group string="AI Analysis">
+                                <field name="ai_analysis" nolabel="1"/>
+                            </group>
+                            <group string="Override" groups="marketing_core.group_marketing_manager">
+                                <p class="oe_grey">
+                                    Change any field below to override AI classification.
+                                    Original values are preserved.
+                                </p>
+                                <group>
+                                    <field name="signal_type"/>
+                                    <field name="ai_relevance"/>
+                                    <field name="sentiment"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_competitor_social_signal_search" model="ir.ui.view">
+        <field name="name">competitor.social.signal.search</field>
+        <field name="model">competitor.social.signal</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="display_name"/>
+                <field name="competitor_id"/>
+                <field name="content"/>
+                <filter name="filter_new" string="New" domain="[('state', '=', 'new')]"/>
+                <filter name="filter_active" string="Active"
+                        domain="[('state', 'in', ('new', 'triaged', 'reviewed'))]"/>
+                <filter name="filter_high_relevance" string="High Relevance"
+                        domain="[('ai_relevance', '=', 'high')]"/>
+                <separator/>
+                <filter name="platform_linkedin" string="LinkedIn"
+                        domain="[('platform', '=', 'linkedin')]"/>
+                <filter name="platform_youtube" string="YouTube"
+                        domain="[('platform', '=', 'youtube')]"/>
+                <separator/>
+                <filter name="group_competitor" string="Competitor"
+                        context="{'group_by': 'competitor_id'}"/>
+                <filter name="group_type" string="Signal Type"
+                        context="{'group_by': 'signal_type'}"/>
+                <filter name="group_platform" string="Platform"
+                        context="{'group_by': 'platform'}"/>
+                <filter name="group_state" string="State"
+                        context="{'group_by': 'state'}"/>
+                <separator/>
+                <filter name="filter_today" string="Today"
+                        date_filter="published_at" date="today"/>
+                <filter name="filter_last_7" string="Last 7 Days"
+                        date_filter="published_at" date="this_week"/>
+                <filter name="filter_last_30" string="Last 30 Days"
+                        date_filter="published_at" date="this_month"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_competitor_social_signal" model="ir.actions.act_window">
+        <field name="name">Sociala signaler</field>
+        <field name="res_model">competitor.social.signal</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_competitor_social_signal_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Inga sociala signaler ännu. Signalerna hämtas automatiskt från LinkedIn och YouTube.
+            </p>
+            <p>
+                Sociala signaler är inlägg från konkurrenters LinkedIn-sidor och YouTube-kanaler.
+                De klassificeras automatiskt med signaltyp, relevans och sentiment.
+            </p>
+        </field>
+    </record>
+</odoo>

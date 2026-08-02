@@ -73,6 +73,6 @@
     <record id="action_marketing_plan" model="ir.actions.act_window">
         <field name="name">Marketing Plans</field>
         <field name="res_model">marketing.plan</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 </odoo>

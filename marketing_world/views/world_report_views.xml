@@ -64,7 +64,7 @@
     <record id="action_world_report_template" model="ir.actions.act_window">
         <field name="name">Rapportmallar</field>
         <field name="res_model">marketing.world.report.template</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <!-- ─── Report Views ─── -->
@@ -167,7 +167,7 @@
     <record id="action_world_report" model="ir.actions.act_window">
         <field name="name">Rapporter</field>
         <field name="res_model">marketing.world.report</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('state', '!=', 'archived')]</field>
     </record>
 </odoo>

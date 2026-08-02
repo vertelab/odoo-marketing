@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Social Monitor Pull — every 6 hours -->
+    <record id="cron_social_monitor_pull" model="ir.cron">
+        <field name="name">Social Monitor Pull</field>
+        <field name="model_id" ref="model_competitor_social_signal"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_pull_all()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="active">True</field>
+        <field name="priority">5</field>
+        <field name="description">Pull social media signals from LinkedIn and YouTube for all tracked competitors, then AI-scoring new signals</field>
+    </record>
+
+    <!-- Social ID Resolution — weekly -->
+    <record id="cron_social_id_resolution" model="ir.cron">
+        <field name="name">Social ID Resolution</field>
+        <field name="model_id" ref="model_competitor_social_signal"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_resolve_all()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+        <field name="numbercall">-1</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="active">True</field>
+        <field name="priority">10</field>
+        <field name="description">Resolve LinkedIn and YouTube IDs for competitors missing them</field>
+    </record>
+</odoo>

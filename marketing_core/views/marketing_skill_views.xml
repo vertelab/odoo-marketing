@@ -66,6 +66,6 @@
     <record id="action_marketing_skill" model="ir.actions.act_window">
         <field name="name">Marketing Skills</field>
         <field name="res_model">marketing.skill</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 </odoo>

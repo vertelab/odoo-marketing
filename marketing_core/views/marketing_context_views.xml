@@ -51,18 +51,18 @@
     <record id="action_marketing_context" model="ir.actions.act_window">
         <field name="name">Marketing Context</field>
         <field name="res_model">marketing.context</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <record id="action_marketing_idea" model="ir.actions.act_window">
         <field name="name">Ideas</field>
         <field name="res_model">marketing.idea</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <record id="action_marketing_kpi" model="ir.actions.act_window">
         <field name="name">KPIs</field>
         <field name="res_model">marketing.kpi</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 </odoo>

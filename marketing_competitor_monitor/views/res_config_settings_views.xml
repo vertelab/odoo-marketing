@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_competitor_monitor_settings" model="ir.ui.view">
+        <field name="name">competitor.monitor.settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="marketing_world.view_world_monitor_settings"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='world_monitor_settings']" position="inside">
+
+                <!-- LinkedIn Monitor Section -->
+                <h2 class="o_settings_stop">Övervakning — LinkedIn</h2>
+                <div class="row mt16" attrs="{'invisible': [('world_monitor_enabled', '=', False)]}">
+                    <div class="col-12 col-lg-8 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <div class="form-group row">
+                                <label class="col-form-label col-lg-4" for="competitor_linkedin_email">
+                                    LinkedIn-e-post
+                                </label>
+                                <div class="col-lg-8">
+                                    <field name="competitor_linkedin_email"
+                                           placeholder="bevakning@example.com"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-form-label col-lg-4" for="competitor_linkedin_password">
+                                    LinkedIn-lösenord
+                                </label>
+                                <div class="col-lg-8">
+                                    <field name="competitor_linkedin_password" password="True"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-lg-8 offset-lg-4">
+                                    <button name="action_test_linkedin_connection"
+                                            string="Testa anslutning" type="object"
+                                            class="btn btn-secondary"/>
+                                    <span class="text-muted ml16">
+                                        <field name="competitor_linkedin_connected"
+                                               widget="label_static"/>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="alert alert-info" role="alert">
+                                <i class="fa fa-info-circle"/>
+                                Använd ett dedikerat LinkedIn-konto för bevakning.
+                                Kontot måste vara inloggat på linkedin.com för att API:t ska fungera.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- YouTube Monitor Section -->
+                <h2 class="o_settings_stop">Övervakning — YouTube</h2>
+                <div class="row mt16" attrs="{'invisible': [('world_monitor_enabled', '=', False)]}">
+                    <div class="col-12 col-lg-8 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <div class="form-group row">
+                                <label class="col-form-label col-lg-4" for="competitor_youtube_api_key">
+                                    YouTube API-nyckel
+                                </label>
+                                <div class="col-lg-8">
+                                    <field name="competitor_youtube_api_key" password="True"
+                                           placeholder="Valfri — RSS fungerar utan"/>
+                                </div>
+                            </div>
+                            <div class="alert alert-info" role="alert">
+                                <i class="fa fa-info-circle"/>
+                                YouTube-kanaler hämtas via RSS som standard.
+                                Ange en Data API v3-nyckel för att även få visningsstatistik och gilla-markeringar.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Batch actions -->
+                <h2 class="o_settings_stop">Åtgärder</h2>
+                <div class="row mt16" attrs="{'invisible': [('world_monitor_enabled', '=', False)]}">
+                    <div class="col-12 col-lg-8 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <button name="action_resolve_all_social"
+                                    string="🔍 Resolvera LinkedIn &amp; YouTube-ID:n"
+                                    type="object" class="btn btn-warning"/>
+                            <div class="text-muted mt8">
+                                Försöker hitta LinkedIn Company ID och YouTube Channel ID
+                                för alla konkurrenter som saknar dem.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Hidden fields for inheritance -->
+    <record id="view_competitor_monitor_settings_hidden" model="ir.ui.view">
+        <field name="name">competitor.monitor.settings.hidden</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="marketing_world.view_world_monitor_settings_inherit"/>
+        <field name="priority" field="1000"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='marketing_settings']" position="inside">
+                <field name="competitor_linkedin_email" invisible="1"/>
+                <field name="competitor_linkedin_password" invisible="1"/>
+                <field name="competitor_linkedin_connected" invisible="1"/>
+                <field name="competitor_youtube_api_key" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

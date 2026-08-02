@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Meny: World Monitor → Sociala signaler -->
+    <menuitem id="menu_competitor_social_signals"
+              name="Sociala signaler"
+              parent="marketing_world.menu_world_monitor_root"
+              action="action_competitor_social_signal"
+              sequence="25"
+              groups="marketing_core.group_marketing_user"/>
+</odoo>
