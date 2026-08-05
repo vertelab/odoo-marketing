@@ -134,7 +134,7 @@
                 <field name="date"/>
                 <field name="summary"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click" t-att-class="'oe_kanban_color_' + (kanban_getcolor(record.severity.raw_value))">
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
