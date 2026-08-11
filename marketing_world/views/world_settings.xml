@@ -45,6 +45,34 @@
         <field name="priority">999</field>
         <field name="arch" type="xml">
             <xpath expr="//app[@name='marketing']" position="inside">
+                                <block title="Background Jobs">
+                    <setting id="world_bg_jobs_display" string="Cron-jobb">
+                        <field name="marketing_world_cron_line_ids" widget="one2many">
+                            <form>
+                                <group>
+                                    <field name="cron_id" readonly="1" force_save="1"/>
+                                    <field name="cron_name" readonly="1"/>
+                                    <field name="cron_active"/>
+                                    <field name="cron_interval_number"/>
+                                    <field name="cron_interval_type"/>
+                                    <field name="cron_lastcall" readonly="1"/>
+                                    <field name="cron_failure_count" readonly="1"/>
+                                    <field name="cron_code" readonly="1"/>
+                                    <button name="action_run_now" type="object"
+                                            string="Kör nu" icon="fa-play"/>
+                                </group>
+                            </form>
+                            <list>
+                                <field name="cron_name"/>
+                                <field name="cron_active"/>
+                                <field name="cron_interval_number"/>
+                                <field name="cron_interval_type"/>
+                                <field name="cron_lastcall"/>
+                                <field name="cron_failure_count"/>
+                            </list>
+                        </field>
+                    </setting>
+                </block>
                 <field name="world_monitor_enabled" invisible="1"/>
                 <field name="world_monitor_api_key" invisible="1"/>
                 <field name="world_monitor_base_url" invisible="1"/>

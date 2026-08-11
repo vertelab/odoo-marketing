@@ -107,4 +107,43 @@
             </xpath>
         </field>
     </record>
+
+    <!-- Background Jobs — cron-administration (samma mönster som ai_agent_core) -->
+    <record id="view_competitor_monitor_settings_bg_jobs" model="ir.ui.view">
+        <field name="name">competitor.monitor.settings.bg.jobs</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="marketing_core.res_config_settings_view_form_marketing"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='marketing']" position="inside">
+                <block title="Background Jobs — Konkurrentbevakning">
+                    <setting id="competitor_bg_jobs_display" string="Cron-jobb">
+                        <field name="marketing_competitor_cron_line_ids" widget="one2many">
+                            <form>
+                                <group>
+                                    <field name="cron_id" readonly="1" force_save="1"/>
+                                    <field name="cron_name" readonly="1"/>
+                                    <field name="cron_active"/>
+                                    <field name="cron_interval_number"/>
+                                    <field name="cron_interval_type"/>
+                                    <field name="cron_lastcall" readonly="1"/>
+                                    <field name="cron_failure_count" readonly="1"/>
+                                    <field name="cron_code" readonly="1"/>
+                                    <button name="action_run_now" type="object"
+                                            string="Kör nu" icon="fa-play"/>
+                                </group>
+                            </form>
+                            <list>
+                                <field name="cron_name"/>
+                                <field name="cron_active"/>
+                                <field name="cron_interval_number"/>
+                                <field name="cron_interval_type"/>
+                                <field name="cron_lastcall"/>
+                                <field name="cron_failure_count"/>
+                            </list>
+                        </field>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
 </odoo>

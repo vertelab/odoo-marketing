@@ -7,3 +7,4 @@ access_world_report_manager,world.report manager,model_marketing_world_report,ma
 access_world_report_template_manager,world.report.template manager,model_marketing_world_report_template,marketing_core.group_marketing_manager,1,1,1,1
 access_world_report_section_manager,world.report.section manager,model_marketing_world_report_section,marketing_core.group_marketing_manager,1,1,1,1
 access_world_competitor_manager,world.competitor manager,model_marketing_world_competitor,marketing_core.group_marketing_manager,1,1,1,1
+access_marketing_world_cron_line_admin,marketing.world.cron.line admin,model_marketing_world_cron_line,marketing_core.group_marketing_manager,1,1,1,1

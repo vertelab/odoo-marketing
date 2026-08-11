@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_social_signal_user,social.signal user,model_competitor_social_signal,marketing_core.group_marketing_user,1,0,0,0
 access_social_signal_manager,social.signal manager,model_competitor_social_signal,marketing_core.group_marketing_manager,1,1,1,1
+access_marketing_competitor_cron_line_admin,marketing.competitor.cron.line admin,model_marketing_competitor_cron_line,marketing_core.group_marketing_manager,1,1,1,1
