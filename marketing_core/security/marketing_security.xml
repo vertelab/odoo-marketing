@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="group_marketing_admin" model="res.groups">
-        <field name="name">Marketing Admin</field>
+    <!-- Order matters: each group's implied_ids must reference groups that
+         are defined earlier in this file (eval refs resolve in order). -->
+    <record id="group_marketing_user" model="res.groups">
+        <field name="name">Marketing User</field>
         <field name="category_id" ref="base.module_category_hidden"/>
-        <field name="implied_ids" eval="[(4, ref('marketing_core.group_marketing_manager')),
-                                           (4, ref('marketing_core.group_marketing_pi_agent')),
-                                           (4, ref('marketing_core.group_marketing_user'))]"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_marketing_pi_agent" model="res.groups">
+        <field name="name">Marketing Pi Agent</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
     </record>
 
     <record id="group_marketing_manager" model="res.groups">
@@ -15,16 +21,12 @@
                                            (4, ref('marketing_core.group_marketing_user'))]"/>
     </record>
 
-    <record id="group_marketing_pi_agent" model="res.groups">
-        <field name="name">Marketing Pi Agent</field>
+    <record id="group_marketing_admin" model="res.groups">
+        <field name="name">Marketing Admin</field>
         <field name="category_id" ref="base.module_category_hidden"/>
-        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
-    </record>
-
-    <record id="group_marketing_user" model="res.groups">
-        <field name="name">Marketing User</field>
-        <field name="category_id" ref="base.module_category_hidden"/>
-        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="implied_ids" eval="[(4, ref('marketing_core.group_marketing_manager')),
+                                           (4, ref('marketing_core.group_marketing_pi_agent')),
+                                           (4, ref('marketing_core.group_marketing_user'))]"/>
     </record>
 
     <!-- System administrators automatically become Marketing Admin -->
