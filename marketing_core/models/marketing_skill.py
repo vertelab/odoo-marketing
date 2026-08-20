@@ -60,8 +60,6 @@ class MarketingSkill(models.Model):
     # Relations
     plan_ids = fields.One2many('marketing.plan', 'skill_id',
         string='Generated Plans')
-    quest_ids = fields.One2many('ai.quest', 'marketing_skill_id',
-        string='AI Quests')
 
     @api.depends('skill_content')
     def _compute_html(self):
