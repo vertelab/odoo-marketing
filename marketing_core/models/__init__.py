@@ -4,4 +4,6 @@
 from . import marketing_skill
 from . import marketing_plan
 from . import marketing_context
+from . import marketing_idea
+from . import marketing_kpi
 from . import marketing_skill_import
