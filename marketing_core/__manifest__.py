@@ -9,7 +9,7 @@
     'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-marketing',
     'license': 'AGPL-3',
-    'depends': ['base', 'mail', 'crm', 'sale_management', 'social_marketing', 'strategy_core'],
+    'depends': ['base', 'mail', 'crm', 'sale_management', 'social_marketing'],
     'data': [
         'security/marketing_security.xml',
         'security/ir.model.access.csv',

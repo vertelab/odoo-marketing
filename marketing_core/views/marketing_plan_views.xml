@@ -7,7 +7,6 @@
             <list>
                 <field name="name"/>
                 <field name="customer_id"/>
-                <field name="bmc_id"/>
                 <field name="state"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
@@ -31,7 +30,6 @@
                     <group>
                         <field name="name"/>
                         <field name="customer_id"/>
-                        <field name="bmc_id"/>
                     </group>
                     <group>
                         <field name="start_date"/>
