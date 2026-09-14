@@ -165,13 +165,7 @@ class ResConfigSettingsWorldCron(models.TransientModel):
     @api.model
     def get_values(self):
         res = super().get_values()
-        # Transienta konfigurationsrader visas i settings-blocket. De är en ren
-        # visnings-proxy för ir.cron (alla fält utom settings_id, cron_active
-        # och interval_* är related), men ACL-raden för
-        # marketing.world.cron.line kräver group_marketing_manager.
-        # get_values() är en läsmetod och får inte snubbla på create-ACL för en
-        # användare som bara öppnar inställningarna — därför sudo().
-        crons = self.env['ir.cron'].sudo().search(
+        crons = self.env['ir.cron'].search(
             [('cron_name', 'in', MARKETING_WORLD_CRON_NAMES)], order='cron_name')
         res['marketing_world_cron_line_ids'] = [(0, 0, {
             'cron_id': cron.id,

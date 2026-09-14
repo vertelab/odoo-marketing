@@ -112,10 +112,7 @@ class ResConfigSettingsCompetitorCron(models.TransientModel):
     @api.model
     def get_values(self):
         res = super().get_values()
-        # Se marketing_world/models/world_settings.py: samma mönster.
-        # Transienta cron-rader är en visnings-proxy för ir.cron, och
-        # get_values() (läsmetod) får inte kräva create-ACL på dem.
-        crons = self.env['ir.cron'].sudo().search(
+        crons = self.env['ir.cron'].search(
             [('cron_name', 'in', MARKETING_COMPETITOR_CRON_NAMES)], order='cron_name')
         res['marketing_competitor_cron_line_ids'] = [(0, 0, {
             'cron_id': cron.id,
