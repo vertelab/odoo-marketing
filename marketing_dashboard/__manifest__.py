@@ -7,7 +7,7 @@
     'category': 'Marketing',
     'summary': 'Unified AARRR marketing dashboard',
     'author': 'Vertel Sverige AB',
-    'website': 'https://vertel.se/apps/odoo-marketing',
+    'website': 'https://vertel.se/apps/odoo-marketing/marketing_dashboard',
     'license': 'AGPL-3',
     'depends': ['marketing_core', 'dashboard_vrtl'],
     'data': [

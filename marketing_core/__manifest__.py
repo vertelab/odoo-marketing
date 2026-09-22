@@ -7,7 +7,7 @@
     'category': 'Marketing',
     'summary': 'Marketing skill registry, AARRR plans, idea bank, KPIs',
     'author': 'Vertel Sverige AB',
-    'website': 'https://vertel.se/apps/odoo-marketing',
+    'website': 'https://vertel.se/apps/odoo-marketing/marketing_core',
     'license': 'AGPL-3',
     'depends': ['base', 'mail', 'crm', 'sale_management', 'social_marketing', 'strategy_core'],
     'data': [

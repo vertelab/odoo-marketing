@@ -7,7 +7,7 @@
     'category': 'Marketing',
     'summary': 'AI coworkers and skills for marketing — bridge into ai_agent_core',
     'author': 'Vertel Sverige AB',
-    'website': 'https://vertel.se/apps/odoo-marketing',
+    'website': 'https://vertel.se/apps/odoo-marketing/marketing_ai',
     'license': 'AGPL-3',
     'depends': ['marketing_core', 'ai_agent_core'],
     'data': [

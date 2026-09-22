@@ -7,7 +7,7 @@
     'category': 'Marketing',
     'summary': 'World Monitor integration — omvärldsbevakning, events, triage, briefs, reports',
     'author': 'Vertel Sverige AB',
-    'website': 'https://vertel.se/apps/odoo-marketing',
+    'website': 'https://vertel.se/apps/odoo-marketing/marketing_world',
     'license': 'AGPL-3',
     'depends': [
         'marketing_core',

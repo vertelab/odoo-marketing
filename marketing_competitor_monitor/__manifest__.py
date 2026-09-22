@@ -7,7 +7,7 @@
     'category': 'Marketing',
     'summary': 'Social media monitoring for competitors — LinkedIn, YouTube, signal scoring, battle card integration',
     'author': 'Vertel Sverige AB',
-    'website': 'https://vertel.se/apps/odoo-marketing',
+    'website': 'https://vertel.se/apps/odoo-marketing/marketing_competitor_monitor',
     'license': 'AGPL-3',
     'depends': [
         'marketing_world',
