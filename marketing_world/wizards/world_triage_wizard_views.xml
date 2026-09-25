@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_world_triage_wizard_form" model="ir.ui.view">
+        <field name="name">world.triage.wizard.form</field>
+        <field name="model">world.triage.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <p class="oe_grey">
+                        Execute triage action on <field name="event_count"/> selected event(s).
+                    </p>
+                </group>
+
+                <group>
+                    <field name="action_type" widget="radio"/>
+                </group>
+
+                <group invisible="action_type != 'escalate_to_risk'">
+                    <group string="Escalation Settings">
+                        <field name="escalation_severity"/>
+                        <field name="escalation_category"/>
+                        <field name="escalation_notes" nolabel="1"
+                               placeholder="Describe why this event is being escalated..."/>
+                    </group>
+                </group>
+
+                <group>
+                    <field name="send_notification"/>
+                </group>
+
+                <footer>
+                    <button name="action_execute" string="Execute" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_world_triage_wizard" model="ir.actions.act_window">
+        <field name="name">Triage Events</field>
+        <field name="res_model">world.triage.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_marketing_world_event"/>
+        <field name="binding_view_types">list,kanban</field>
+        <field name="context">{'active_model': 'marketing.world.event'}</field>
+    </record>
+</odoo>

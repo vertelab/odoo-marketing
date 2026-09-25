@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Bas-sektion för Marketing-inställningar (Odoo 18 <app>-struktur).
+         world_settings.xml (marketing_world) ärver denna app. -->
+    <record id="res_config_settings_view_form_marketing" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.marketing</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Marketing" string="Marketing" name="marketing"
+                     groups="marketing_core.group_marketing_manager">
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

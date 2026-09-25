@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        AI Skills and Quests for World Monitor integration.
+        Skills define what the AI knows how to do.
+        Quests define when and how the AI runs (cron, chat, powerbox).
+    -->
+
+    <!-- ── Skill: market-intelligence-triage ── -->
+    <record id="skill_market_intelligence_triage" model="ai.skill">
+        <field name="name">market-intelligence-triage</field>
+        <field name="description">AI-driven relevance assessment for world events. Categorizes events as direct, indirect, or monitor relevance, suggests severity, and escalates risks.</field>
+        <field name="category">general</field>
+        <field name="compatibility">any</field>
+        <field name="trigger_keywords">triage, relevance, world event, omvärld, risk bedömning, event classification</field>
+        <field name="recipe_text"><![CDATA[
+# Market Intelligence Triage
+
+Assess relevance of world monitoring events for a specific company/customer context.
+
+## Context Available
+- `marketing.world.event` record: name, summary, full_text, category, severity, country, wm_raw
+- Company: industry filter, country filter
+- Customer: `marketing.context` (ICP, positioning, active channels) if `customer_id` is set
+- Active `strategy.plan` for the customer (if any)
+
+## Process
+
+### 1. Read Event
+Read the event name, summary, full_text, category, and raw data from WM.
+
+### 2. Read Context
+- Company industry filter: {company.world_monitor_filter_industry}
+- Country filter: {company_country_names}
+- Customer context: {customer_context} (if available)
+- Active strategy plans: {plan_names} (if available)
+
+### 3. Assess Relevance
+Classify as one of:
+- **direct**: Directly impacts the company/customer — immediate attention needed
+- **indirect**: Indirectly relevant — relevant for weekly brief
+- **monitor**: Worth monitoring but no action needed
+
+### 4. Assign Category & Severity
+- Select the most specific category from the allowed list
+- Suggest severity level
+
+### 5. Write Reasoning
+Document your reasoning in `ai_analysis` field.
+
+### 6. Escalate if Critical
+If severity is `high` or `critical`, create a draft `strategy.risk`:
+- name: "WM: {event.name}"
+- category: Mapped from event category
+- probability: 'high' for critical, 'medium' for high
+- impact_description: AI's assessment of impact
+]]></field>
+    </record>
+
+    <!-- ── Skill: world-brief-generator ── -->
+    <record id="skill_world_brief_generator" model="ai.skill">
+        <field name="name">world-brief-generator</field>
+        <field name="description">Generate weekly world monitoring briefs per customer. Summarizes relevant events, risk changes, and competitor movements.</field>
+        <field name="category">general</field>
+        <field name="compatibility">any</field>
+        <field name="trigger_keywords">brief, omvärldsanalys, weekly briefing, world summary, veckobrev</field>
+        <field name="recipe_text"><![CDATA[
+# World Brief Generator
+
+Generate a weekly world monitoring brief for a specific customer.
+
+## Data Sources
+- `marketing.world.event` records with `state='relevant'` and `date` in the past 7 days
+- Previous brief for comparison
+- `strategy.risk` changes since last brief
+- `marketing.world.competitor` movements (if enabled)
+
+## Brief Format
+
+1. **Executive Summary** (1-2 paragraphs)
+   - Key takeaway: what happened this week?
+   - Overall risk level: stable/increased/decreased
+
+2. **Key Events** (per category)
+   - For each event: title, severity, date
+   - Summary of what happened
+   - Why it matters for this customer
+
+3. **Risk Changes**
+   - New risks identified
+   - Risks that escalated
+   - Risks that were mitigated
+
+4. **Competitor Movements** (if applicable)
+   - Recent competitor activity from WM news intelligence
+
+5. **Recommendations**
+   - What to monitor closely
+   - What to act on
+   - Priority level per recommendation
+
+## Output Format
+Write to `marketing.world.brief` model:
+- `summary`: Full analysis text
+- `event_ids`: Link to relevant events
+- `risk_changes`: Text describing risk posture changes
+- `body_markdown`: Full brief in Markdown with YAML front-matter
+]]></field>
+    </record>
+
+    <!-- ── Skill: meeting-prep-world ── -->
+    <record id="skill_meeting_prep_world" model="ai.skill">
+        <field name="name">meeting-prep-world</field>
+        <field name="description">Prepare world monitoring content for strategy meetings. Creates agenda items with brief summary, risk changes, and competitor moves.</field>
+        <field name="category">general</field>
+        <field name="compatibility">any</field>
+        <field name="trigger_keywords">meeting prep, mötesförberedelse, world brief, omvärld, agenda</field>
+        <field name="recipe_text"><![CDATA[
+# Meeting Prep World
+
+Prepare world monitoring content for a strategy.meeting.
+
+## Data Sources
+- Most recent `marketing.world.brief` for the meeting's customer
+- Recent `strategy.risk` changes since last meeting
+- `marketing.world.competitor` movements (if enabled)
+
+## Process
+
+1. Read the most recent brief for the meeting's customer
+2. Read risk changes since last meeting
+3. Create agenda item "Omvärldsbevakning"
+4. Include: brief summary (3-5 bullets), risk changes, competitor moves
+5. Time allocation: default 15 minutes
+
+## Agenda Item Structure
+- Title: "Omvärldsbevakning"
+- Summary as bullet points
+- Risk changes: new/escalated/resolved
+- Competitor moves (if any)
+- Estimated time: 15 min
+]]></field>
+    </record>
+
+    <!-- ── Skill: world-monitor-query ── -->
+    <record id="skill_world_monitor_query" model="ai.skill">
+        <field name="name">world-monitor-query</field>
+        <field name="description">Query World Monitor directly via MCP for ad-hoc world intelligence questions. Supports geospatial analysis, news intelligence, country briefs, and market data.</field>
+        <field name="category">general</field>
+        <field name="compatibility">any</field>
+        <field name="trigger_keywords">world monitor, query, mcp, world intelligence, news, geopolitical</field>
+        <field name="recipe_text"><![CDATA[
+# World Monitor Query
+
+Query World Monitor directly via MCP for ad-hoc world intelligence.
+
+## MCP Server
+- URL: https://worldmonitor.vertel.se/mcp
+- Auth: X-WorldMonitor-Key header with API key from Odoo settings
+
+## Available Tools
+- `get_world_brief(geo_context)` — AI-summarized world intelligence
+- `get_country_brief(country_code)` — per-country intelligence
+- `get_news_intelligence(query, limit)` — cross-source news signals
+- `get_market_data(sector, region)` — market-specific intelligence
+- `get_conflict_events(region, since)` — conflict monitoring
+- `get_country_risk(country_code)` — country risk assessment
+
+## Process
+1. Understand the user's question
+2. Select the appropriate WM tool(s)
+3. Call with the API key from Odoo settings
+4. Present results with source citations
+5. Ask follow-up questions to refine
+
+## Example Queries
+- "Vad händer i omvärlden som påverkar vår bransch?"
+  → get_world_brief(geo_context="SE") + get_news_intelligence(query="[company industry]")
+- "Hur går det för konkurrent X?"
+  → get_news_intelligence(query="Competitor X")
+]]></field>
+    </record>
+
+    <!-- ── Skill: world-report-generator ── -->
+    <record id="skill_world_report_generator" model="ai.skill">
+        <field name="name">world-report-generator</field>
+        <field name="description">Generate formal world monitoring reports from templates. Each section has its own AI prompt for focused analysis with assessment and reasoning.</field>
+        <field name="category">general</field>
+        <field name="compatibility">any</field>
+        <field name="trigger_keywords">report, rapport, world report, omvärldsrapport, formal report, template report</field>
+        <field name="recipe_text"><![CDATA[
+# World Report Generator
+
+Generate a formal world monitoring report from a template.
+
+## Data Sources
+- `marketing.world.report.template` with sections and per-section ai_prompt
+- Recent `marketing.world.event` (relevant, since last report)
+- `strategy.risk` changes since last report
+- `marketing.world.competitor` movements (if enabled)
+- Previous report (for comparison/trend analysis)
+
+## Process
+For each section in the template:
+1. Read the section's `ai_prompt` for instructions
+2. Collect relevant events/risks for this section
+3. Write `content`: what happened (facts)
+4. Write `assessment`: what does this mean for the customer?
+5. Write `reasoning`: why did we assess this way?
+6. Link `source_event_ids` to specific events
+
+## Output Structure
+```json
+{
+  "sections": [
+    {
+      "sequence": 10,
+      "name": "Section Name",
+      "content": "What happened...",
+      "assessment": "What this means...",
+      "reasoning": "Why we assess this way...",
+      "source_event_ids": [1, 2, 3]
+    }
+  ]
+}
+```
+]]></field>
+    </record>
+    <!-- ── Skill: world-competitor-battle-card ── -->
+    <record id="skill_world_competitor_battle_card" model="ai.skill">
+        <field name="name">world-competitor-battle-card</field>
+        <field name="description">Generate structured battle cards combining World Monitor intelligence with competitor data. Produces a competitive SWOT, positioning analysis, recent movements, and counter-strategies.</field>
+        <field name="category">general</field>
+        <field name="compatibility">any</field>
+        <field name="trigger_keywords">battle card, battlecard, konkurrent, competitor profiling, competitive intelligence, SWOT competitor</field>
+        <field name="recipe_text"><![CDATA[
+# World Competitor Battle Card
+
+Generate a structured battle card for a tracked competitor by combining World Monitor intelligence with existing competitor data.
+
+## Context Available
+- `marketing.world.competitor` record: name, website, description, customer_id, wm_search_query
+- World Monitor news intelligence results for the competitor
+- Recent `marketing.world.event` records mentioning this competitor
+- Customer context: industry, ICP from `marketing.context`
+
+## Process
+
+### 1. Read Competitor Data
+Read the competitor record fields: name, website, description, customer context.
+
+### 2. Query World Monitor
+Search WM for recent news about this competitor:
+- Use `fetch_news_intelligence(query="{competitor_name}", limit=15)`
+- Focus on: product launches, funding, partnerships, market moves, press coverage
+
+### 3. Gather Mentions from Odoo Events
+Check `marketing.world.event` records that mention this competitor:
+- State: relevant, escalated, or triaged
+- Focus on recent events (last 90 days)
+
+### 4. Build Battle Card Structure
+
+#### Header
+- Competitor name, website
+- Customer this relates to
+- Date generated
+- Data freshness: how recent is the intelligence?
+
+#### Competitive SWOT
+
+**Strengths** (theirs vs. us)
+- Where they genuinely outperform
+- Unique differentiators
+- Evidence from WM data or site
+
+**Weaknesses** (theirs vs. us)
+- Where they fall short
+- Gaps, limitations, vulnerabilities
+- Evidence from reviews, complaints, or gaps in coverage
+
+**Opportunities** (for us)
+- Gaps in their offering we can exploit
+- Segments they are ignoring
+- Messaging angles they are missing
+- Recent events that create openings
+
+**Threats** (from them)
+- Recent moves (product launches, funding, hiring)
+- Areas where they are improving fast
+- Market perception shifts
+
+#### Recent Movements
+Timeline of competitor activity (last 90 days):
+| Date | Movement | Source | Impact |
+|------|----------|--------|--------|
+| ... | ... | WM / manual | High/Med/Low |
+
+#### Positioning & Messaging
+- Tagline / headline (from website if available)
+- Target audience signals
+- Key messaging themes
+- Pricing tier signals
+
+#### Counter-Strategies
+Concrete recommendations:
+1. **How to compete**: specific differentiation angles
+2. **Sales plays**: talk tracks for when this competitor comes up
+3. **Product gaps**: what to build to neutralize their advantage
+4. **Messaging shifts**: how to reframe the comparison
+
+### 5. Output Format
+Write structured text to the `battle_card` field using this format:
+
+```
+# Battle Card: {competitor_name}
+
+**Customer**: {customer_name}
+**Generated**: {date}
+**Data Sources**: World Monitor, Odoo events
+
+## Competitive SWOT
+
+### Strengths
+- ...
+
+### Weaknesses
+- ...
+
+### Opportunities
+- ...
+
+### Threats
+- ...
+
+## Recent Movements
+
+| Date | Movement | Impact |
+|------|----------|--------|
+
+## Positioning
+
+...
+
+## Counter-Strategies
+
+1. ...
+```
+]]></field>
+    </record>
+</odoo>

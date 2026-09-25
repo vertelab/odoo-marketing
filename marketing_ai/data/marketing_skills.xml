@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Marketing AI skills — ai.skill registry for marketing coworkers.
+        Bridge module (marketing_ai): AI-förmågor läggs ENBART här,
+        aldrig i marketing_core.
+        Note: ai.skill.category is selection-constrained; we map to
+        valid categories (communication/analysis/research/general).
+    -->
+
+    <record id="skill_marketing_content" model="ai.skill">
+        <field name="name">marketing-content-strategy</field>
+        <field name="description">Create data-driven content strategies from CRM and sales data — content pillars, formats, cadence, and copy direction.</field>
+        <field name="category">communication</field>
+        <field name="compatibility">any</field>
+        <field name="trigger_keywords">content, copy, blog, social post, inlägg, innehåll</field>
+        <field name="recipe_text"><![CDATA[
+# Marketing Content Strategy
+
+Create content strategies grounded in Odoo CRM/sales data.
+
+## Process
+1. Read customer context (marketing.context: ICP, brand voice) and plan (marketing.plan).
+2. Identify 3-5 content pillars from customer segments and value propositions.
+3. Propose formats + cadence per channel.
+4. Draft 2 example pieces (headline + outline + CTA).
+
+## HITL
+Always deliver as workspace.activity.suggestion. Never publish directly.
+        ]]></field>
+    </record>
+
+    <record id="skill_marketing_seo" model="ai.skill">
+        <field name="name">marketing-seo</field>
+        <field name="description">SEO audits, programmatic content, keyword strategy and on-page optimization grounded in web data.</field>
+        <field name="category">analysis</field>
+        <field name="compatibility">any</field>
+        <field name="trigger_keywords">seo, keyword, sökord, rank, organisk</field>
+        <field name="recipe_text"><![CDATA[
+# Marketing SEO
+
+Optimize web presence with SEO audits and programmatic content.
+
+## Process
+1. Gather current pages/URLs and target segments.
+2. Build keyword clusters mapped to customer segments.
+3. Propose on-page changes and content gaps.
+4. Prioritize by impact/effort.
+
+## HITL
+Deliver as suggestions; implement only after approval.
+        ]]></field>
+    </record>
+
+    <record id="skill_marketing_ads" model="ai.skill">
+        <field name="name">marketing-acquisition</field>
+        <field name="description">Paid acquisition: ad campaigns, creatives, budgets, and channel mix optimization.</field>
+        <field name="category">communication</field>
+        <field name="compatibility">any</field>
+        <field name="trigger_keywords">ads, annonser, kampanj, acquisition, spend, budget</field>
+        <field name="recipe_text"><![CDATA[
+# Marketing Acquisition (Paid)
+
+Optimize ad campaigns and creative performance.
+
+## Process
+1. Read campaign context (channels, budget, target segments).
+2. Suggest channel mix and budget allocation.
+3. Draft ad creatives per channel (headline, body, CTA).
+4. Define tracking/measurement plan.
+
+## HITL
+Budgets and campaigns require explicit approval before change.
+        ]]></field>
+    </record>
+
+    <record id="skill_marketing_analytics" model="ai.skill">
+        <field name="name">marketing-analytics</field>
+        <field name="description">Analyze marketing performance, funnels, competitor activity, and attribution from Odoo data.</field>
+        <field name="category">analysis</field>
+        <field name="compatibility">any</field>
+        <field name="trigger_keywords">analytics, analys, funnel, konvertering, attribution, rapport</field>
+        <field name="recipe_text"><![CDATA[
+# Marketing Analytics
+
+Analyze marketing performance and competitor activity.
+
+## Process
+1. Collect metrics from CRM, campaigns, and analytics sources.
+2. Build funnel view and identify drop-off points.
+3. Compare against targets and benchmarks.
+4. Recommend experiments with expected impact.
+
+## HITL
+Insights are read-only; experiments go through approval queue.
+        ]]></field>
+    </record>
+
+    <record id="skill_marketing_plan" model="ai.skill">
+        <field name="name">marketing-plan-aarrr</field>
+        <field name="description">Comprehensive AARRR marketing plans from business data — acquisition, activation, retention, revenue, referral.</field>
+        <field name="category">general</field>
+        <field name="compatibility">any</field>
+        <field name="trigger_keywords">plan, strategi, aarrr, roadmap, marketing plan, marknadsplan</field>
+        <field name="recipe_text"><![CDATA[
+# Marketing Plan (AARRR)
+
+Create comprehensive marketing plans from business data.
+
+## Process
+1. Read customer, BMC (value propositions, segments), and context.
+2. Build AARRR funnel with concrete actions per stage.
+3. Assign owner, channel, budget estimate, and success metric per action.
+4. Produce the plan as structured output.
+
+## HITL
+The plan itself is a deliverable; execution actions require approval.
+        ]]></field>
+    </record>
+
+    <record id="skill_marketing_social" model="ai.skill">
+        <field name="name">marketing-social</field>
+        <field name="description">Social media planning: post ideas from OKF concepts, scheduling, and channel-specific copy.</field>
+        <field name="category">communication</field>
+        <field name="compatibility">any</field>
+        <field name="trigger_keywords">social, linkedin, instagram, post, inlägg, publicering</field>
+        <field name="recipe_text"><![CDATA[
+# Marketing Social
+
+Transform OKF concepts into scheduled social posts.
+
+## Process
+1. Read 3+ relevant ai.okf.concept records.
+2. Draft post ideas per channel (LinkedIn, Instagram, X).
+3. Each idea becomes workspace.activity.suggestion with evidence_ids.
+4. After approval, create social_marketing.post in draft (never publish directly).
+
+## HITL
+always — suggestions only, no auto-publication.
+        ]]></field>
+    </record>
+
+    <record id="skill_marketing_conversion" model="ai.skill">
+        <field name="name">marketing-conversion</field>
+        <field name="description">Conversion rate optimization: landing pages, A/B tests, funnel improvements, churn prevention.</field>
+        <field name="category">analysis</field>
+        <field name="compatibility">any</field>
+        <field name="trigger_keywords">konvertering, conversion, cro, ab-test, churn, onboarding</field>
+        <field name="recipe_text"><![CDATA[
+# Marketing Conversion
+
+Improve conversion and retention.
+
+## Process
+1. Identify conversion bottlenecks in the funnel.
+2. Propose A/B test hypotheses with expected impact.
+3. Include churn prevention actions for at-risk accounts.
+4. Define success metrics and measurement.
+
+## HITL
+Tests require approval before rollout.
+        ]]></field>
+    </record>
+
+    <record id="skill_marketing_referral" model="ai.skill">
+        <field name="name">marketing-referral</field>
+        <field name="description">Referral and partner programs: co-marketing, community, advocacy, and incentive design.</field>
+        <field name="category">communication</field>
+        <field name="compatibility">any</field>
+        <field name="trigger_keywords">referral, partner, co-marketing, community, advocacy, ambassadör</field>
+        <field name="recipe_text"><![CDATA[
+# Marketing Referral
+
+Design referral and partner programs.
+
+## Process
+1. Read customer base segments and partner landscape.
+2. Design incentive structure (reward, threshold, channel).
+3. Propose co-marketing and community actions.
+4. Define program KPIs and rollout plan.
+
+## HITL
+Incentives and partner commitments require approval.
+        ]]></field>
+    </record>
+</odoo>

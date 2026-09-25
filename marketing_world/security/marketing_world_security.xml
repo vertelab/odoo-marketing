@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Record rules for marketing.world.* models.
+    -->
+
+    <!-- marketing.world.event: user can read all, write only own company -->
+    <record id="rule_world_event_company" model="ir.rule">
+        <field name="name">marketing.world.event: company multi-company</field>
+        <field name="model_id" ref="model_marketing_world_event"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- marketing.world.brief: user can read all, write only manager -->
+    <record id="rule_world_brief_company" model="ir.rule">
+        <field name="name">marketing.world.brief: company multi-company</field>
+        <field name="model_id" ref="model_marketing_world_brief"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- marketing.world.report: manager only -->
+    <record id="rule_world_report_company" model="ir.rule">
+        <field name="name">marketing.world.report: company multi-company</field>
+        <field name="model_id" ref="model_marketing_world_report"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- marketing.world.competitor: manager only -->
+    <record id="rule_world_competitor_company" model="ir.rule">
+        <field name="name">marketing.world.competitor: company multi-company</field>
+        <field name="model_id" ref="model_marketing_world_competitor"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

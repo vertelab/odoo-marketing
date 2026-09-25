@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend marketing.world.competitor form with social monitoring buttons -->
+    <record id="view_competitor_form_social" model="ir.ui.view">
+        <field name="name">marketing.world.competitor.form.social</field>
+        <field name="model">marketing.world.competitor</field>
+        <field name="inherit_id" ref="marketing_world.view_world_competitor_form"/>
+        <field name="arch" type="xml">
+            <!-- Add social buttons to header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_pull_linkedin" string="📡 Pull LinkedIn" type="object"
+                        class="btn-secondary"
+                        groups="marketing_core.group_marketing_manager"/>
+                <button name="action_pull_youtube" string="📺 Pull YouTube" type="object"
+                        class="btn-secondary"
+                        groups="marketing_core.group_marketing_manager"/>
+                <button name="action_pull_and_generate" string="⚡ Pull &amp; Generate Battle Card"
+                        type="object" class="btn-warning"
+                        groups="marketing_core.group_marketing_manager"/>
+            </xpath>
+
+            <!-- Add social fields to the sheet -->
+            <xpath expr="//sheet//group[group/field[@name='last_mention_date']]" position="after">
+                <group string="Social Monitoring">
+                    <group>
+                        <field name="competitor_linkedin_public_id" placeholder="LinkedIn company ID"/>
+                        <field name="competitor_linkedin_pull_state" widget="badge"
+                               decoration-success="competitor_linkedin_pull_state == 'ok'"
+                               decoration-danger="competitor_linkedin_pull_state == 'challenge'"
+                               decoration-warning="competitor_linkedin_pull_state == 'error'"
+                               decoration-muted="competitor_linkedin_pull_state == 'unknown'"/>
+                        <field name="competitor_linkedin_last_pull"/>
+                    </group>
+                    <group>
+                        <field name="competitor_youtube_channel_id" placeholder="YouTube channel ID"/>
+                        <field name="competitor_youtube_last_pull"/>
+                    </group>
+                </group>
+            </xpath>
+
+            <!-- Add social signal stats to existing statinfo area -->
+            <xpath expr="//field[@name='mention_count']" position="after">
+                <field name="social_signal_count" widget="statinfo"
+                       string="Signaler"/>
+            </xpath>
+
+            <!-- Add "Open Signals" link button -->
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_open_social_signals"
+                            string="Social Signals"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-comments">
+                        <field name="social_signal_count" widget="statinfo"/>
+                    </button>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

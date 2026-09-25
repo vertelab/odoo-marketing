@@ -61,6 +61,8 @@ class MarketingSkill(models.Model):
     # Relations
     plan_ids = fields.One2many('marketing.plan', 'skill_id',
         string='Generated Plans')
+    # AI-koppling sker enbart i _ai-modulen (marketing_ai) — aldrig här.
+    # Ai.coworker.skill (via coworker-kopplingen) används i stället.
 
     @api.depends('skill_content')
     def _compute_html(self):
