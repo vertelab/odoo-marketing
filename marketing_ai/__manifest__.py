@@ -5,7 +5,17 @@
     'name': 'Marketing AI',
     'version': '18.0.1.1.0',
     'category': 'Marketing',
-    'summary': 'AI coworkers and skills for marketing — bridge into ai_agent_core',
+    'summary': 'AI coworkers and skills for marketing — bridge into ai_agent_core.',
+    'description': '''
+Marketing AI
+============
+
+    AI coworkers and skills for marketing — bridge into ai_agent_core.
+
+    Features:
+
+        - Extends Odoo: Builds on ai.coworker.
+    ''',
     'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-marketing/marketing_ai',
     'license': 'AGPL-3',

@@ -5,7 +5,19 @@
     'name': 'Marketing Competitor Monitor',
     'version': '18.0.1.0.0',
     'category': 'Marketing',
-    'summary': 'Social media monitoring for competitors — LinkedIn, YouTube, signal scoring, battle card integration',
+    'summary': 'Social media monitoring for competitors — LinkedIn, YouTube, signal scoring, battle card integration.',
+    'description': '''
+Marketing Competitor Monitor
+============================
+
+    Social media monitoring for competitors — LinkedIn, YouTube, signal scoring, battle card integration.
+
+    Features:
+
+        - Automation: Scheduled jobs: Social Monitor Pull, Social ID Resolution.
+        - UI Integration: Extends 4 view(s) in the Odoo interface.
+        - Extends Odoo: Builds on competitor.social.signal, display_name, mail.thread, marketing.competitor.cron.line.
+    ''',
     'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-marketing/marketing_competitor_monitor',
     'license': 'AGPL-3',

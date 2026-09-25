@@ -5,7 +5,17 @@
     'name': 'Marketing Dashboard',
     'version': '18.0.1.0.0',
     'category': 'Marketing',
-    'summary': 'Unified AARRR marketing dashboard',
+    'summary': 'Unified AARRR marketing dashboard.',
+    'description': '''
+Marketing Dashboard
+===================
+
+    Unified AARRR marketing dashboard.
+
+    Features:
+
+        - Focused Fix: A small, targeted improvement to standard Odoo behaviour.
+    ''',
     'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-marketing/marketing_dashboard',
     'license': 'AGPL-3',

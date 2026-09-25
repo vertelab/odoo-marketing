@@ -5,7 +5,18 @@
     'name': 'Marketing Core',
     'version': '18.0.1.0.0',
     'category': 'Marketing',
-    'summary': 'Marketing skill registry, AARRR plans, idea bank, KPIs',
+    'summary': 'Marketing skill registry, AARRR plans, idea bank, KPIs.',
+    'description': '''
+Marketing Core
+==============
+
+    Marketing skill registry, AARRR plans, idea bank, KPIs.
+
+    Features:
+
+        - UI Integration: Extends 5 view(s) in the Odoo interface.
+        - Extends Odoo: Builds on mail.thread, marketing.context, marketing.idea, marketing.kpi.
+    ''',
     'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-marketing/marketing_core',
     'license': 'AGPL-3',

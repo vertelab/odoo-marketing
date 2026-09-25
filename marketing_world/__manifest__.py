@@ -6,6 +6,19 @@
     'version': '18.0.1.0.0',
     'category': 'Marketing',
     'summary': 'World Monitor integration — omvärldsbevakning, events, triage, briefs, reports',
+    'description': '''
+Marketing World
+===============
+
+    World Monitor integration — omvärldsbevakning, events, triage, briefs, reports.
+
+    Features:
+
+        - Automation: Scheduled jobs: World Monitor Pull, World Intelligence Triage, World Brief Generator.
+        - Guided Wizards: Step-by-step dialogs for data entry.
+        - UI Integration: Extends 9 view(s) in the Odoo interface.
+        - Extends Odoo: Builds on mail.thread, marketing.world.brief, marketing.world.competitor, marketing.world.cron.line.
+    ''',
     'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-marketing/marketing_world',
     'license': 'AGPL-3',
