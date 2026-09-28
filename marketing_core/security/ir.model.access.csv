@@ -1,7 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_marketing_skill_manager,marketing.skill manager,model_marketing_skill,group_marketing_manager,1,1,1,1
 access_marketing_skill_pi,marketing.skill pi agent,model_marketing_skill,group_marketing_pi_agent,1,0,0,0
-access_marketing_skill_strategy,marketing.skill strategy,model_marketing_skill,strategy_core.group_strategy_pi_agent,1,1,1,0
 access_marketing_plan_manager,marketing.plan manager,model_marketing_plan,group_marketing_manager,1,1,1,1
 access_marketing_plan_user,marketing.plan user,model_marketing_plan,group_marketing_user,1,1,1,0
 access_marketing_plan_pi,marketing.plan pi agent,model_marketing_plan,group_marketing_pi_agent,1,1,1,0

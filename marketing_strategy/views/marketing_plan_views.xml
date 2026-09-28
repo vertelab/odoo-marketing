@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add BMC field to marketing.plan (only when strategy_core is present) -->
+    <record id="view_plan_tree_bridge" model="ir.ui.view">
+        <field name="name">marketing.plan.tree.bridge</field>
+        <field name="model">marketing.plan</field>
+        <field name="inherit_id" ref="marketing_core.view_plan_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='customer_id']" position="after">
+                <field name="bmc_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_plan_form_bridge" model="ir.ui.view">
+        <field name="name">marketing.plan.form.bridge</field>
+        <field name="model">marketing.plan</field>
+        <field name="inherit_id" ref="marketing_core.view_plan_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet//group[1]/field[@name='customer_id']" position="after">
+                <field name="bmc_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

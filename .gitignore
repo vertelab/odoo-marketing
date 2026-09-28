@@ -4,3 +4,5 @@ graphify-out/
 # Lokala arbetskataloger (Pi)
 .pi/
 openspec/
+
+__pycache__/

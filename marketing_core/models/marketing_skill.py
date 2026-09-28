@@ -12,6 +12,7 @@ class MarketingSkill(models.Model):
 
     _name = 'marketing.skill'
     _description = 'Marketing Skill (SKILL.md in Odoo)'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'category, name'
     _sql_constraints = [
         ('name_unique', 'UNIQUE(name)', 'Skill name must be unique'),
