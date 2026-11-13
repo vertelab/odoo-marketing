@@ -1,0 +1,17 @@
+# Odoo Marketing (vertelab/odoo-marketing) — Python-beroenden
+#
+# Installeras av repo_apply tillsammans med alla andra
+# /usr/share/odoo-*/requirements.txt.
+#
+# Inventering 2026-11-13: filen saknades helt. Modulerna deklareras av
+# canary18.repo, key.repo och social.repo.
+
+# marketing_core — pyyaml (konfiguration) och markdown (innehåll) importeras
+PyYAML
+markdown
+
+# marketing_world — BeautifulSoup skrapar omvärldsbevakning
+beautifulsoup4
+
+# marketing_competitor_monitor — manifest deklarerar linkedin-api
+linkedin-api
